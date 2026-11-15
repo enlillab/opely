@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test HTML Page</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 640px; margin: 40px auto; padding: 0 16px; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    button { padding: 8px 16px; margin-top: 12px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>Test HTML Page</h1>
+  <p>This is a <strong>test</strong> page with some <em>sample</em> content.</p>
+
+  <h2>Students</h2>
+  <table>
+    <tr><th>Name</th><th>Score</th></tr>
+    <tr><td>Alice</td><td>92</td></tr>
+    <tr><td>Bob</td><td>78</td></tr>
+    <tr><td>Sara</td><td>85</td></tr>
+  </table>
+
+  <h2>Counter</h2>
+  <p>Clicks: <span id="count">0</span></p>
+  <button id="btn">Click me</button>
+
+  <script src="test.js"></script>
+  <script>
+    let n = 0;
+    document.getElementById("btn").addEventListener("click", () => {
+      document.getElementById("count").textContent = ++n;
+    });
+  </script>
+</body>
+</html>
