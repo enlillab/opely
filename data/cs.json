@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-15T18:30:19.505Z",
+  "updated": "2026-11-15T18:59:46.900Z",
   "stages": [
     {
       "id": "stage1",
@@ -17,7 +17,19 @@
       "id": "stage3",
       "name": "Stage 3",
       "color": "green",
-      "courses": []
+      "courses": [
+        {
+          "id": "test",
+          "code": "Test",
+          "semester": 1,
+          "title": "Test",
+          "instructor": "Test",
+          "sources": [],
+          "lectures": [],
+          "hasLabs": true,
+          "labs": []
+        }
+      ]
     },
     {
       "id": "stage4",
