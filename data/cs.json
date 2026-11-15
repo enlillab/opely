@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-15T18:59:46.900Z",
+  "updated": "2026-11-15T19:00:13.375Z",
   "stages": [
     {
       "id": "stage1",
@@ -25,7 +25,99 @@
           "title": "Test",
           "instructor": "Test",
           "sources": [],
-          "lectures": [],
+          "lectures": [
+            {
+              "id": "lmwi78w1e0",
+              "title": "test",
+              "date": "2026-11-16",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "test.cpp",
+                  "url": "files/cs/stage3/test/mwi78w1e0-test.cpp"
+                }
+              ]
+            },
+            {
+              "id": "lmwi78w1e1",
+              "title": "test",
+              "date": "2026-11-16",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "test.html",
+                  "url": "files/cs/stage3/test/mwi78w1e1-test.html"
+                }
+              ]
+            },
+            {
+              "id": "lmwi78w1e2",
+              "title": "test",
+              "date": "2026-11-16",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "test.js",
+                  "url": "files/cs/stage3/test/mwi78w1e2-test.js"
+                }
+              ]
+            },
+            {
+              "id": "lmwi78w1e3",
+              "title": "test",
+              "date": "2026-11-16",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "test.md",
+                  "url": "files/cs/stage3/test/mwi78w1e3-test.md"
+                }
+              ]
+            },
+            {
+              "id": "lmwi78w1e4",
+              "title": "test",
+              "date": "2026-11-16",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "test.pdf",
+                  "url": "files/cs/stage3/test/mwi78w1e4-test.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwi78w1e5",
+              "title": "test",
+              "date": "2026-11-16",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "test.py",
+                  "url": "files/cs/stage3/test/mwi78w1e5-test.py"
+                }
+              ]
+            },
+            {
+              "id": "lmwi78w1e6",
+              "title": "test",
+              "date": "2026-11-16",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "test.txt",
+                  "url": "files/cs/stage3/test/mwi78w1e6-test.txt"
+                }
+              ]
+            }
+          ],
           "hasLabs": true,
           "labs": []
         }
