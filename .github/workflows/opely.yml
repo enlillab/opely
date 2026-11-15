@@ -1,0 +1,101 @@
+# OPELY — work GitHub does for the site, for free:
+#  1. After an upload: Word, PowerPoint and similar files become PDFs, so they open inside Opely.
+#  2. Every night: announcements whose "remove after" time has passed are deleted.
+#  3. After a save: students who turned notifications on are told about new lectures, labs and
+#     announcements (only once notifications are set up: see cloudflare/SETUP.md).
+# The script is .github/opely/tasks.py. After a change, the site is published again.
+name: Opely tasks
+
+on:
+  push:
+    branches: [main]
+    paths: ["files/**", "data/**"]
+  schedule:
+    - cron: "17 0 * * *"   # every night, 03:17 in Iraq
+  workflow_dispatch:         # can also be started by hand from the Actions tab
+    inputs:
+      test_message:
+        description: "Send this test notification to every student who has notifications on (leave empty for none)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write   # to save the converted files
+  pages: write      # to publish the site again
+
+concurrency:
+  group: opely-tasks
+  cancel-in-progress: false
+
+jobs:
+  tasks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Is there anything to convert?
+        id: check
+        run: |
+          if python3 .github/opely/tasks.py needs-converter; then echo "convert=yes" >> "$GITHUB_OUTPUT"; fi
+
+      - name: Install LibreOffice and fonts (only when needed)
+        if: steps.check.outputs.convert == 'yes'
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq --no-install-recommends libreoffice-writer libreoffice-impress \
+            fonts-noto-core fonts-noto-extra fonts-crosextra-carlito fonts-crosextra-caladea fonts-dejavu
+
+      - name: Convert to PDF
+        if: steps.check.outputs.convert == 'yes'
+        run: python3 .github/opely/tasks.py convert
+
+      - name: Delete ended announcements
+        run: python3 .github/opely/tasks.py tidy
+
+      - name: Save and publish
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "Opely"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A data files
+          if git diff --cached --quiet; then echo "Nothing changed."; exit 0; fi
+          git commit -m "Convert files to PDF and tidy announcements"
+          git pull --rebase --quiet && git push
+          # Changes saved by this job don't publish the site by themselves, so ask for it
+          gh api -X POST "repos/${GITHUB_REPOSITORY}/pages/builds" || echo "Publishing will happen with the next change."
+
+  # Notifications run by themselves for every save, so none is skipped when saves come quickly
+  notify:
+    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.test_message != '')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    env:
+      OPELY_PUSH_URL: ${{ secrets.OPELY_PUSH_URL }}
+      OPELY_PUSH_SECRET: ${{ secrets.OPELY_PUSH_SECRET }}
+      OPELY_VAPID_PRIVATE: ${{ secrets.OPELY_VAPID_PRIVATE }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      BEFORE: ${{ github.event.before }}
+      AFTER: ${{ github.sha }}
+      TEST_MESSAGE: ${{ inputs.test_message }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: .github   # only the script; the lecture files aren't needed
+          fetch-depth: 1
+
+      - name: Is there anything to tell students?
+        id: check
+        run: |
+          if python3 .github/opely/tasks.py needs-notify; then echo "send=yes" >> "$GITHUB_OUTPUT"; fi
+
+      - name: Install the sender
+        if: steps.check.outputs.send == 'yes'
+        run: pip install --quiet pywebpush==2.5.0
+
+      - name: Send notifications
+        if: steps.check.outputs.send == 'yes'
+        run: python3 .github/opely/tasks.py notify
