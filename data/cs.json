@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-15T19:05:10.498Z",
+  "updated": "2026-11-15T19:05:17.293Z",
   "stages": [
     {
       "id": "stage1",
@@ -207,25 +207,6 @@
           "archive": {
             "versions": [],
             "removed": [
-              {
-                "id": "rmwi7fdcy",
-                "kind": "lecture",
-                "removedAt": "2026-11-15",
-                "item": {
-                  "id": "lmwi66g2o1",
-                  "title": "test",
-                  "date": "2026-11-16",
-                  "summary": "",
-                  "video": "",
-                  "files": [
-                    {
-                      "label": "test.html",
-                      "url": "files/cs/stage4/111/mwi66g2o1-test.html",
-                      "commit": "6b9bd7dbbac1e94a2fa0b1e98febd231a4c0f8ae"
-                    }
-                  ]
-                }
-              },
               {
                 "id": "rmwi7f92y",
                 "kind": "lecture",
