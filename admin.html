@@ -10,10 +10,10 @@
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="style.css?v=32">
-<script src="lang.js?v=32"></script>
-<script src="icons.js?v=32"></script>
-<script src="viewer.js?v=32"></script>
+<link rel="stylesheet" href="style.css?v=33">
+<script src="lang.js?v=33"></script>
+<script src="icons.js?v=33"></script>
+<script src="viewer.js?v=33"></script>
 </head>
 <body>
 <!-- The navigation bar, the same as on the student site -->
@@ -2398,7 +2398,8 @@ function showAdmins() {
     <li><span class="row">
       <span class="avatar ${admin.owner ? "indigo" : "blue"}" style="width:34px;height:34px;font-size:13px">${esc(initials(admin.name))}</span>
       <span class="grow">${esc(admin.name)}${admin.owner ? " (" + t("owner") + ")" : ""}<br>
-        <span class="secondary small">${esc(admin.username)}${SEP}${esc(departmentName(admin.department))}${SEP}${esc(t(admin.stage.replace("stage", "Stage ")))}</span></span>
+        <span class="secondary small">${esc(admin.username)}${SEP}${admin.owner && !admin.department ? esc(t("All departments"))
+          : esc(departmentName(admin.department || "")) + (admin.stage ? SEP + esc(t(admin.stage.replace("stage", "Stage "))) : "")}</span></span>
       ${admin.key === settings.key ? "" : `<button class="delete" type="button" aria-label="${t("Delete")}" data-key="${i}">${icon("trash")}${t("Delete")}</button>`}
     </span></li>`).join("");
 
@@ -2658,7 +2659,8 @@ async function signIn(token) {
     const me = admins.find(admin => admin.key === key);
     if (!me) throw new Error("This token isn’t registered on the site. Ask the site owner to add you.");
     settings = Object.assign({}, me, { token: token });
-    dept = departments.find(department => department.id === me.department);
+    // An owner manages everything, so a department and stage are optional: the first one opens
+    dept = departments.find(department => department.id === me.department) || (me.owner ? departments[0] : undefined);
     if (!dept) throw new Error("Your department is no longer on the site. Ask the site owner.");
     data = (await readData()).data;
     if (!ownStage()) throw new Error("Your stage is no longer on the site. Ask the site owner.");
