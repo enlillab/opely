@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-15T17:53:46.244Z",
+  "updated": "2026-11-15T18:29:52.643Z",
   "stages": [
     {
       "id": "stage1",
@@ -23,7 +23,19 @@
       "id": "stage4",
       "name": "Stage 4",
       "color": "purple",
-      "courses": []
+      "courses": [
+        {
+          "id": "111",
+          "code": "111",
+          "semester": 1,
+          "title": "Test",
+          "instructor": "111",
+          "sources": [],
+          "lectures": [],
+          "hasLabs": true,
+          "labs": []
+        }
+      ]
     }
   ],
   "announcements": []
