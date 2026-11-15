@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-15T19:01:34.151Z",
+  "updated": "2026-11-15T19:02:38.267Z",
   "stages": [
     {
       "id": "stage1",
@@ -234,13 +234,5 @@
       ]
     }
   ],
-  "announcements": [
-    {
-      "id": "nmwi7apzr",
-      "title": "علاوي مشتاقين",
-      "text": "كلا كلا للبس",
-      "date": "2026-11-15",
-      "stage": "stage3"
-    }
-  ]
+  "announcements": []
 }
