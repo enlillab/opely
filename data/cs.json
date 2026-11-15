@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-15T19:05:17.293Z",
+  "updated": "2026-11-15T19:05:29.652Z",
   "stages": [
     {
       "id": "stage1",
@@ -206,27 +206,7 @@
           "labs": [],
           "archive": {
             "versions": [],
-            "removed": [
-              {
-                "id": "rmwi7f92y",
-                "kind": "lecture",
-                "removedAt": "2026-11-15",
-                "item": {
-                  "id": "lmwi66g2o0",
-                  "title": "test",
-                  "date": "2026-11-16",
-                  "summary": "",
-                  "video": "",
-                  "files": [
-                    {
-                      "label": "test.cpp",
-                      "url": "files/cs/stage4/111/mwi66g2o0-test.cpp",
-                      "commit": "2ba228952dd16da1b2ff1e7ef78e912fa3cd1bb1"
-                    }
-                  ]
-                }
-              }
-            ]
+            "removed": []
           }
         }
       ]
