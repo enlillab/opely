@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-12T08:26:42.539Z",
+  "updated": "2026-11-15T17:50:31.515Z",
   "stages": [
     {
       "id": "stage1",
@@ -18,29 +18,6 @@
       "name": "Stage 3",
       "color": "green",
       "courses": [
-        {
-          "id": "001",
-          "code": "001",
-          "semester": 1,
-          "title": "Data Science",
-          "instructor": "Rasha Abdullah",
-          "sources": [],
-          "lectures": [
-            {
-              "id": "lmwcz91bf",
-              "title": "Recording",
-              "date": "2026-11-12",
-              "summary": "",
-              "video": "",
-              "files": [
-                {
-                  "label": "01.pdf",
-                  "url": "files/cs/stage3/001/mwcz8z33-01.pdf"
-                }
-              ]
-            }
-          ]
-        },
         {
           "id": "002",
           "code": "002",
