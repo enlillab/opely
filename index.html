@@ -9,19 +9,25 @@
 <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-180.png">
-<link rel="stylesheet" href="style.css">
-<script src="lang.js"></script>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Opely">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="style.css?v=32">
+<script src="lang.js?v=32"></script>
+<script src="icons.js?v=32"></script>
+<script src="viewer.js?v=32"></script>
 </head>
 <body>
-<header class="bar">
-  <div class="bar-inner">
-    <a class="home" href="#home">Opely</a>
-    <a class="icon-button" href="#settings" aria-label="Settings" title="Settings">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <circle cx="12" cy="12" r="3.2"/>
-        <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.04 1.56V21a2 2 0 1 1-4 0v-.09a1.7 1.7 0 0 0-1.1-1.56 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.56-1.04H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.6 8.86a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H9a1.7 1.7 0 0 0 1.04-1.56V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1.04 1.56 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87V9c.26.6.85 1 1.5 1.04H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.51 1z"/>
-      </svg>
-    </a>
+<!-- The navigation bar: a back button, and the page's name once its big title scrolls away -->
+<header class="nav">
+  <div class="nav-inner">
+    <a id="navBack" class="nav-back" href="#home" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></a>
+    <a id="navBrand" class="nav-brand" href="#home" hidden><img src="icon.svg" alt="">Opely</a>
+    <span id="navTitle" class="nav-title" aria-hidden="true"></span>
+    <a id="navSearch" class="nav-back nav-end" href="#search" aria-label="Search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg></a>
+    <a id="navSettings" class="nav-back nav-end" href="#settings" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1.1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.6V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.6 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></a>
   </div>
 </header>
 <div class="wrap">
@@ -29,6 +35,7 @@
   <!-- Every page is drawn inside this element by the script below -->
   <main id="app"></main>
 </div>
+
 
 <script>
 /* =====================================================================
@@ -54,9 +61,10 @@ let fileUrl = null;       // the address of the PDF being viewed, for its Downlo
 let pageWatcher = null;   // notices which PDF pages are near the screen
 
 const app = document.getElementById("app");
+const VERSION = "1.0";
 translatePage(); // the few words written in the HTML above
-document.querySelector(".icon-button").setAttribute("aria-label", t("Settings"));
-document.querySelector(".icon-button").title = t("Settings");
+document.getElementById("navSettings").setAttribute("aria-label", t("Settings"));
+document.getElementById("navSearch").setAttribute("aria-label", t("Search"));
 
 // Makes text safe to place inside HTML
 function esc(text) {
@@ -67,23 +75,26 @@ function esc(text) {
 
 // Files stored in the repository download; outside links open in a new tab
 function linkAttrs(url) {
-  return /^https?:/.test(url) ? 'target="_blank" rel="noopener"' : "download";
+  // Outside links and plain-text files open in a new tab; other files download
+  return /^https?:/.test(url) || /\.txt$/i.test(url) ? 'target="_blank" rel="noopener"' : "download";
 }
 
-// A PDF stored in the repository can be saved in the browser and shown inside the page
+// A file stored in the site that Opely can show inside the page (PDF, text, code, notebook, picture).
+// It is saved in the browser too. See viewer.js.
 function isPdf(url) {
-  return !/^https?:/.test(url) && /\.pdf$/i.test(url);
+  return canView(url);
 }
 
 // One row in a list of files. `viewer` is the address of the in-page viewer for this file.
 function fileRow(file, viewer) {
+  const [shape, color] = fileKind(file.url);
   if (!file.url) {
-    return `<li><span class="row"><span class="grow">${esc(file.label)}</span><span class="secondary small">${t("Not added yet")}</span></span></li>`;
+    return `<li><span class="row">${tile(shape, "gray")}<span class="grow secondary">${esc(file.label)}</span><span class="end">${t("Not added yet")}</span></span></li>`;
   }
   if (isPdf(file.url)) {
-    return `<li><a class="row" href="${viewer}" data-saved="${esc(file.url)}"><span class="grow">${esc(file.label)}</span><span class="secondary small"></span></a></li>`;
+    return `<li><a class="row" href="${viewer}" data-saved="${esc(file.url)}">${tile(shape, color)}<span class="grow">${esc(file.label)}</span><span class="end"></span></a></li>`;
   }
-  return `<li><a class="row" href="${esc(file.url)}" ${linkAttrs(file.url)}><span class="grow">${esc(file.label)}</span></a></li>`;
+  return `<li><a class="row" href="${esc(file.from || file.url)}" ${linkAttrs(file.url)}>${tile(shape, color)}<span class="grow">${esc(file.label)}</span></a></li>`;
 }
 
 // Writes “Saved” next to the files that are already stored in this browser
@@ -91,7 +102,10 @@ async function markSaved() {
   if (!window.caches) return;
   const cache = await caches.open(FILE_CACHE);
   document.querySelectorAll("[data-saved]").forEach(async row => {
-    if (await cache.match(row.dataset.saved)) row.querySelector(".small").textContent = t("Saved");
+    if (!(await cache.match(row.dataset.saved))) return;
+    const label = row.querySelector(".end");
+    label.className = "end saved";
+    label.innerHTML = icon("check") + t("Saved");
   });
 }
 
@@ -104,22 +118,489 @@ function allLectures(stageList) {
   return found.sort((a, b) => b.lecture.date.localeCompare(a.lecture.date));
 }
 
+// The small arrow at the end of a widget
+const chevron = () => icon("chevron", "flip chev");
+
 // The wide widget that shows the newest lecture of a department
 function latestWidget(dept, stageList) {
   const latest = allLectures(stageList)[0];
-  if (!latest) {
-    return `<div class="widget medium">
-      <span class="kicker">${t("Latest")}</span>
-      <span class="secondary">${t("No lectures yet.")}</span>
-    </div>`;
-  }
-  return `<a class="widget medium" href="#${dept.id}-${latest.stage.id}-${latest.course.id}-${latest.lecture.id || latest.number}">
-    <span class="kicker">${t("Latest")}</span>
-    <span>
-      <span class="title">${esc(latest.lecture.title)}</span><br>
-      <span class="secondary small">${esc(stageName(latest.stage) + SEP + latest.course.title)}${SEP}${niceDate(latest.lecture.date)}</span>
-    </span>
+  if (!latest) return "";
+  return `<a class="widget wide" href="#${dept.id}-${latest.stage.id}-${latest.course.id}-${latest.lecture.id || latest.number}">
+    <span class="head"><span class="kicker">${t("Latest")}</span>${chevron()}</span>
+    <span class="title">${esc(latest.lecture.title)}</span>
+    <span class="meta-row"><span>${esc(latest.course.title)}</span><span>${niceDate(latest.lecture.date)}</span></span>
   </a>`;
+}
+
+// ----- Progress: which lectures the student has opened, kept in this browser only -----
+const OPENED_KEY = "opely-opened";
+let opened = {};
+try { opened = JSON.parse(localStorage.getItem(OPENED_KEY)) || {}; } catch (error) { opened = {}; }
+const keyOfLecture = (dept, stage, course, lecture, number) => `${dept.id}-${stage.id}-${course.id}-${lecture.id || number}`;
+function markOpened(key) {
+  opened[key] = Date.now();
+  try { localStorage.setItem(OPENED_KEY, JSON.stringify(opened)); } catch (error) { /* storage blocked */ }
+}
+// How many lectures of a course, a stage, or a whole department have been opened: [opened, total]
+function courseProgress(dept, stage, course) {
+  const done = course.lectures.filter((lecture, i) => opened[keyOfLecture(dept, stage, course, lecture, i + 1)]).length;
+  return [done, course.lectures.length];
+}
+function stageProgress(dept, stage) {
+  return stage.courses.reduce(([d, n], course) => { const [a, b] = courseProgress(dept, stage, course); return [d + a, n + b]; }, [0, 0]);
+}
+function deptProgress(dept, stages) {
+  return stages.reduce(([d, n], stage) => { const [a, b] = stageProgress(dept, stage); return [d + a, n + b]; }, [0, 0]);
+}
+
+// A progress ring, like the rings in Mo Focus. `size` is in pixels.
+function ring(done, total, size, showText) {
+  const part = total ? Math.round(done / total * 100) : 0;
+  return `<span class="ring${part === 100 ? " full" : ""}" style="--size:${size}px" role="img" aria-label="${t("{done} of {total} opened", { done: done, total: total })}">
+    <svg viewBox="0 0 36 36" aria-hidden="true"><circle class="track" cx="18" cy="18" r="15.9155"/>
+      <circle class="bar" cx="18" cy="18" r="15.9155" stroke-dasharray="${part} 100"/></svg>
+    ${showText ? `<span class="ring-text" dir="ltr"><b>${done}</b><small>/${total}</small></span>` : ""}
+  </span>`;
+}
+// A thin progress bar
+const progressBar = (done, total) => `<span class="progress"><span style="width:${total ? done / total * 100 : 0}%"></span></span>`;
+
+// The last lecture the student opened, kept in this browser only
+const LAST_KEY = "opely-last";
+function rememberLecture(address, lecture, course, number, courseKey) {
+  try {
+    localStorage.setItem(LAST_KEY, JSON.stringify({ address: address, title: lecture.title, course: course.title,
+      number: number, courseKey: courseKey, total: course.lectures.length, lab: !!course.isLabs }));
+  } catch (error) { /* storage blocked */ }
+}
+function continueWidget() {
+  let last = null;
+  try { last = JSON.parse(localStorage.getItem(LAST_KEY)); } catch (error) { last = null; }
+  if (!last || !last.address) return `<div class="hero static welcome">
+    <span class="hero-text">
+      <span class="kicker">${t("Welcome")}</span>
+      <span class="hero-title">${t("Every lecture, in one place.")}</span>
+      <span class="sub">${t("Pick your department to start. Opely remembers where you stopped.")}</span>
+    </span>
+    <img src="icon.svg" alt="" class="app-icon welcome-icon">
+  </div>`;
+  const done = Object.keys(opened).filter(key => last.courseKey && key.startsWith(last.courseKey + "-") &&
+    (last.lab || !key.startsWith(last.courseKey + "-labs-"))).length; // a course's lab keys are counted with its labs only
+  return `<a class="hero" href="${esc(last.address)}">
+    <span class="hero-text">
+      <span class="kicker">${t("Continue")}</span>
+      <span class="hero-title">${esc(last.title)}</span>
+      <span class="sub">${esc(last.course)}${last.number ? SEP + t(last.lab ? "Lab {n}" : "Lecture {n}", { n: last.number }) : ""}</span>
+      <span class="glow-button">${t("Open")}</span>
+    </span>
+    ${last.total ? ring(Math.min(done, last.total), last.total, 96, true) : ""}
+  </a>`;
+}
+
+// The number of lectures in a department, from the copy saved in this browser (null if not saved yet)
+function savedProgress(dept) {
+  if (content[dept.id]) return deptProgress(dept, content[dept.id].stages);
+  try {
+    const text = savedCopy(dept.data);
+    if (text) return deptProgress(dept, JSON.parse(text).stages || []);
+  } catch (error) { /* ignored */ }
+  return null;
+}
+
+// ----- My stage: the student's own department and stage, kept in this browser -----
+const MY_STAGE_KEY = "opely-my-stage";
+function myStage() {
+  try { return JSON.parse(localStorage.getItem(MY_STAGE_KEY)); } catch (error) { return null; }
+}
+function setMyStage(value) {
+  try { value ? localStorage.setItem(MY_STAGE_KEY, JSON.stringify(value)) : localStorage.removeItem(MY_STAGE_KEY); } catch (error) { /* storage blocked */ }
+}
+// The department's stages: shown, or from the copy saved in this browser
+function stagesOf(dept) {
+  if (content[dept.id]) return content[dept.id].stages;
+  try { const text = savedCopy(dept.data); if (text) return JSON.parse(text).stages || []; } catch (error) { /* ignored */ }
+  return null;
+}
+// The "My stage" card on the home page
+function myStageWidget() {
+  const mine = myStage();
+  if (!mine) return "";
+  const dept = departments.find(d => d.id === mine.dept);
+  if (!dept) return "";
+  const stages = stagesOf(dept);
+  const stage = stages && stages.find(s => s.id === mine.stage);
+  const name = stage ? stageName(stage) : t("Stage {n}", { n: mine.stage.replace("stage", "") });
+  const [done, total] = stage ? stageProgress(dept, stage) : [0, 0];
+  return `<a class="hero my-stage" href="#${dept.id}-${mine.stage}">
+    <span class="hero-text">
+      <span class="kicker">${t("My stage")}</span>
+      <span class="hero-title">${esc(name)}</span>
+      <span class="sub">${esc(localName(dept))}${stage ? SEP + plural(stage.courses.length, "course") : ""}</span>
+      ${content[dept.id] && upcomingEvents(dept, mine.stage)[0] ? `<span class="sub event-line">${icon("calendar")}${esc(upcomingEvents(dept, mine.stage)[0].title)}${SEP}${timeUntil(upcomingEvents(dept, mine.stage)[0].event).words}</span>` : ""}
+    </span>
+    ${total ? ring(done, total, 72, true) : tile(dept.icon || "school", dept.color, "big")}
+  </a>`;
+}
+
+// ----- "New" badges: lectures, labs and announcements added since the student last looked -----
+// Opely remembers, in this browser, what it has already shown. The first visit to a department
+// shows nothing as new; after that, anything added is new until the student sees it.
+const KNOWN_KEY = "opely-known";
+function knownStore() { try { return JSON.parse(localStorage.getItem(KNOWN_KEY)) || {}; } catch (error) { return {}; } }
+function saveKnown(store) { try { localStorage.setItem(KNOWN_KEY, JSON.stringify(store)); } catch (error) { /* storage full */ } }
+const newsKey = item => "news:" + (item.id || item.title + item.date);
+// Every key of a department: its lectures, labs and announcements
+function itemKeys(dept) {
+  const stages = stagesOf(dept);
+  if (!stages) return null;
+  const keys = [];
+  stages.forEach(stage => stage.courses.forEach(course => {
+    course.lectures.forEach((lecture, i) => keys.push(keyOfLecture(dept, stage, course, lecture, i + 1)));
+    if (hasLabs(course)) { const labs = asLabs(course); labs.lectures.forEach((lab, i) => keys.push(keyOfLecture(dept, stage, labs, lab, i + 1))); }
+  }));
+  const news = content[dept.id] ? content[dept.id].announcements : [];
+  news.forEach(item => keys.push(newsKey(item)));
+  return keys;
+}
+// The keys that are new in a department (an empty set on the first visit)
+function newIn(dept) {
+  const keys = itemKeys(dept);
+  if (!keys) return new Set();
+  const store = knownStore();
+  if (!store[dept.id]) { store[dept.id] = keys; saveKnown(store); return new Set(); }
+  const known = new Set(store[dept.id]);
+  return new Set(keys.filter(key => !known.has(key)));
+}
+function markKnown(dept, keys) {
+  if (!keys.length) return;
+  const store = knownStore();
+  const known = new Set(store[dept.id] || []);
+  keys.forEach(key => known.add(key));
+  store[dept.id] = [...known];
+  saveKnown(store);
+}
+const newBadge = count => count ? `<span class="new-badge">${count === true ? t("New") : t("{n} new", { n: count })}</span>` : "";
+// How many new lectures and labs a course (or a stage) has
+function newCount(dept, stage, course, fresh) {
+  let n = course.lectures.filter((lecture, i) => fresh.has(keyOfLecture(dept, stage, course, lecture, i + 1))).length;
+  if (hasLabs(course)) { const labs = asLabs(course); n += labs.lectures.filter((lab, i) => fresh.has(keyOfLecture(dept, stage, labs, lab, i + 1))).length; }
+  return n;
+}
+
+// ----- Share a course or a lecture: the phone's share sheet, or the link is copied -----
+function shareButton() {
+  return `<button id="shareButton" class="mine-pill share-pill" type="button">${icon("upload")}${t("Share")}</button>`;
+}
+function wireShare(title) {
+  const button = document.getElementById("shareButton");
+  if (!button) return;
+  button.addEventListener("click", async () => {
+    const link = location.href;
+    if (navigator.share) {
+      try { await navigator.share({ title: title, url: link }); } catch (error) { /* closed */ }
+      return;
+    }
+    const copied = typeof copyText === "function" && await copyText(link);
+    button.lastChild.textContent = t(copied ? "Link copied" : "Can’t copy here");
+    setTimeout(() => { if (button.isConnected) button.lastChild.textContent = t("Share"); }, 2000);
+  });
+}
+
+// ----- The archive: earlier versions of a course, and lectures, labs and sources that were removed -----
+// Archived files are no longer on the site; they are read from the site's history on GitHub
+// ("commit" says which saved version still has them). They take no space on the site.
+function historyAddress(file) {
+  if (!file.commit || !location.hostname.endsWith(".github.io")) return file.url; // on a computer, the file is still in the folder
+  const owner = location.hostname.replace(".github.io", "");
+  const repo = location.pathname.split("/").filter(Boolean)[0] || "Opely";
+  return "https://raw.githubusercontent.com/" + owner + "/" + repo + "/" + file.commit + "/" + file.url.split("/").map(encodeURIComponent).join("/");
+}
+// A whole course that was archived (stage.archivedCourses), ready to show like any course.
+// Its files are read from the history: each gets "from", the address to read it from.
+function archivedCourse(stage, id) {
+  const found = (stage.archivedCourses || []).find(course => course.id === id);
+  if (!found) return null;
+  const from = file => file.commit && file.url ? Object.assign({}, file, { from: historyAddress(file) }) : file;
+  const item = lecture => Object.assign({}, lecture, { files: (lecture.files || []).map(from) });
+  return Object.assign({}, found, { isArchived: true, lectures: found.lectures.map(item),
+    labs: found.labs ? found.labs.map(item) : found.labs, sources: (found.sources || []).map(from) });
+}
+// The archived courses of a stage
+function showArchivedCourses(dept, stage) {
+  const base = "#" + dept.id + "-" + stage.id;
+  document.title = t("Archived courses") + " | " + stageName(stage);
+  const list = (stage.archivedCourses || []).slice().sort((a, b) => a.code.localeCompare(b.code, "en", { numeric: true }));
+  const widgets = list.map(course => `<a class="widget course" href="${base}-${course.id}">
+      <span class="head"><span class="kicker" dir="ltr">${esc(course.code)}</span>${chevron()}</span>
+      <span class="title">${esc(course.title)}</span>
+      ${course.instructor ? `<span class="sub">${esc(course.instructor)}</span>` : ""}
+      <span class="foot meta-row"><span>${plural(course.lectures.length, "lecture")}</span><span>${t("Archived {date}", { date: niceDate(course.archivedAt) })}</span></span>
+    </a>`).join("");
+  app.innerHTML = `
+    <a class="back" href="${base}">${esc(stageName(stage))}</a>
+    <h1>${t("Archived courses")}</h1>
+    <p class="lead secondary">${t("Courses that are no longer taught. They stay here to read.")}</p>
+    ${widgets ? `<div class="courses">${widgets}</div>` : emptyState("clock", "No archived courses.")}`;
+}
+const hasArchive = course => !!course.archive && ((course.archive.versions || []).length + (course.archive.removed || []).length) > 0;
+// A row of an archived file: opens in Opely when it can, otherwise downloads from the history
+function archivedFileRow(file, viewer) {
+  const [shape, color] = fileKind(file.url);
+  if (/^https?:/.test(file.url)) return `<li><a class="row" href="${esc(file.url)}" target="_blank" rel="noopener">${tile(shape, color)}<span class="grow">${esc(file.label)}</span></a></li>`;
+  return isPdf(file.url)
+    ? `<li><a class="row" href="${viewer}">${tile(shape, color)}<span class="grow">${esc(file.label)}${file.removedAt ? `<br><span class="secondary small">${t("Removed {date}", { date: niceDate(file.removedAt) })}</span>` : ""}</span></a></li>`
+    : `<li><a class="row" href="${esc(historyAddress(file))}" download>${tile(shape, color)}<span class="grow">${esc(file.label)}</span></a></li>`;
+}
+function archiveRowFor(dept, stage, course) {
+  if (!hasArchive(course)) return "";
+  const a = course.archive;
+  const parts = [(a.versions || []).length ? plural(a.versions.length, "earlier version") : "", (a.removed || []).length ? plural(a.removed.length, "removed item") : ""].filter(Boolean).join(SEP);
+  return `<ul class="group icons archive-row"><li><a class="row" href="#${dept.id}-${stage.id}-${course.id}-archive">${tile("clock", "gray")}
+    <span class="grow">${t("Archive")}<br><span class="secondary small">${parts}</span></span></a></li></ul>`;
+}
+// The archive page of a course
+function showArchive(dept, stage, course) {
+  const base = "#" + dept.id + "-" + stage.id + "-" + course.id;
+  const a = course.archive || { versions: [], removed: [] };
+  document.title = t("Archive") + " | " + course.title;
+  const versions = (a.versions || []).map(version => `
+    <a class="widget wide" href="${base}-archive-${version.id}">
+      <span class="head"><span class="kicker">${t("Archived {date}", { date: niceDate(version.archivedAt) })}</span>${chevron()}</span>
+      <span class="title">${esc(version.name)}</span>
+      <span class="sub">${[plural(version.lectures.length, "lecture"), version.labs.length ? plural(version.labs.length, "lab") : "", version.sources.length ? plural(version.sources.length, "source") : ""].filter(Boolean).join(SEP)}</span>
+    </a>`).join("");
+  const kinds = { lecture: ["doc", "indigo", "Lecture"], lab: ["flask", "green", "Lab"], source: ["book", "gray", "Source"] };
+  const removed = (a.removed || []).map(entry => {
+    const [shape, color, word] = kinds[entry.kind] || kinds.lecture;
+    const title = entry.kind === "source" ? entry.item.label : entry.item.title;
+    const href = entry.kind === "source"
+      ? (isPdf(entry.item.url) ? `href="${base}-archive-${entry.id}-1"` : `href="${esc(historyAddress(entry.item))}" download`)
+      : `href="${base}-archive-${entry.id}"`;
+    return `<li><a class="row" ${href}>${tile(shape, color)}<span class="grow">${esc(title)}<br>
+      <span class="secondary small">${t(word)}${SEP}${t("Removed {date}", { date: niceDate(entry.removedAt) })}</span></span></a></li>`;
+  }).join("");
+  app.innerHTML = `
+    <a class="back" href="${base}">${esc(course.title)}</a>
+    <h1>${t("Archive")}</h1>
+    <p class="lead secondary">${esc(course.code)}${SEP}${t("Earlier versions of this course, and lectures that were replaced or removed.")}</p>
+    ${versions ? `<h2 class="label">${t("Earlier versions")}</h2><div class="widgets">${versions}</div>` : ""}
+    ${removed ? `<h2 class="label">${t("Removed")}</h2><ul class="group icons">${removed}</ul>` : ""}
+    ${!versions && !removed ? emptyState("clock", "Nothing in the archive yet.") : ""}`;
+}
+// An archived version: its lectures, labs and sources, the way the course looked then
+function showArchivedVersion(dept, stage, course, version) {
+  const base = "#" + dept.id + "-" + stage.id + "-" + course.id + "-archive-" + version.id;
+  document.title = version.name + " | " + course.title;
+  const list = (items, word) => items.map((item, i) => `
+    <li><a class="row" href="${base}-${item.id || i + 1}"><span class="num">${i + 1}</span>
+      <span class="grow">${esc(item.title)}<br><span class="secondary small">${niceDate(item.date)}${SEP}${plural((item.files || []).length, "file")}</span></span></a></li>`).join("");
+  app.innerHTML = `
+    <a class="back" href="#${dept.id}-${stage.id}-${course.id}-archive">${t("Archive")}</a>
+    <div class="course-head">
+      <span class="pill">${t("Archived version")}${SEP}<bdi>${esc(course.code)}</bdi></span>
+      <h1>${esc(version.name)}</h1>
+      <p class="meta-row"><span>${esc(course.title)}</span><span>${t("Archived {date}", { date: niceDate(version.archivedAt) })}</span></p>
+    </div>
+    ${version.lectures.length ? `<h2 class="label">${plural(version.lectures.length, "lecture")}</h2><ol class="group icons">${list(version.lectures)}</ol>` : ""}
+    ${version.labs.length ? `<h2 class="label">${plural(version.labs.length, "lab")}</h2><ol class="group icons">${list(version.labs)}</ol>` : ""}
+    ${version.sources.length ? `<h2 class="label">${plural(version.sources.length, "source")}</h2><ul class="group icons">${version.sources.map((source, i) => archivedFileRow(source, base + "-sources-" + (i + 1))).join("")}</ul>` : ""}`;
+}
+// An archived lecture or lab, read only
+function showArchivedItem(dept, stage, course, item, back, here, word) {
+  document.title = item.title + " | " + course.code;
+  const files = (item.files || []).map((file, i) => archivedFileRow(file, here + "-" + (i + 1))).join("");
+  app.innerHTML = `
+    <a class="back" href="${back}">${t("Archive")}</a>
+    <div class="course-head">
+      <span class="pill">${t(word)}${SEP}<bdi>${esc(course.code)}</bdi>${SEP}${t("From the archive")}</span>
+      <h1>${esc(item.title)}</h1>
+      <p class="meta-row"><span>${niceDate(item.date)}</span></p>
+    </div>
+    ${item.video ? `<h2 class="label">${t("Recording")}</h2><ul class="group icons"><li><a class="row" href="${esc(item.video)}" target="_blank" rel="noopener">${tile("play", "pink")}<span class="grow">${t("Watch recording")}</span></a></li></ul>` : ""}
+    ${item.summary ? `<h2 class="label">${t("Summary")}</h2><p class="text-block">${esc(item.summary)}</p>` : ""}
+    <h2 class="label">${t("Files")}</h2>
+    ${files ? `<ul class="group icons">${files}</ul>` : `<p class="text-block secondary">${t("No files yet.")}</p>`}
+    ${(item.earlier || []).length ? `<h2 class="label">${t("Earlier files")}</h2><ul class="group icons earlier">${item.earlier.map((file, i) => archivedFileRow(file, here + "-earlier-" + (i + 1))).join("")}</ul>` : ""}`;
+}
+// Opens an archived file inside Opely, read from the history
+function showArchivedFile(file, back, backLabel) {
+  return showFile(Object.assign({}, file, { from: historyAddress(file) }), back, backLabel);
+}
+// #cs-stage1-cs101-archive ...  -<version id>  -<version id>-<lecture id>[-<n>]  -<version id>-sources-<n>
+//                                -<removed id>[-<n>]
+function openArchive(dept, stage, course, parts) {
+  const base = "#" + dept.id + "-" + stage.id + "-" + course.id;
+  const a = course.archive || { versions: [], removed: [] };
+  const [key, second, third] = parts;
+  if (key === undefined) return showArchive(dept, stage, course);
+  const version = (a.versions || []).find(v => v.id === key);
+  if (version) {
+    const vbase = base + "-archive-" + version.id;
+    if (second === undefined) return showArchivedVersion(dept, stage, course, version);
+    if (second === "sources") { const source = version.sources[Number(third) - 1]; return source ? showArchivedFile(source, vbase, version.name) : showNotFound(); }
+    const items = version.lectures.concat(version.labs);
+    const item = items.find(other => other.id === second) || version.lectures[Number(second) - 1];
+    if (!item) return showNotFound();
+    const word = version.labs.includes(item) ? "Lab" : "Lecture";
+    if (third === undefined) return showArchivedItem(dept, stage, course, item, vbase, vbase + "-" + second, word);
+    if (third === "earlier") { const earlier = (item.earlier || [])[Number(parts[3]) - 1]; return earlier ? showArchivedFile(earlier, vbase + "-" + second, item.title) : showNotFound(); }
+    const file = (item.files || [])[Number(third) - 1];
+    return file ? showArchivedFile(file, vbase + "-" + second, item.title) : showNotFound();
+  }
+  const entry = (a.removed || []).find(r => r.id === key);
+  if (!entry) return showNotFound();
+  if (entry.kind === "source") return showArchivedFile(entry.item, base + "-archive", t("Archive"));
+  const here = base + "-archive-" + entry.id;
+  if (second === undefined) return showArchivedItem(dept, stage, course, entry.item, base + "-archive", here, entry.kind === "lab" ? "Lab" : "Lecture");
+  if (second === "earlier") { const earlier = (entry.item.earlier || [])[Number(third) - 1]; return earlier ? showArchivedFile(earlier, here, entry.item.title) : showNotFound(); }
+  const file = (entry.item.files || [])[Number(second) - 1];
+  return file ? showArchivedFile(file, here, entry.item.title) : showNotFound();
+}
+
+// ----- Search: every course, lecture, lab, file and announcement, in every department -----
+let searchFrom = "#home";  // where the student was before opening Search
+let lastQuery = "";        // kept, so going back to Search shows the same results
+// Lower case, without Arabic marks, with the letters that are often typed differently made the same
+function plain(text) {
+  return String(text || "").toLowerCase()
+    .replace(/[ً-ْٰـ]/g, "")
+    .replace(/[أإآٱ]/g, "ا").replace(/ى/g, "ي").replace(/ة/g, "ه").replace(/ؤ/g, "و").replace(/ئ/g, "ي")
+    .replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d));
+}
+// Everything that can be found, from the departments shown or saved in this browser
+function searchIndex() {
+  const found = [];
+  departments.forEach(dept => {
+    const stages = stagesOf(dept);
+    if (!stages) return;
+    stages.forEach(stage => stage.courses.forEach(course => {
+      const courseHref = `#${dept.id}-${stage.id}-${course.id}`;
+      const where = stageName(stage) + SEP + localName(dept);
+      found.push({ kind: "course", title: course.title, sub: course.code + SEP + where, href: courseHref, text: [course.title, course.code, course.instructor].join(" ") });
+      const lists = [[course, "lecture"]].concat(hasLabs(course) ? [[asLabs(course), "lab"]] : []);
+      lists.forEach(([list, kind]) => list.lectures.forEach((lecture, i) => {
+        const here = `#${dept.id}-${stage.id}-${list.id}-${lecture.id || i + 1}`;
+        const label = t(kind === "lab" ? "Lab {n}" : "Lecture {n}", { n: i + 1 }) + SEP + course.code + SEP + (dept.short || localName(dept));
+        found.push({ kind: kind, title: lecture.title, sub: label, href: here, text: [lecture.title, lecture.summary].join(" ") });
+        (lecture.files || []).forEach((file, f) => {
+          if (!file.url) return;
+          found.push({ kind: "file", title: file.label, sub: label, href: isPdf(file.url) ? here + "-" + (f + 1) : here, url: file.url, text: file.label });
+        });
+      }));
+      (course.sources || []).forEach((source, f) => {
+        found.push({ kind: "file", title: source.label, sub: t("Source") + SEP + course.code + SEP + (dept.short || localName(dept)), href: isPdf(source.url) ? courseHref + "-sources-" + (f + 1) : courseHref + "-sources", url: source.url, text: source.label });
+      });
+    }));
+    const news = content[dept.id] ? content[dept.id].announcements : (() => { try { return JSON.parse(savedCopy(dept.data)).announcements || []; } catch (error) { return []; } })();
+    news.filter(item => !hasEnded(item)).forEach(item => found.push({ kind: "news", title: item.title, sub: niceDate(item.date) + SEP + localName(dept), href: `#${dept.id}-news`, text: [item.title, item.text].join(" ") }));
+  });
+  return found;
+}
+// Marks the words that were searched for
+function markWords(text, words) {
+  let html = esc(text);
+  words.forEach(word => {
+    if (!word) return;
+    const at = plain(text).indexOf(word);
+    if (at === -1 || plain(text).length !== text.length) return; // only when letters line up one to one
+    const original = text.slice(at, at + word.length);
+    html = html.replace(esc(original), "<mark>" + esc(original) + "</mark>");
+  });
+  return html;
+}
+function searchResults(query) {
+  const words = plain(query).split(/\s+/).filter(Boolean);
+  if (!words.length) return `<p class="hint-below">${t("Search every course, lecture, lab, file and announcement.")}</p>`;
+  const groups = { course: [], lecture: [], lab: [], file: [], news: [] };
+  searchIndex().forEach(item => {
+    const text = plain(item.text);
+    if (!words.every(word => text.includes(word))) return;
+    const score = plain(item.title).startsWith(words[0]) ? 0 : 1;
+    groups[item.kind].push(Object.assign({ score: score }, item));
+  });
+  const titles = { course: "Courses", lecture: "Lectures", lab: "Labs", file: "Files", news: "Announcements" };
+  const shapes = { course: ["book", "blue"], lecture: ["doc", "indigo"], lab: ["flask", "green"], news: ["megaphone", "orange"] };
+  const sections = Object.keys(groups).filter(kind => groups[kind].length).map(kind => {
+    const rows = groups[kind].sort((a, b) => a.score - b.score).slice(0, 25).map(item => {
+      const [shape, color] = kind === "file" ? fileKind(item.url) : shapes[kind];
+      return `<li><a class="row" href="${item.href}">${tile(shape, color)}<span class="grow">${markWords(item.title, words)}<br><span class="secondary small">${esc(item.sub)}</span></span></a></li>`;
+    }).join("");
+    return `<h2 class="label">${t(titles[kind])}</h2><ul class="group icons">${rows}</ul>`;
+  }).join("");
+  return sections || emptyState("search", "Nothing found. Try other words.");
+}
+async function showSearch() {
+  document.title = t("Search") + " | Opely";
+  app.innerHTML = `
+    <a class="back" href="${searchFrom}">${t("Back")}</a>
+    <h1>${t("Search")}</h1>
+    <label class="search-field">${icon("search")}<input id="searchInput" type="search" enterkeyhint="search" autocomplete="off"
+      placeholder="${t("Courses, lectures, labs, files")}" value="${esc(lastQuery)}" aria-label="${t("Search")}"></label>
+    <div id="searchResults">${searchResults(lastQuery)}</div>`;
+  const input = document.getElementById("searchInput");
+  const results = document.getElementById("searchResults");
+  input.addEventListener("input", () => { lastQuery = input.value; results.innerHTML = searchResults(lastQuery); });
+  if (!lastQuery) setTimeout(() => input.focus(), 350);
+  // Get every department, so the search covers all of them; the results update when they arrive
+  const view = viewNumber;
+  await Promise.allSettled(departments.map(dept => refreshFile(dept.data, content[dept.id] ? content[dept.id].text : null, text => useDepartment(dept.id, text))));
+  if (view === viewNumber && document.getElementById("searchResults")) results.innerHTML = searchResults(lastQuery);
+}
+
+// ----- Save a whole course for offline: every file of its lectures, labs and sources -----
+function courseFiles(course) {
+  const files = [];
+  course.lectures.concat(course.labs || []).forEach(lecture => (lecture.files || []).forEach(file => files.push(file)));
+  (course.sources || []).forEach(source => files.push(source));
+  return files.filter(file => file.url && !/^https?:/.test(file.url));
+}
+async function offlineCount(files) {
+  if (!window.caches) return 0;
+  const cache = await caches.open(FILE_CACHE);
+  let saved = 0;
+  for (const file of files) if (await cache.match(file.url)) saved += 1;
+  return saved;
+}
+function offlineRow(course) {
+  if (!window.caches || !courseFiles(course).length) return "";
+  return `<ul class="group icons offline-row"><li><button id="offlineButton" class="row" type="button">
+    <span id="offlineTile">${tile("download", "blue")}</span>
+    <span class="grow">${t("Save for offline")}<br><span id="offlineState" class="secondary small">${t("Checking…")}</span></span>
+  </button></li></ul>`;
+}
+async function wireOffline(course) {
+  const button = document.getElementById("offlineButton");
+  if (!button) return;
+  const files = courseFiles(course);
+  const state = document.getElementById("offlineState");
+  const show = saved => {
+    const all = saved === files.length;
+    state.textContent = all ? t("All {n} files are saved in this browser.", { n: files.length }) : t("{saved} of {n} files saved", { saved: saved, n: files.length });
+    document.getElementById("offlineTile").innerHTML = tile(all ? "check" : "download", all ? "green" : "blue");
+    button.dataset.all = all ? "yes" : "";
+  };
+  show(await offlineCount(files));
+  button.addEventListener("click", async () => {
+    if (button.dataset.busy) return;
+    if (button.dataset.all) { // already saved: a second tap removes the copies
+      if (!button.dataset.armed) { button.dataset.armed = "yes"; state.textContent = t("Tap again to remove this course’s saved files."); return; }
+      delete button.dataset.armed;
+      const cache = await caches.open(FILE_CACHE);
+      for (const file of files) await cache.delete(file.url);
+      show(0); markSaved();
+      return;
+    }
+    button.dataset.busy = "yes";
+    let saved = 0, failed = 0;
+    for (const file of files) {
+      state.textContent = t("Saving {i} of {n}…", { i: saved + failed + 1, n: files.length });
+      try { await getFile(file.url); saved += 1; } catch (error) { failed += 1; }
+    }
+    delete button.dataset.busy;
+    show(await offlineCount(files));
+    if (failed) state.textContent += SEP + t("{n} couldn’t be saved. Check your connection.", { n: failed });
+    markSaved();
+  });
 }
 
 // ----- Home: pick a department -----
@@ -127,43 +608,109 @@ function latestWidget(dept, stageList) {
 // universities are added to catalog.json, they appear here by themselves.
 function showDepartments() {
   document.title = "Opely";
-  if (departments.length === 0) return showStatus("No departments yet.");
+  if (departments.length === 0) return showEmpty("school", "No departments yet.");
 
   const manyUniversities = new Set(faculties.map(faculty => faculty.university.id)).size > 1;
   const sections = faculties.map(faculty => {
     const heading = manyUniversities ? localName(faculty.university) + SEP + faculty.name : faculty.name;
-    const widgets = faculty.departments.map(dept => `
-      <a class="widget dept filled ${esc(dept.color)}" href="#${dept.id}">
-        <span class="glyph">${esc(dept.short || dept.name.charAt(0))}</span>
+    const widgets = faculty.departments.map((dept, i, all) => {
+      const progress = savedProgress(dept);
+      const wide = all.length % 2 === 1 && i === all.length - 1;
+      return `<a class="widget dept ${esc(dept.color)}${wide ? " wide" : ""}" href="#${dept.id}">
+        <span class="head">${tile(dept.icon || "school", dept.color, "big")}${chevron()}</span>
         <span class="title">${esc(localName(dept))}</span>
-      </a>`).join("");
-    return `<h2>${esc(heading)}</h2><div class="widgets depts">${widgets}</div>`;
+        <span class="sub">${progress && progress[1] ? t("{done} of {total} opened", { done: progress[0], total: progress[1] }) : `<bdi>${esc(dept.short || "")}</bdi>`}</span>
+        ${progressBar(progress ? progress[0] : 0, progress ? progress[1] : 0)}
+      </a>`;
+    }).join("");
+    return `<h2 class="label">${esc(heading)}</h2><div class="widgets depts">${widgets}</div>`;
   }).join("");
 
   app.innerHTML = `
     <h1>${t("Departments")}</h1>
     <p class="lead secondary">${t("Choose your department.")}</p>
-    ${sections}`;
+    ${continueWidget()}
+    ${myStageWidget()}
+    ${sections}
+    <p class="page-foot">Opely${SEP}${t("Version {v}", { v: VERSION })}</p>`;
+}
+
+// Today, as "2026-11-15"
+function todayText() {
+  const now = new Date();
+  return now.getFullYear() + "-" + String(now.getMonth() + 1).padStart(2, "0") + "-" + String(now.getDate()).padStart(2, "0");
+}
+
+// Whether an announcement's "remove after" time has passed. A date alone lasts the whole day.
+function hasEnded(item) {
+  if (!item.until) return false;
+  return item.until.length <= 10 ? item.until < todayText() : new Date(item.until) < new Date();
+}
+// "Nov 20, 2026" or "Nov 20, 2026, 09:00"
+function whenText(value) {
+  const [day, time] = value.split("T");
+  return niceDate(day) + (time ? SEP + new Date(value).toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" }) : "");
+}
+
+// ----- Countdowns: exams and events from announcements -----
+// The upcoming events for a stage (or a whole department), soonest first
+function upcomingEvents(dept, stageId) {
+  const now = new Date();
+  return announcementsFor(dept, stageId)
+    .filter(item => item.event && (item.event.length <= 10 ? item.event >= todayText() : new Date(item.event) > now))
+    .sort((a, b) => a.event.localeCompare(b.event));
+}
+// How long until an event: { number, unit } for the big text, and a short sentence
+function timeUntil(event) {
+  const [day, time] = event.split("T");
+  const start = new Date(day + "T00:00");
+  const today = new Date(todayText() + "T00:00");
+  const days = Math.round((start - today) / 86400000);
+  if (days < 0) return { number: "", unit: t("Done"), words: t("Already happened") };
+  if (days === 0) {
+    if (time) {
+      const hours = Math.max(0, Math.round((new Date(event) - new Date()) / 3600000));
+      if (hours >= 1) return { number: hours, unit: hours === 1 ? t("hour") : t("hours"), words: t("Today at {time}", { time: new Date(event).toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" }) }) };
+      return { number: "", unit: t("Starting soon"), words: t("Starting soon") };
+    }
+    return { number: "", unit: t("Today"), words: t("Today") };
+  }
+  if (days === 1) return { number: 1, unit: t("day"), words: t("Tomorrow") };
+  return { number: days, unit: t("days"), words: t("In {n} days", { n: days }) };
+}
+// The countdown card: the next event, big, with the others below it
+function countdownWidget(dept, stageId) {
+  const events = upcomingEvents(dept, stageId);
+  if (!events.length) return "";
+  const next = events[0];
+  const left = timeUntil(next.event);
+  return `<a class="hero countdown" href="#${dept.id}-news">
+    <span class="hero-text">
+      <span class="kicker">${t("Countdown")}</span>
+      <span class="hero-title">${esc(next.title)}</span>
+      <span class="sub">${whenText(next.event)}${events.length > 1 ? SEP + t("{n} more", { n: events.length - 1 }) : ""}</span>
+    </span>
+    <span class="countdown-number"><b>${left.number}</b><small>${esc(left.unit)}</small></span>
+  </a>`;
 }
 
 // ----- Announcements -----
 // Newest first. With a stage id, only that stage's own announcements.
 function announcementsFor(dept, stageId) {
   return content[dept.id].announcements
-    .filter(news => stageId === undefined || news.stage === stageId)
+    .filter(news => !hasEnded(news)) // past its "remove after" time: no longer shown
+    .filter(news => stageId === undefined || news.stage === "all" || news.stage === stageId || (news.stages || []).includes(stageId))
     .sort((a, b) => b.date.localeCompare(a.date));
 }
 
 // A full-width widget with the newest announcement. Empty text if there is none.
 function newsWidget(dept, list, extraClass) {
   if (list.length === 0) return "";
-  const more = list.length > 1 ? SEP + t("{n} more", { n: list.length - 1 }) : "";
+  const more = list.length > 1 ? `<span>${t("{n} more", { n: list.length - 1 })}</span>` : "";
   return `<a class="widget wide ${extraClass || ""}" href="#${dept.id}-news">
-    <span class="kicker">${t(list.length > 1 ? "Announcements" : "Announcement")}</span>
-    <span>
-      <span class="title">${esc(list[0].title)}</span><br>
-      <span class="secondary small">${niceDate(list[0].date)}${more}</span>
-    </span>
+    <span class="head"><span class="kicker">${t(list.length > 1 ? "Announcements" : "Announcement")}</span><span class="head-end">${newBadge(list.some(item => newIn(dept).has(newsKey(item))))}${chevron()}</span></span>
+    <span class="title">${esc(list[0].title)}</span>
+    <span class="meta-row"><span>${niceDate(list[0].date)}</span>${more}</span>
   </a>`;
 }
 
@@ -171,41 +718,65 @@ function newsWidget(dept, list, extraClass) {
 function showNews(dept, stages) {
   document.title = t("Announcements") + " | " + localName(dept);
   const cards = announcementsFor(dept).map(news => {
-    const stage = stages.find(s => s.id === news.stage);
+    const ids = news.stage === "all" ? null : news.stages || [news.stage];
+    const audience = ids ? ids.map(id => { const found = stages.find(s => s.id === id); return found ? stageName(found) : ""; }).filter(Boolean).join(SEP) : "";
     return `<div class="text-block">
-      <span class="title">${esc(news.title)}</span>
-      <span class="meta secondary small">${niceDate(news.date)}${SEP}${esc(stage ? stageName(stage) : t("All stages"))}</span>
-      <span class="message">${esc(news.text || "")}</span>
+      <div>
+        <span class="title">${esc(news.title)}</span>
+        <span class="meta meta-row"><span>${niceDate(news.date)}</span><span>${esc(audience || t("All stages"))}</span></span>
+        ${news.event ? `<span class="event-line">${icon("calendar")}${whenText(news.event)}${SEP}${timeUntil(news.event).words}</span>` : ""}
+        <span class="message">${esc(news.text || "")}</span>
+      </div>
     </div>`;
   }).join("");
 
   app.innerHTML = `
     <a class="back" href="#${dept.id}">${esc(localName(dept))}</a>
     <h1>${t("Announcements")}</h1>
-    ${cards ? `<div class="news">${cards}</div>` : `<p class="lead secondary">${t("No announcements yet.")}</p>`}`;
+    ${cards ? `<div class="news">${cards}</div>` : emptyState("megaphone", "No announcements yet.")}`;
+  markKnown(dept, announcementsFor(dept).map(newsKey));
+}
+
+// The main card of a department page: its icon, its size, and how much of it has been opened
+function deptHero(dept, stages) {
+  const [done, total] = deptProgress(dept, stages);
+  const courses = stages.reduce((n, stage) => n + stage.courses.length, 0);
+  return `<div class="hero static">
+    <span class="hero-text">
+      ${tile(dept.icon || "school", dept.color, "big")}
+      <span class="hero-title">${plural(total, "lecture")}</span>
+      <span class="sub">${plural(stages.length, "stage")}${SEP}${plural(courses, "course")}</span>
+    </span>
+    ${total ? ring(done, total, 96, true) : ""}
+  </div>`;
 }
 
 // ----- A department: one widget per stage -----
 function showDepartment(dept, stages) {
   document.title = localName(dept) + " | Opely";
+  const fresh = newIn(dept);
   const stageWidgets = stages.map((stage, i) => {
     const lectures = allLectures([stage]).length;
-    return `<a class="widget square filled ${esc(stage.color)}" href="#${dept.id}-${stage.id}">
-      <span class="glyph">${i + 1}</span>
-      <span>
-        <span class="title">${esc(stageName(stage))}</span><br>
-        <span class="secondary small">${plural(stage.courses.length, "course")}${SEP}${plural(lectures, "lecture")}</span>
-      </span>
+    const [done] = stageProgress(dept, stage);
+    const added = stage.courses.reduce((n, course) => n + newCount(dept, stage, course, fresh), 0);
+    return `<a class="widget stage" href="#${dept.id}-${stage.id}">
+      <span class="head"><span class="kicker">${t("Stage")}</span><span class="head-end">${newBadge(added)}${chevron()}</span></span>
+      <span class="big">${i + 1}</span>
+      <span class="sub">${plural(stage.courses.length, "course")}<br>${plural(lectures, "lecture")}</span>
+      ${lectures ? ring(done, lectures, 40, false) : ""}
     </a>`;
   }).join("");
+  const top = newsWidget(dept, announcementsFor(dept)) + latestWidget(dept, stages);
 
   app.innerHTML = `
     <a class="back" href="#home">${t("Departments")}</a>
     <h1>${esc(localName(dept))}</h1>
     ${stages.length
       ? `<p class="lead secondary">${t("Choose your stage.")}</p>
-         <div class="widgets">${newsWidget(dept, announcementsFor(dept))}${latestWidget(dept, stages)}${stageWidgets}</div>`
-      : `<p class="lead secondary">${t("No stages yet.")}</p>`}`;
+         ${deptHero(dept, stages)}
+         ${top ? `<div class="widgets">${top}</div>` : ""}
+         <div class="widgets stages">${stageWidgets}</div>`
+      : emptyState("layers", "No stages yet.")}`;
 }
 
 // ----- A stage’s channel: pick a semester, then see its courses -----
@@ -223,34 +794,78 @@ function showStage(dept, stage, semester) {
     .sort((a, b) => a.code.localeCompare(b.code, "en", { numeric: true }));
   const lectures = courses.reduce((total, course) => total + course.lectures.length, 0);
 
+  const fresh = newIn(dept);
   const courseWidgets = courses.map(course => {
     const dates = course.lectures.map(lecture => lecture.date).sort();
     const status = dates.length
       ? t("Updated {date}", { date: niceDate(dates[dates.length - 1]) })
       : t("No lectures yet");
-    return `<a class="widget course ${esc(stage.color)}" href="${base}-${course.id}">
-      <span class="top">
-        <span class="pill">${esc(course.code)}</span>
-        <span class="secondary small">${plural(course.lectures.length, "lecture")}</span>
-      </span>
-      <span>
-        <span class="title">${esc(course.title)}</span><br>
-        <span class="secondary small">${esc(course.instructor)}</span>
-      </span>
-      <span class="secondary small">${status}</span>
+    return `<a class="widget course" href="${base}-${course.id}">
+      <span class="head"><span class="kicker" dir="ltr">${esc(course.code)}</span><span class="head-end">${newBadge(newCount(dept, stage, course, fresh))}${chevron()}</span></span>
+      <span class="title">${esc(course.title)}</span>
+      ${course.instructor ? `<span class="sub">${esc(course.instructor)}</span>` : ""}
+      ${hasLabs(course) ? `<span class="sub">${plural((course.labs || []).length, "lab")}</span>` : ""}
+      <span class="foot meta-row"><span>${course.lectures.length ? t("{done} of {total} opened", { done: courseProgress(dept, stage, course)[0], total: course.lectures.length }) : t("No lectures yet")}</span>${dates.length ? `<span>${status}</span>` : ""}</span>
+      ${course.lectures.length ? progressBar(...courseProgress(dept, stage, course)) : ""}
     </a>`;
   }).join("");
 
   app.innerHTML = `
     <a class="back" href="#${dept.id}">${esc(localName(dept))}</a>
     <h1>${esc(stageName(stage))}</h1>
+    ${(() => { const mine = myStage(); const is = mine && mine.dept === dept.id && mine.stage === stage.id;
+      return `<button id="myStageButton" class="mine-pill" type="button" aria-pressed="${!!is}">${icon(is ? "check" : "plus")}${t(is ? "My stage" : "Make this my stage")}</button>`; })()}
+    ${countdownWidget(dept, stage.id)}
     ${newsWidget(dept, announcementsFor(dept, stage.id), "notice")}
     <nav class="segments" aria-label="${t("Semester")}">${segments}</nav>
     ${courses.length
-      ? `<p class="count small secondary">${plural(courses.length, "course")}${SEP}${plural(lectures, "lecture")}</p>
+      ? `<p class="count">${plural(courses.length, "course")}${SEP}${plural(lectures, "lecture")}</p>
          <div class="courses">${courseWidgets}</div>`
-      : `<p class="text-block secondary empty">${t("No courses yet.")}</p>`}`;
+      : emptyState("book", "No courses yet.")}
+    ${(stage.archivedCourses || []).length ? `<ul class="group icons archive-row"><li><a class="row" href="${base}-archived">${tile("clock", "gray")}
+      <span class="grow">${t("Archived courses")}<br><span class="secondary small">${plural(stage.archivedCourses.length, "course")}</span></span></a></li></ul>` : ""}`;
+  document.getElementById("myStageButton").addEventListener("click", () => {
+    const mine = myStage();
+    setMyStage(mine && mine.dept === dept.id && mine.stage === stage.id ? null : { dept: dept.id, stage: stage.id });
+    showStage(dept, stage, semester);
+  });
 }
+
+// The big button of a course: the first lecture not opened yet
+function nextButton(dept, stage, course, base) {
+  const index = course.lectures.findIndex((lecture, i) => !opened[keyOfLecture(dept, stage, course, lecture, i + 1)]);
+  if (course.lectures.length === 0) return "";
+  if (index === -1) return `<span class="sub done-note">${icon("check")}${t(course.isLabs ? "All labs opened" : "All lectures opened")}</span>`;
+  const lecture = course.lectures[index];
+  const words = course.isLabs ? (index === 0 ? "Start with Lab {n}" : "Continue with Lab {n}") : (index === 0 ? "Start with Lecture {n}" : "Continue with Lecture {n}");
+  return `<a class="glow-button" ${lectureLink(dept, stage, course, lecture, index + 1)}>${t(words, { n: index + 1 })}</a>`;
+}
+
+// A course's labs, shaped like its lectures, so labs use the same pages, links and progress.
+// Their addresses add "-labs": #cs-stage1-cs101-labs, #cs-stage1-cs101-labs-<lab id>
+function asLabs(course) {
+  return Object.assign({}, course, { id: course.id + "-labs", lectures: course.labs || [], isLabs: true });
+}
+const hasLabs = course => !!course.hasLabs || (course.labs || []).length > 0;
+
+// A lecture with just one file, and no recording or summary, opens that file straight away
+function directFile(lecture) {
+  const files = lecture.files || [];
+  return files.length === 1 && files[0].url && !lecture.video && !lecture.summary ? files[0] : null;
+}
+// Where tapping a lecture goes: its page, or its only file
+function lectureLink(dept, stage, course, lecture, number) {
+  const here = "#" + dept.id + "-" + stage.id + "-" + course.id + "-" + (lecture.id || number);
+  const file = directFile(lecture);
+  if (!file) return `href="${here}"`;
+  if (isPdf(file.url)) return `href="${here}-1"`;
+  return `href="${esc(file.from || file.url)}" ${linkAttrs(file.url)} data-opens="${esc(keyOfLecture(dept, stage, course, lecture, number))}"`;
+}
+// A file that opens outside the page still counts as opening its lecture
+document.addEventListener("click", event => {
+  const link = event.target.closest && event.target.closest("[data-opens]");
+  if (link) markOpened(link.dataset.opens);
+});
 
 // ----- A course: a switch between its lectures and its sources -----
 function showCourse(dept, stage, course, section) {
@@ -262,33 +877,55 @@ function showCourse(dept, stage, course, section) {
   if (section === "sources") {
     const rows = sources.map((source, i) => fileRow(source, base + "-sources-" + (i + 1))).join("");
     list = sources.length
-      ? `<p class="count small secondary">${plural(sources.length, "source")}</p><ul class="group">${rows}</ul>`
-      : `<p class="text-block secondary empty">${t("No sources yet.")}</p>`;
+      ? `<p class="count">${plural(sources.length, "source")}</p><ul class="group icons">${rows}</ul>`
+      : emptyState("book", "No sources yet.");
   } else {
-    const rows = course.lectures.map((lecture, i) => `
-      <li><a class="row" href="${base}-${lecture.id || i + 1}">
-        <span class="num">${i + 1}</span>
+    const shown = section === "labs" ? asLabs(course) : course; // lectures, or labs shaped like lectures
+    const fresh = newIn(dept);
+    var seenNow = shown.lectures.map((lecture, i) => keyOfLecture(dept, stage, shown, lecture, i + 1));
+    const rows = shown.lectures.map((lecture, i) => `
+      <li><a class="row" ${lectureLink(dept, stage, shown, lecture, i + 1)}>
+        ${opened[keyOfLecture(dept, stage, shown, lecture, i + 1)]
+          ? `<span class="num done" aria-label="${t("Opened")}">${icon("check")}</span>`
+          : `<span class="num">${i + 1}</span>`}
         <span class="grow">${esc(lecture.title)}<br>
           <span class="secondary small">${niceDate(lecture.date)}</span></span>
+        ${newBadge(fresh.has(keyOfLecture(dept, stage, shown, lecture, i + 1)))}
       </a></li>`).join("");
-    list = course.lectures.length
-      ? `<p class="count small secondary">${plural(course.lectures.length, "lecture")}</p><ol class="group">${rows}</ol>`
-      : `<p class="text-block secondary empty">${t("No lectures yet.")}</p>`;
+    list = shown.lectures.length
+      ? `<p class="count">${plural(shown.lectures.length, section === "labs" ? "lab" : "lecture")}</p><ol class="group icons">${rows}</ol>`
+      : emptyState(section === "labs" ? "flask" : "doc", section === "labs" ? "No labs yet." : "No lectures yet.");
   }
+  // The ring and the big button follow the part that is open: lectures, or labs
+  const leading = section === "labs" ? asLabs(course) : course;
+  const leadingBase = "#" + dept.id + "-" + stage.id + "-" + leading.id;
 
   app.innerHTML = `
-    <a class="back" href="#${dept.id}-${stage.id}-sem${course.semester}">${esc(stageName(stage))}${SEP}${t("Semester {n}", { n: course.semester })}</a>
-    <div class="course-head ${esc(stage.color)}">
-      <span class="pill">${esc(course.code)}</span>
-      <h1>${esc(course.title)}</h1>
-      <p class="secondary">${esc(course.instructor)}</p>
+    ${course.isArchived
+      ? `<a class="back" href="#${dept.id}-${stage.id}-archived">${t("Archived courses")}</a>`
+      : `<a class="back" href="#${dept.id}-${stage.id}-sem${course.semester}">${esc(stageName(stage))}${SEP}${t("Semester {n}", { n: course.semester })}</a>`}
+    <div class="hero static course-hero">
+      <span class="hero-text">
+        <span class="kicker" dir="ltr">${esc(course.code)}</span>
+        <h1>${esc(course.title)}</h1>
+        ${course.instructor ? `<span class="sub">${esc(course.instructor)}</span>` : ""}
+        ${shareButton()}
+      </span>
+      ${leading.lectures.length ? ring(...courseProgress(dept, stage, leading), 80, true) : ""}
+      ${nextButton(dept, stage, leading, leadingBase)}
     </div>
-    <nav class="segments" aria-label="${t("Course content")}">
-      <a class="segment" href="${base}" ${section === "sources" ? "" : 'aria-current="page"'}>${t("Lectures")}</a>
+    ${course.isArchived ? `<p class="archived-note">${icon("clock")}<span>${t("Archived course{sep}archived {date}. It stays here to read.", { sep: SEP, date: niceDate(course.archivedAt) })}</span></p>` : offlineRow(course)}
+    <nav class="segments${hasLabs(course) ? " three" : ""}" aria-label="${t("Course content")}">
+      <a class="segment" href="${base}" ${section === "lectures" ? 'aria-current="page"' : ""}>${t("Lectures")}</a>
+      ${hasLabs(course) ? `<a class="segment" href="${base}-labs" ${section === "labs" ? 'aria-current="page"' : ""}>${t("Labs")}</a>` : ""}
       <a class="segment" href="${base}-sources" ${section === "sources" ? 'aria-current="page"' : ""}>${t("Sources")}</a>
     </nav>
-    ${list}`;
+    ${list}
+    ${archiveRowFor(dept, stage, course)}`;
   markSaved();
+  wireOffline(course);
+  wireShare(course.title);
+  if (typeof seenNow !== "undefined") markKnown(dept, seenNow); // shown once as new, then known
 }
 
 // ----- A single lecture -----
@@ -296,10 +933,12 @@ function showLecture(dept, stage, course, number) {
   const lecture = course.lectures[number - 1];
   const base = "#" + dept.id + "-" + stage.id + "-" + course.id;
   document.title = lecture.title + " | " + course.code;
+  markOpened(keyOfLecture(dept, stage, course, lecture, number));
+  rememberLecture(base + "-" + (lecture.id || number), lecture, course, number, base.slice(1));
 
   const recording = lecture.video
-    ? `<a class="row" href="${esc(lecture.video)}" target="_blank" rel="noopener"><span class="grow">${t("Watch recording")}</span></a>`
-    : `<span class="row secondary">${t("No recording yet")}</span>`;
+    ? `<a class="row" href="${esc(lecture.video)}" target="_blank" rel="noopener">${tile("play", "pink")}<span class="grow">${t("Watch recording")}</span></a>`
+    : `<span class="row secondary">${tile("play", "gray")}<span class="grow">${t("No recording yet")}</span></span>`;
 
   const here = base + "-" + (lecture.id || number);
   const files = (lecture.files || []).map((file, i) => fileRow(file, here + "-" + (i + 1))).join("");
@@ -307,20 +946,27 @@ function showLecture(dept, stage, course, number) {
   // Links use the lecture's id, so they keep working when lectures are added
   const before = course.lectures[number - 2];
   const after = course.lectures[number];
-  const previous = before ? `<a href="${base}-${before.id || number - 1}">${t("Previous")}</a>` : `<span></span>`;
-  const next = after ? `<a href="${base}-${after.id || number + 1}">${t("Next")}</a>` : `<span></span>`;
+  const previous = before ? `<a href="${base}-${before.id || number - 1}">${icon("back", "flip")}${t("Previous")}</a>` : `<span></span>`;
+  const next = after ? `<a class="next" href="${base}-${after.id || number + 1}">${t("Next")}${icon("chevron", "flip")}</a>` : `<span></span>`;
 
   app.innerHTML = `
     <a class="back" href="${base}">${esc(course.title)}</a>
-    <h1>${esc(lecture.title)}</h1>
-    <p class="secondary">${t("Lecture {n}", { n: number })}${SEP}${niceDate(lecture.date)}</p>
-    <h2>${t("Recording")}</h2>
-    <ul class="group"><li>${recording}</li></ul>
-    ${lecture.summary ? `<h2>${t("Summary")}</h2><p class="text-block">${esc(lecture.summary)}</p>` : ""}
-    <h2>${t("Files")}</h2>
-    ${files ? `<ul class="group">${files}</ul>` : `<p class="text-block secondary">${t("No files yet.")}</p>`}
+    <div class="course-head">
+      <span class="pill">${t(course.isLabs ? "Lab {n}" : "Lecture {n}", { n: number })}${SEP}<bdi>${esc(course.code)}</bdi></span>
+      <h1>${esc(lecture.title)}</h1>
+      <p class="meta-row"><span>${niceDate(lecture.date)}</span></p>
+      ${shareButton()}
+    </div>
+    <h2 class="label">${t("Recording")}</h2>
+    <ul class="group icons"><li>${recording}</li></ul>
+    ${lecture.summary ? `<h2 class="label">${t("Summary")}</h2><p class="text-block">${esc(lecture.summary)}</p>` : ""}
+    <h2 class="label">${t("Files")}</h2>
+    ${files ? `<ul class="group icons">${files}</ul>` : `<p class="text-block secondary">${t("No files yet.")}</p>`}
+    ${(lecture.earlier || []).length ? `<h2 class="label">${t("Earlier files")}</h2><ul class="group icons earlier">${lecture.earlier.map((file, i) => archivedFileRow(file, here + "-earlier-" + (i + 1))).join("")}</ul>` : ""}
     <nav class="pager" aria-label="${t("Lectures")}">${previous}${next}</nav>`;
   markSaved();
+  wireShare(lecture.title);
+  markKnown(dept, [keyOfLecture(dept, stage, course, lecture, number)]);
 }
 
 // ----- A PDF, shown inside the page -----
@@ -360,6 +1006,12 @@ function loadPdfLibrary() {
   return pdfLibrary;
 }
 
+// The name a downloaded file gets: its label, with the file's own ending
+function downloadName(file) {
+  const ending = (file.url.split(".").pop() || "").toLowerCase();
+  return ending && !file.label.toLowerCase().endsWith("." + ending) ? file.label + "." + ending : file.label;
+}
+
 async function showFile(file, backAddress, backLabel) {
   const view = viewNumber;
   document.title = file.label + " | Opely";
@@ -367,22 +1019,41 @@ async function showFile(file, backAddress, backLabel) {
     <a class="back" href="${backAddress}">${esc(backLabel)}</a>
     <h1>${esc(file.label)}</h1>
     <p id="fileStatus" class="secondary" role="status">${t("Downloading…")}</p>
-    <p class="file-actions"><a id="fileDownload" class="button" hidden>${t("Download")}</a></p>
-    <div id="pages" class="pages"></div>`;
+    <p class="file-actions"><a id="fileDownload" class="button" hidden>${icon("download")}${t("Download")}</a>
+      <button id="fileCopy" class="button secondary" type="button" hidden>${t("Copy")}</button></p>
+    <div id="pages" class="pages"></div>
+    <div id="shown" class="shown"></div>`;
   const status = document.getElementById("fileStatus");
+  const type = fileType(file.url) || { kind: "pdf", name: "PDF" };
 
   try {
     // 1. Get the file and offer it as a download
-    const got = await getFile(file.url);
+    const got = await getFile(file.from || file.url);
     if (view !== viewNumber) return; // the student already moved to another page
     fileUrl = URL.createObjectURL(got.blob);
     const download = document.getElementById("fileDownload");
     download.href = fileUrl;
-    download.download = /\.pdf$/i.test(file.label) ? file.label : file.label + ".pdf";
+    download.download = downloadName(file);
     download.hidden = false;
 
-    // 2. Show its pages
+    // 2. Text, code, notebooks and pictures are shown by viewer.js
     status.textContent = t("Opening…");
+    if (type.kind !== "pdf") {
+      const shown = await showInPage(document.getElementById("shown"), got.blob, type, file.label);
+      if (view !== viewNumber) return;
+      status.textContent = t(type.name) + (shown.lines ? SEP + plural(shown.lines, "line") : "") + (got.saved ? SEP + t("saved in this browser") : "");
+      if (shown.text !== null) {
+        const copy = document.getElementById("fileCopy");
+        copy.hidden = false;
+        copy.addEventListener("click", async () => {
+          copy.textContent = t(await copyText(shown.text) ? "Copied" : "Can’t copy here");
+          setTimeout(() => { if (copy.isConnected) copy.textContent = t("Copy"); }, 2000);
+        });
+      }
+      return;
+    }
+
+    // 3. A PDF: show its pages
     const library = await loadPdfLibrary();
     const pdf = await library.getDocument({ data: await got.blob.arrayBuffer() }).promise;
     if (view !== viewNumber) return;
@@ -438,16 +1109,209 @@ async function drawPage(pdf, box, view) {
 }
 
 // ----- Shown while the content is loading, or if it can’t be loaded -----
-function showStatus(message) {
-  app.innerHTML = `<h1>Opely</h1><p class="lead secondary">${t(message)}</p>`;
+// An empty list or page: a large soft icon and a short sentence
+function emptyState(shape, message) {
+  return `<div class="empty-state"><span class="halo">${icon(shape)}</span><p>${t(message)}</p></div>`;
 }
 
+function showEmpty(shape, message) {
+  app.innerHTML = `<h1>Opely</h1>${emptyState(shape, message)}`;
+}
+
+// While the content loads, grey shapes stand in for it; if it can't load, say so
 function showLoading() {
-  showStatus(loadFailed ? "Can’t load the lectures. Check your connection, then reload." : "Loading…");
+  if (loadFailed) return showEmpty("wifioff", "Can’t load the lectures. Check your connection, then reload.");
+  app.innerHTML = `<div class="skeleton" role="status" aria-label="${t("Loading…")}"><div class="short"></div><div></div><div></div><div></div></div>`;
+}
+
+// ----- Files the developers keep next to the page: version.json (updates) and notify.json (notifications) -----
+async function siteJson(name) {
+  const response = await fetch(name + "?t=" + Date.now(), { cache: "no-store" });
+  if (!response.ok) throw new Error(response.status);
+  return response.json();
+}
+
+// ----- Updates: when we, the developers, change Opely, every student's copy updates -----
+// version.json says { "update": a number, "force": true or false, "note": "..." }. The owner raises the
+// number from the admin page after an update. A higher number than the one this browser has shows
+// an "Update" banner, or, when "force" is on, updates at once.
+const UPDATE_KEY = "opely-update";
+// The update number this browser has (null on the first visit)
+const haveUpdate = () => { try { const v = localStorage.getItem(UPDATE_KEY); return v === null ? null : Number(v) || 0; } catch (error) { return 0; } };
+const setUpdate = number => { try { localStorage.setItem(UPDATE_KEY, String(number)); } catch (error) { /* ignored */ } };
+let updateChecked = 0;
+
+// Returns "current", "ready" (a banner is shown), "updating" or "offline"
+async function checkForUpdate(byHand) {
+  updateChecked = Date.now();
+  let remote;
+  try { remote = await siteJson("version.json"); } catch (error) {
+    if (error.message !== "404") return "offline";
+    remote = { update: 0 }; // no update sent yet
+  }
+  const number = Number(remote.update) || 0;
+  const have = haveUpdate();
+  if (have === null) { setUpdate(number); return "current"; } // the first visit already has the newest Opely
+  if (number <= have) return "current";
+  if (remote.force || byHand) { await updateNow(number); return "updating"; }
+  showUpdateBanner(number, remote.note);
+  return "ready";
+}
+
+// Throws away this browser's copy of Opely (never the saved lecture files), and loads the newest
+async function updateNow(number) {
+  setUpdate(number);
+  const banner = document.getElementById("updateBanner");
+  if (banner) banner.remove();
+  document.body.insertAdjacentHTML("beforeend", `<div class="update-banner" id="updateBanner" role="status"><span class="grow">${t("Updating Opely…")}</span></div>`);
+  try {
+    const registration = navigator.serviceWorker && await navigator.serviceWorker.getRegistration();
+    if (registration) await registration.update();
+  } catch (error) { /* the page still reloads */ }
+  try {
+    const names = await caches.keys();
+    await Promise.all(names.filter(name => name.startsWith("opely-shell-")).map(name => caches.delete(name)));
+  } catch (error) { /* ignored */ }
+  location.reload();
+}
+
+function showUpdateBanner(number, note) {
+  if (document.getElementById("updateBanner")) return;
+  document.body.insertAdjacentHTML("beforeend", `<div class="update-banner" id="updateBanner" role="status">
+    <span class="grow"><b>${t("A new version of Opely is ready")}</b>${note ? `<br><span class="small">${esc(note)}</span>` : ""}</span>
+    <button type="button" class="update-now" id="updateNow">${t("Update")}</button>
+    <button type="button" class="update-later" id="updateLater" aria-label="${t("Later")}">${t("Later")}</button>
+  </div>`);
+  document.getElementById("updateNow").addEventListener("click", () => updateNow(number));
+  document.getElementById("updateLater").addEventListener("click", () => document.getElementById("updateBanner").remove());
+}
+
+// ----- Notifications: real ones, on the phone or computer, even when Opely is closed -----
+// notify.json (saved by the owner from the admin page) has the address of Opely's notifications
+// helper on Cloudflare and its public key. Students choose the stages they follow; each stage is
+// a "topic" like "cs-stage1". Opely's GitHub job sends the notifications (see cloudflare/SETUP.md).
+const NOTIFY_KEY = "opely-notify";
+const savedNotify = () => { try { return JSON.parse(localStorage.getItem(NOTIFY_KEY)); } catch (error) { return null; } };
+const setSavedNotify = value => { try { value ? localStorage.setItem(NOTIFY_KEY, JSON.stringify(value)) : localStorage.removeItem(NOTIFY_KEY); } catch (error) { /* ignored */ } };
+
+async function notifySetup() {
+  try { const setup = await siteJson("notify.json"); return setup && setup.worker && setup.key ? setup : null; } catch (error) { return null; }
+}
+// "yes", "home-screen" (iPhone or iPad: Opely must be added to the Home Screen first) or "no"
+function pushSupport() {
+  const apple = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  if ("serviceWorker" in navigator && "PushManager" in window && "Notification" in window && window.isSecureContext) return "yes";
+  if (apple && !navigator.standalone) return "home-screen";
+  return "no";
+}
+function keyBytes(text) {
+  const plain = atob((text + "===".slice((text.length + 3) % 4)).replace(/-/g, "+").replace(/_/g, "/"));
+  return Uint8Array.from(plain, c => c.charCodeAt(0));
+}
+// Turns notifications on (or changes the stages): asks the browser, then tells the helper
+async function subscribe(setup, topics) {
+  const permission = await Notification.requestPermission();
+  if (permission !== "granted") throw new Error(t("Notifications are blocked. Allow them for Opely in the browser’s settings."));
+  const registration = await navigator.serviceWorker.register("sw.js");
+  await navigator.serviceWorker.ready;
+  let subscription = await registration.pushManager.getSubscription();
+  if (!subscription) subscription = await registration.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: keyBytes(setup.key) });
+  const response = await fetch(setup.worker.replace(/\/+$/, "") + "/subscribe", {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ subscription: subscription.toJSON(), topics: topics, lang: lang })
+  });
+  if (!response.ok) throw new Error(t("Couldn’t reach Opely’s notifications. Try again later."));
+  setSavedNotify({ topics: topics, endpoint: subscription.endpoint, lang: lang });
+}
+async function unsubscribe(setup) {
+  const saved = savedNotify();
+  setSavedNotify(null);
+  try {
+    const registration = await navigator.serviceWorker.getRegistration();
+    const subscription = registration && await registration.pushManager.getSubscription();
+    if (subscription) await subscription.unsubscribe();
+    const endpoint = (subscription && subscription.endpoint) || (saved && saved.endpoint);
+    if (endpoint && setup) await fetch(setup.worker.replace(/\/+$/, "") + "/unsubscribe", {
+      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ endpoint: endpoint }) });
+  } catch (error) { /* turned off in this browser anyway */ }
+}
+
+async function showNotifications() {
+  const view = viewNumber;
+  document.title = t("Notifications") + " | Opely";
+  app.innerHTML = `
+    <a class="back" href="#settings">${t("Settings")}</a>
+    <h1>${t("Notifications")}</h1>
+    <p class="lead secondary">${t("Get a notification when a new lecture, lab or announcement is added to the stages you follow, even when Opely is closed.")}</p>
+    <div id="notifyBody"><p class="secondary">${t("Loading…")}</p></div>`;
+  const setup = await notifySetup();
+  if (view !== viewNumber) return;
+  const body = document.getElementById("notifyBody");
+  const support = pushSupport();
+  if (!setup) { body.innerHTML = emptyState("bell", "Notifications aren’t set up yet. The site’s owner turns them on from the admin page."); return; }
+  if (support === "home-screen") {
+    body.innerHTML = `<div class="card notify-help">${tile("bell", "red")}<p>${t("On iPhone and iPad, notifications work once Opely is on your Home Screen. Tap the Share button, then “Add to Home Screen”, and open Opely from there.")}</p></div>`;
+    return;
+  }
+  if (support === "no") { body.innerHTML = emptyState("bell", "This browser can’t show notifications."); return; }
+
+  const saved = savedNotify();
+  const mine = myStage();
+  let chosen = new Set(saved ? saved.topics : mine ? [mine.dept + "-" + mine.stage] : []);
+  const stageList = dept => stagesOf(dept) || [1, 2, 3, 4].map(n => ({ id: "stage" + n, name: "Stage " + n }));
+  const blocked = Notification.permission === "denied";
+  body.innerHTML = `
+    <ul class="group icons"><li><label class="row switch-row" for="notifyOn">${tile("bell", "red")}
+      <span class="grow">${t("Notifications")}<br><span class="secondary small" id="notifyState">${t(saved ? "On" : "Off")}</span></span>
+      <input id="notifyOn" type="checkbox" role="switch" ${saved ? "checked" : ""} ${blocked ? "disabled" : ""}><span class="switch" aria-hidden="true"></span>
+    </label></li></ul>
+    ${blocked ? `<p class="hint-below">${t("Notifications are blocked. Allow them for Opely in the browser’s settings.")}</p>` : ""}
+    <h2 class="label">${t("Stages you follow")}</h2>
+    ${departments.map(dept => `<div class="card notify-dept">
+      <p class="notify-dept-name">${esc(localName(dept))}</p>
+      <div class="chips">${stageList(dept).map(stage => { const topic = dept.id + "-" + stage.id;
+        return `<button type="button" class="chip-toggle" data-topic="${esc(topic)}" aria-pressed="${chosen.has(topic)}">${esc(stageName(stage))}</button>`; }).join("")}</div>
+    </div>`).join("")}
+    <p class="hint-below" id="notifyMessage" role="status"></p>`;
+
+  const toggle = document.getElementById("notifyOn");
+  const message = document.getElementById("notifyMessage");
+  const tell = (text, bad) => { message.textContent = text; message.classList.toggle("error-text", !!bad); };
+  const busy = on => { toggle.disabled = on; app.querySelectorAll("[data-topic]").forEach(chip => { chip.disabled = on; }); };
+  async function apply() {
+    busy(true);
+    try {
+      if (toggle.checked) {
+        if (!chosen.size) { toggle.checked = false; tell(t("Choose at least one stage first."), true); return; }
+        tell(t("Saving…"));
+        await subscribe(setup, Array.from(chosen));
+        tell(t("You’ll get a notification when something new is added."));
+      } else {
+        await unsubscribe(setup);
+        tell(t("Notifications are off."));
+      }
+      document.getElementById("notifyState").textContent = t(toggle.checked ? "On" : "Off");
+    } catch (error) {
+      toggle.checked = !!savedNotify();
+      tell(error.message || String(error), true);
+    } finally {
+      busy(false);
+      if (Notification.permission === "denied") toggle.disabled = true;
+    }
+  }
+  toggle.addEventListener("change", apply);
+  app.querySelectorAll("[data-topic]").forEach(chip => chip.addEventListener("click", () => {
+    const topic = chip.dataset.topic;
+    if (chosen.has(topic)) chosen.delete(topic); else chosen.add(topic);
+    chip.setAttribute("aria-pressed", chosen.has(topic));
+    if (toggle.checked) {
+      if (!chosen.size) { toggle.checked = false; return apply(); } // no stages left: notifications turn off
+      apply();
+    }
+  }));
 }
 
 // ----- Settings: appearance, language, saved files, and the way to the admin page -----
-let lastPlace = "#home"; // where the student was before opening Settings
 
 async function showSettings() {
   const view = viewNumber;
@@ -463,24 +1327,63 @@ async function showSettings() {
     <a class="back" href="${lastPlace}">${t("Back")}</a>
     <h1>${t("Settings")}</h1>
 
-    <h2>${t("Appearance")}</h2>
-    ${choiceSwitch(APPEARANCE_KEY, [["auto", t("Automatic")], ["light", t("Light")], ["dark", t("Dark")]])}
+    <ul class="group icons app-card"><li><a class="row" href="#about">
+      <img src="icon.svg" alt="" class="app-icon">
+      <span class="grow"><span class="app-name">Opely</span><br><span class="secondary small">${t("Version {v}", { v: VERSION })}${SEP}${t("About")}</span></span>
+    </a></li></ul>
 
-    <h2>${t("Language")}</h2>
-    ${choiceSwitch(LANGUAGE_KEY, [["auto", t("Automatic")], ["en", "English"], ["ar", "العربية"]])}
-    <p class="hint small secondary">${t("Automatic follows your device.")}</p>
+    <h2 class="label">${t("General")}</h2>
+    <ul class="group icons">
+      <li><div class="row choice">${tile("appearance", "indigo")}<span class="grow">${t("Appearance")}</span>
+        ${choiceSwitch(APPEARANCE_KEY, [["auto", t("Automatic")], ["light", t("Light")], ["dark", t("Dark")]])}</div></li>
+      <li><div class="row choice">${tile("globe", "blue")}<span class="grow">${t("Language")}</span>
+        ${choiceSwitch(LANGUAGE_KEY, [["auto", t("Automatic")], ["en", "English"], ["ar", "العربية"]])}</div></li>
+    </ul>
+    <p class="hint-below">${t("Automatic follows your device.")}</p>
+    ${(() => { const mine = myStage(); const dept = mine && departments.find(d => d.id === mine.dept); if (!dept) return "";
+      const stages = stagesOf(dept); const stage = stages && stages.find(s => s.id === mine.stage);
+      return `<h2 class="label">${t("My stage")}</h2><ul class="group icons"><li><span class="row">${tile(dept.icon || "school", dept.color)}
+        <span class="grow">${esc(stage ? stageName(stage) : mine.stage)}<br><span class="secondary small">${esc(localName(dept))}</span></span>
+        <button id="forgetStage" class="plain" type="button">${t("Remove")}</button></span></li></ul>`; })()}
 
-    <h2>${t("Saved files")}</h2>
-    <ul class="group"><li><span class="row"><span id="savedSize" class="grow">${t("Loading…")}</span></span></li></ul>
-    <p class="hint small secondary">${t("PDFs you open are kept in this browser, so they open faster next time.")}</p>
-    <button id="clearFiles" class="danger" type="button" hidden>${t("Remove saved files")}</button>
+    <h2 class="label">${t("Notifications")}</h2>
+    <ul class="group icons">
+      <li><a class="row" href="#notifications">${tile("bell", "red")}<span class="grow">${t("Notifications")}<br>
+        <span class="secondary small">${t(savedNotify() ? "On" : "Off")}</span></span></a></li>
+    </ul>
 
-    <h2>${t("Admin")}</h2>
-    <ul class="group"><li><a class="row" href="admin.html"><span class="grow">${t("Admin page")}<br>
-      <span class="secondary small">${t("For people who manage a stage.")}</span></span></a></li></ul>
+    <h2 class="label">${t("Saved files")}</h2>
+    <ul class="group icons">
+      <li><span class="row">${tile("tray", "green")}<span class="grow">${t("In this browser")}</span><span id="savedSize" class="end">${t("Loading…")}</span></span></li>
+      <li id="clearRow" hidden><button id="clearFiles" class="row danger" type="button">${t("Remove saved files")}</button></li>
+    </ul>
+    <p class="hint-below">${t("PDFs you open are kept in this browser, so they open faster next time.")}</p>
 
-    <h2>${t("About")}</h2>
-    <p class="text-block">${t("Opely is open source, under the MIT License.")}</p>`;
+    <h2 class="label">${t("Progress")}</h2>
+    <ul class="group icons">
+      <li><span class="row">${tile("check", "blue")}<span class="grow">${t("Lectures opened")}</span><span class="end">${Object.keys(opened).length}</span></span></li>
+      ${Object.keys(opened).length ? `<li><button id="clearProgress" class="row danger" type="button">${t("Reset progress")}</button></li>` : ""}
+    </ul>
+    <p class="hint-below">${t("Opely remembers which lectures you opened, in this browser only.")}</p>
+
+    <h2 class="label">${t("More")}</h2>
+    <ul class="group icons">
+      <li><button id="checkUpdates" class="row" type="button">${tile("download", "blue")}<span class="grow">${t("Check for updates")}<br>
+        <span id="updateState" class="secondary small">${haveUpdate() ? t("Update {n}", { n: haveUpdate() }) : ""}</span></span></button></li>
+      <li><a class="row" href="admin.html">${tile("key", "gray")}<span class="grow">${t("Admin page")}<br>
+        <span class="secondary small">${t("For people who manage a stage.")}</span></span></a></li>
+      <li><a class="row" href="#about">${tile("info", "gray")}<span class="grow">${t("About")}</span></a></li>
+    </ul>`;
+
+  document.getElementById("checkUpdates").addEventListener("click", async () => {
+    const state = document.getElementById("updateState");
+    state.textContent = t("Checking…");
+    const answer = await checkForUpdate(true);
+    if (!state.isConnected) return;
+    state.textContent = t(answer === "offline" ? "Couldn’t check. Are you online?" : answer === "updating" ? "Updating Opely…" : "Opely is up to date.");
+  });
+  const forget = document.getElementById("forgetStage");
+  if (forget) forget.addEventListener("click", () => { setMyStage(null); showSettings(); });
 
   // Choosing in a switch: appearance changes at once, a new language reloads the page in that language
   app.querySelectorAll(".setting button").forEach(button => button.addEventListener("click", () => {
@@ -491,6 +1394,15 @@ async function showSettings() {
     applyAppearance();
     showSettings();
   }));
+
+  // Resetting progress needs two taps, like removing files
+  const resetButton = document.getElementById("clearProgress");
+  if (resetButton) resetButton.addEventListener("click", () => {
+    if (!resetButton.dataset.armed) { resetButton.dataset.armed = "yes"; resetButton.textContent = t("Tap again to reset"); return; }
+    opened = {};
+    try { localStorage.removeItem(OPENED_KEY); localStorage.removeItem(LAST_KEY); } catch (error) { /* ignored */ }
+    showSettings();
+  });
 
   // How much space the saved PDFs take
   const sizeText = document.getElementById("savedSize");
@@ -504,8 +1416,9 @@ async function showSettings() {
     if (view !== viewNumber) return; // the student already moved to another page
     const big = bytes >= 1024 * 1024; // under 1 MB, the size is shown in KB
     const size = (bytes / (big ? 1024 * 1024 : 1024)).toLocaleString(locale, { maximumFractionDigits: big ? 1 : 0 }) + (big ? " MB" : " KB");
-    sizeText.textContent = saved.length ? plural(saved.length, "file") + SEP + size : t("No saved files.");
-    clear.hidden = saved.length === 0;
+    const sizeLtr = "\u2066" + size + "\u2069"; // keeps "3 KB" in that order on an Arabic page
+    sizeText.textContent = saved.length ? plural(saved.length, "file") + SEP + sizeLtr : t("None");
+    document.getElementById("clearRow").hidden = saved.length === 0;
   } catch (error) {
     sizeText.textContent = t("Saving files isn’t available in this browser.");
   }
@@ -527,11 +1440,44 @@ async function showSettings() {
   });
 }
 
+// ----- About: what Opely is, its version and licence -----
+function sourceAddress() {
+  const host = location.hostname;
+  if (host.endsWith(".github.io")) {
+    const repo = location.pathname.split("/").filter(Boolean)[0] || "Opely";
+    return "https://github.com/" + host.replace(".github.io", "") + "/" + repo;
+  }
+  return "https://github.com/enlillab/Opely";
+}
+
+function showAbout() {
+  document.title = t("About") + " | Opely";
+  app.innerHTML = `
+    <a class="back" href="#settings">${t("Settings")}</a>
+    <h1 class="visually-hidden">${t("About")}</h1>
+    <div class="about-hero">
+      <img src="icon.svg" alt="" class="app-icon big">
+      <p class="app-name">Opely</p>
+      <p class="secondary">${t("Version {v}", { v: VERSION })}</p>
+    </div>
+    <p class="text-block">${t("Opely keeps the lectures, slides, sources and announcements of every department and stage in one place. Everything you open is kept in your browser, so it opens quickly, even offline.")}</p>
+    <h2 class="label">${t("Information")}</h2>
+    <ul class="group">
+      <li><span class="row"><span class="grow">${t("Version")}</span><span class="end">${VERSION}</span></span></li>
+      <li><span class="row"><span class="grow">${t("License")}</span><span class="end">MIT</span></span></li>
+      <li><span class="row"><span class="grow">${t("PDF reader")}</span><span class="end">PDF.js</span></span></li>
+      <li><a class="row" href="${sourceAddress()}" target="_blank" rel="noopener"><span class="grow">${t("Source code")}</span><span class="end">GitHub</span></a></li>
+    </ul>
+    <p class="about-foot secondary small">${t("Made by students, for students.")}</p>`;
+}
+
 function showNotFound() {
   document.title = t("Page not found") + " | Opely";
   app.innerHTML = `
     <h1>${t("Page not found")}</h1>
-    <p class="text-block empty">${t("This department, stage, course, or lecture may have been renamed.")} <a href="#home">${t("See all departments")}</a></p>`;
+    <div class="empty-state"><span class="halo">${icon("search")}</span>
+      <p>${t("This department, stage, course, or lecture may have been renamed.")}</p>
+      <a class="button" href="#home" style="width:auto;margin-top:4px">${t("See all departments")}</a></div>`;
 }
 
 // ----- Decides which page to draw, based on the part after # in the address -----
@@ -540,9 +1486,42 @@ function showNotFound() {
 //           #cs-stage1-cs101-sources   #cs-stage1-cs101-l1
 // One more part opens a PDF: #cs-stage1-cs101-l1-2 is the second file of
 // that lecture, and #cs-stage1-cs101-sources-1 is the course's first source.
+// How deep a page is: Departments 0, a department 1, a stage 2, and so on.
+// Switching semesters, or between lectures and sources, stays at the same depth.
+function depthOf(name) {
+  if (name === "" || name === "home" || name === "settings") return 0;
+  if (name === "about" || name === "search" || name === "notifications") return 1;
+  const parts = name.split("-");
+  if (/^(sem\d|sources|labs)$/.test(parts[parts.length - 1])) parts.pop();
+  if (parts[3] === "archive") return parts.length + 1; // the archive sits deeper than the course
+  if (parts[2] === "archived") return 2.5; // a stage's archived courses: between the stage and a course
+  return parts.length;
+}
+const tabOf = name => (name === "settings" || name === "about" || name === "notifications") ? "settings" : "browse";
+
+let shownName = null;       // the page on screen
+const scrollPlaces = {};    // where each page was scrolled to, so going back returns there
+let lastPlace = "#home";    // where the student was before opening Settings
+
 function route(keepScroll) {
   const name = location.hash.replace("#", "");
-  if (!keepScroll) window.scrollTo(0, 0);
+  const previous = shownName;
+  if (previous !== null && previous !== name) scrollPlaces[previous] = window.scrollY;
+  if (name === "search" && previous !== null && previous !== "search") searchFrom = "#" + (previous || "home");
+  shownName = name;
+
+  // Pages slide in from the side when going deeper, and back out when going up
+  let motion = "";
+  if (!keepScroll && previous !== null && previous !== name) {
+    if (tabOf(previous) !== tabOf(name)) motion = tabOf(name) === "settings" ? "push" : "pop";
+    else if (depthOf(name) > depthOf(previous)) motion = "push";
+    else if (depthOf(name) < depthOf(previous)) motion = "pop";
+  }
+  drawRoute(name);
+  afterDraw(motion, keepScroll ? null : motion === "pop" ? (scrollPlaces[name] || 0) : 0);
+}
+
+function drawRoute(name) {
 
   // Tidy up after a PDF that was being viewed
   viewNumber += 1;
@@ -550,9 +1529,15 @@ function route(keepScroll) {
   if (pageWatcher) { pageWatcher.disconnect(); pageWatcher = null; }
 
   // The settings button lights up on the Settings page
-  document.querySelector(".icon-button").toggleAttribute("aria-current", name === "settings");
+  // The settings button shows everywhere except in Settings itself
+  const tab = tabOf(name);
+  document.getElementById("navSettings").hidden = tab === "settings";
+  document.getElementById("navSearch").hidden = tab === "settings" || name === "search";
+  if (name === "search") return showSearch();
+  if (tab === "browse") lastPlace = "#" + (name || "home");
   if (name === "settings") return showSettings();
-  lastPlace = "#" + (name || "home");
+  if (name === "about") return showAbout();
+  if (name === "notifications") return showNotifications();
 
   if (catalogText === null) return showLoading();
 
@@ -571,9 +1556,16 @@ function route(keepScroll) {
   if (courseId === undefined || courseId === "sem1") return showStage(dept, stage, 1);
   if (courseId === "sem2") return showStage(dept, stage, 2);
 
-  const course = stage.courses.find(s => s.id === courseId);
+  if (courseId === "archived") return showArchivedCourses(dept, stage);
+  const course = stage.courses.find(s => s.id === courseId) || archivedCourse(stage, courseId);
   if (!course) return showNotFound();
   if (lectureKey === undefined) return showCourse(dept, stage, course, "lectures");
+  if (lectureKey === "archive") return openArchive(dept, stage, course, name.split("-").slice(4));
+  if (lectureKey === "labs") {
+    const [labKey, labFile] = name.split("-").slice(4);
+    if (labKey === undefined) return hasLabs(course) ? showCourse(dept, stage, course, "labs") : showNotFound();
+    return openLecture(dept, stage, asLabs(course), labKey, labFile);
+  }
   const base = "#" + dept.id + "-" + stage.id + "-" + course.id;
   if (lectureKey === "sources") {
     if (fileNumber === undefined) return showCourse(dept, stage, course, "sources");
@@ -582,16 +1574,93 @@ function route(keepScroll) {
     return showFile(source, base + "-sources", course.title);
   }
 
+  openLecture(dept, stage, course, lectureKey, fileNumber);
+}
+
+// A lecture (or a lab, from asLabs), and one of its files
+function openLecture(dept, stage, course, lectureKey, fileNumber) {
+  const base = "#" + dept.id + "-" + stage.id + "-" + course.id;
   // A lecture is found by its id. A plain number (an older link) still works.
   let index = course.lectures.findIndex(lecture => lecture.id === lectureKey);
   if (index === -1) index = Number(lectureKey) - 1;
   const lecture = course.lectures[index];
   if (!lecture) return showNotFound();
   if (fileNumber === undefined) return showLecture(dept, stage, course, index + 1);
+  if (fileNumber === "earlier") { // a file removed when the lecture was edited, read from the history
+    const parts = location.hash.split("-");
+    const earlier = (lecture.earlier || [])[Number(parts[parts.length - 1]) - 1];
+    return earlier ? showArchivedFile(earlier, base + "-" + lectureKey, lecture.title) : showNotFound();
+  }
 
   const file = (lecture.files || [])[Number(fileNumber) - 1];
   if (!file || !isPdf(file.url)) return showNotFound();
+  if (directFile(lecture)) {
+    // Opened straight from the course: it counts as opening the lecture, and Back returns to the course
+    markOpened(keyOfLecture(dept, stage, course, lecture, index + 1));
+    rememberLecture(base + "-" + lectureKey + "-1", lecture, course, index + 1, base.slice(1));
+    return showFile(file, base, course.title);
+  }
   showFile(file, base + "-" + lectureKey, lecture.title);
+}
+
+// After a page is drawn: move its back link into the navigation bar,
+// watch its big title, scroll, and play the slide.
+let titleWatcher = null;
+// Once a slide has played, it is cleared, so it never plays again by itself
+// (for example when a hidden part of the page is shown again)
+app.addEventListener("animationend", event => { if (event.target === app) app.classList.remove("push", "pop", "fade"); });
+function afterDraw(motion, scrollTo) {
+  const back = document.getElementById("navBack");
+  const title = document.getElementById("navTitle");
+  const link = app.querySelector(":scope > .back");
+  back.hidden = !link;
+  document.getElementById("navBrand").hidden = !!link || tabOf(shownName || "") === "settings";
+  if (link) {
+    back.href = link.getAttribute("href");
+    back.setAttribute("aria-label", t("Back") + ": " + link.textContent);
+    link.remove();
+  }
+  const h1 = app.querySelector("h1");
+  title.textContent = h1 ? h1.textContent : "";
+  if (titleWatcher) titleWatcher.disconnect();
+  document.body.classList.remove("scrolled-title");
+  if (h1) {
+    titleWatcher = new IntersectionObserver(([entry]) =>
+      document.body.classList.toggle("scrolled-title", !entry.isIntersecting && entry.boundingClientRect.top < 60),
+      { rootMargin: "-60px 0px 0px 0px" });
+    titleWatcher.observe(h1);
+  }
+  if (scrollTo !== null) window.scrollTo(0, scrollTo);
+  if (motion) {
+    app.classList.remove("push", "pop", "fade");
+    void app.offsetWidth; // restarts the animation
+    app.classList.add(motion);
+  }
+}
+
+// The glass bar fills in once the page scrolls under it
+function onScroll() { document.body.classList.toggle("scrolled", window.scrollY > 4); }
+window.addEventListener("scroll", onScroll, { passive: true });
+onScroll();
+
+// Swipe from the edge of the screen to go back, as in an iPhone app.
+// Only when Opely is opened from the home screen: in Safari, Safari does this itself.
+const standalone = window.navigator.standalone || matchMedia("(display-mode: standalone)").matches;
+if (standalone) {
+  let start = null;
+  const rtl = () => document.documentElement.dir === "rtl";
+  window.addEventListener("touchstart", event => {
+    const touch = event.touches[0];
+    const fromEdge = rtl() ? window.innerWidth - touch.clientX : touch.clientX;
+    start = fromEdge < 24 && !document.getElementById("navBack").hidden ? { x: touch.clientX, y: touch.clientY } : null;
+  }, { passive: true });
+  window.addEventListener("touchmove", event => {
+    if (!start) return;
+    const touch = event.touches[0];
+    const dx = (touch.clientX - start.x) * (rtl() ? -1 : 1);
+    if (Math.abs(touch.clientY - start.y) > 40) start = null;
+    else if (dx > 70) { start = null; location.hash = document.getElementById("navBack").getAttribute("href"); }
+  }, { passive: true });
 }
 
 // ----- Loading the content -----
@@ -678,6 +1747,23 @@ window.addEventListener("hashchange", () => {
 });
 // Check again whenever the student comes back to the tab
 document.addEventListener("visibilitychange", () => { if (!document.hidden) refresh(); });
+
+// Updates: checked at the start, when the student comes back to Opely, and every half hour
+document.addEventListener("visibilitychange", () => { if (!document.hidden && Date.now() - updateChecked > 10 * 60 * 1000) checkForUpdate(false); });
+setInterval(() => { if (!document.hidden) checkForUpdate(false); }, 30 * 60 * 1000);
+setTimeout(() => checkForUpdate(false), 1500);
+// Notifications follow the language: after changing it, the helper is told (no question is asked again)
+setTimeout(() => {
+  const saved = savedNotify();
+  if (saved && saved.lang !== lang && pushSupport() === "yes" && Notification.permission === "granted") {
+    notifySetup().then(setup => setup && subscribe(setup, saved.topics)).catch(() => { /* tried again next time */ });
+  }
+}, 3000);
+
+// Offline: the helper in sw.js keeps a copy of Opely, so it opens with no internet
+if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
+  navigator.serviceWorker.register("sw.js").catch(() => { /* Opely still works, just not offline */ });
+}
 
 // Start: show the copies saved in this browser, then ask the site for the newest
 try {

@@ -16,7 +16,8 @@
               "data": "data/cs.json",
               "names": {
                 "ar": "علوم الحاسوب"
-              }
+              },
+              "icon": "cpu"
             },
             {
               "id": "ai",
@@ -26,7 +27,8 @@
               "data": "data/ai.json",
               "names": {
                 "ar": "الذكاء الاصطناعي"
-              }
+              },
+              "icon": "sparkles"
             },
             {
               "id": "cyber",
@@ -36,7 +38,8 @@
               "data": "data/cyber.json",
               "names": {
                 "ar": "الأمن السيبراني"
-              }
+              },
+              "icon": "shield"
             }
           ],
           "names": {

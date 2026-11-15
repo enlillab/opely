@@ -9,14 +9,20 @@
 <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-180.png">
-<link rel="stylesheet" href="style.css">
-<script src="lang.js"></script>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="style.css?v=32">
+<script src="lang.js?v=32"></script>
+<script src="icons.js?v=32"></script>
+<script src="viewer.js?v=32"></script>
 </head>
 <body>
-<header class="bar">
-  <div class="bar-inner">
-    <a class="home" href="#home">Opely Admin</a>
-    <a href="index.html">Student site</a>
+<!-- The navigation bar, the same as on the student site -->
+<header class="nav">
+  <div class="nav-inner">
+    <a id="navBack" class="nav-back" href="#home" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></a>
+    <a id="navBrand" class="nav-brand" href="#home"><img src="icon.svg" alt="">Opely Admin</a>
+    <span id="navTitle" class="nav-title" aria-hidden="true"></span>
+    <a class="nav-pill nav-end" href="index.html">Student site</a>
   </div>
 </header>
 <div class="wrap">
@@ -28,7 +34,7 @@
 
     <!-- Step 1: sign in with the token alone. The site knows who each token belongs to. -->
     <form id="connectForm" class="card" novalidate>
-      <h2>Sign in</h2>
+      <div class="card-head" data-icon="key" data-color="blue"><h2>Sign in</h2></div>
       <p class="secondary small">Paste the access token the site owner gave you. It is saved in this browser only. Never share it.</p>
       <div class="field">
         <label for="token">Access token</label>
@@ -40,7 +46,7 @@
 
     <!-- Shown once, when no admin is registered yet: the owner registers themselves -->
     <form id="setupForm" class="card" novalidate hidden>
-      <h2>Set up the owner</h2>
+      <div class="card-head" data-icon="person" data-color="indigo"><h2>Set up the owner</h2></div>
       <p class="secondary small">No admins are registered yet. Register yourself as the owner. You can then add the other admins.</p>
       <div class="field"><label for="ownerName">Full name</label><input id="ownerName" type="text" autocomplete="name" placeholder="First Father Grandfather">
         <p class="hint">Your three-part name, in English. It is written next to every change you make.</p></div>
@@ -51,24 +57,15 @@
       <p id="setupStatus" class="status" role="status"></p>
     </form>
 
-    <!-- Preview: see the admin pages without a token -->
-    <div id="previewCard" class="card">
-      <h2>Preview</h2>
-      <p class="secondary small">Look around the admin pages without a token. Nothing is saved.</p>
-      <div class="field"><label for="department">Department</label><select id="department"></select></div>
-      <div class="field"><label for="adminStage">Stage</label><select id="adminStage"></select></div>
-      <button id="previewButton" class="primary" type="button">Look around</button>
-    </div>
   </div>
 
   <!-- Step 2: after signing in, every page is drawn inside "app" by the script below -->
   <div id="session" hidden>
-    <div class="connected">
-      <span><span id="connectedLabel">Connected as</span> <strong id="connectedName"></strong><br>
-        <span id="connectedDetails" class="secondary small"></span></span>
+    <div class="connected" hidden>
+      <span class="who"><span id="avatar" class="avatar blue"></span><span><span id="connectedLabel">Connected as</span> <strong id="connectedName"></strong><br>
+        <span id="connectedDetails" class="secondary small"></span></span></span>
       <button id="changeButton" class="plain" type="button">Sign out</button>
     </div>
-    <p id="previewNote" class="preview-note small" hidden>Preview mode. You can try everything, but nothing is saved or sent to GitHub. Reloading the page undoes your changes.</p>
     <div id="app"></div>
   </div>
 </main>
@@ -88,6 +85,10 @@
    There is no server.
    ===================================================================== */
 translatePage(); // the words written in the HTML above
+document.querySelector(".nav-pill").textContent = t("Student site");
+// The bar turns to frosted glass once the page scrolls under it
+window.addEventListener("scroll", () => document.body.classList.toggle("scrolled", window.scrollY > 4), { passive: true });
+document.querySelectorAll(".card-head[data-icon]").forEach(head => head.insertAdjacentHTML("afterbegin", tile(head.dataset.icon, head.dataset.color, "big")));
 const SETTINGS_KEY = "opely-admin";
 const MAX_FILE_SIZE = 25 * 1024 * 1024; // 25 MB
 const $ = id => document.getElementById(id);
@@ -119,10 +120,6 @@ let departments = []; // every department in catalog.json
 let dept = null;      // the department being worked on: { id, name, data }
 let data = null;      // the contents of that department's file
 
-// Preview mode: look around without a token. The department's content is read
-// from the site itself, and every change is kept in memory only.
-let preview = false;
-let previewData = null;
 
 // ---------- Small helpers ----------
 function setStatus(element, text, kind) {
@@ -215,13 +212,6 @@ function explain(error) {
 // Reads the newest content file of the chosen department. Returns its contents
 // and the "sha" GitHub needs when we save a new version on top of it.
 async function readData() {
-  if (preview) {
-    if (!previewData) {
-      const response = await fetch(dept.data, { cache: "no-store" });
-      previewData = response.ok ? await response.json() : emptyData();
-    }
-    return { data: JSON.parse(JSON.stringify(previewData)), sha: null }; // a copy, like a fresh read
-  }
   try {
     const file = await github("/contents/" + dept.data + "?ref=" + encodeURIComponent(BRANCH));
     return { data: JSON.parse(base64ToText(file.content)), sha: file.sha };
@@ -238,7 +228,6 @@ function signed(message) {
 }
 
 function writeData(newData, sha, message) {
-  if (preview) { previewData = newData; return Promise.resolve(); } // kept in memory only
   const body = {
     message: signed(message),
     content: textToBase64(JSON.stringify(newData, null, 2) + "\n"),
@@ -249,7 +238,6 @@ function writeData(newData, sha, message) {
 }
 
 async function uploadFile(file, path) {
-  if (preview) return; // nothing is sent in preview mode
   await github("/contents/" + encodeURI(path), {
     method: "PUT",
     body: { message: signed("Add " + file.name), content: await fileToBase64(file), branch: BRANCH }
@@ -310,7 +298,33 @@ async function linkPickers(departmentSelect, stageSelect) {
 
 // The stage this admin looks after
 function ownStage() {
-  return data.stages.find(stage => stage.id === settings.stage);
+  return data.stages.find(stage => stage.id === settings.stage) || data.stages[0];
+}
+
+// The owner manages every stage of every department; other admins only their own stage
+const isOwner = () => !!(settings && settings.owner);
+function canManage(stage) {
+  return isOwner() || (stage.id === settings.stage && dept.id === settings.department);
+}
+
+// The owner switches to another department: its content file is read, then its stages are shown
+async function switchDepartment(id) {
+  const next = departments.find(department => department.id === id);
+  if (!next) return showNotFound();
+  setBusy(true);
+  say("Loading…", "busy");
+  try {
+    dept = next;
+    data = (await readData()).data;
+    say("");
+  } catch (error) {
+    say(explain(error), "error");
+  } finally {
+    setBusy(false);
+  }
+  shownName = null;
+  history.replaceState(null, "", "#home");
+  route();
 }
 
 // A three-part name written in English letters
@@ -322,10 +336,11 @@ function isFullName(name) {
 // Makes an id like "cs101" from a course code like "CS 101"
 function makeCourseId(code, stage) {
   let id = code.toLowerCase().replace(/[^a-z0-9]/g, "") || "course";
-  if (id === "sem1" || id === "sem2") id = "c" + id; // these words are used in page addresses
+  if (["sem1", "sem2", "news", "archived"].includes(id)) id = "c" + id; // these words are used in page addresses
   let unique = id;
   let n = 2;
-  while (stage.courses.some(course => course.id === unique)) { unique = id + "x" + n; n += 1; }
+  const taken = stage.courses.concat(stage.archivedCourses || []); // an archived course keeps its address
+  while (taken.some(course => course.id === unique)) { unique = id + "x" + n; n += 1; }
   return unique;
 }
 
@@ -333,16 +348,19 @@ function makeCourseId(code, stage) {
 function confirmThen(button, action) {
   if (button.dataset.armed) {
     delete button.dataset.armed;
-    button.textContent = button.dataset.label;
+    button.innerHTML = button.dataset.label;
+    if (button.dataset.name) button.setAttribute("aria-label", button.dataset.name);
     return action();
   }
   button.dataset.armed = "yes";
-  button.dataset.label = button.textContent;
-  button.textContent = t("Tap again to delete");
+  button.dataset.label = button.innerHTML;
+  button.innerHTML = icon("trash") + t("Tap again to delete");
+  if (button.hasAttribute("aria-label")) { button.dataset.name = button.getAttribute("aria-label"); button.setAttribute("aria-label", t("Tap again to delete")); }
   setTimeout(() => {
     if (!button.dataset.armed) return;
     delete button.dataset.armed;
-    button.textContent = button.dataset.label;
+    button.innerHTML = button.dataset.label;
+    if (button.dataset.name) button.setAttribute("aria-label", button.dataset.name);
   }, 4000);
 }
 
@@ -354,7 +372,6 @@ function repoFiles(entries) {
 
 // Deletes files from the repository. Returns how many could not be deleted.
 async function deleteFiles(paths) {
-  if (preview) return 0; // nothing is removed in preview mode
   let failed = 0;
   for (let i = 0; i < paths.length; i += 1) {
     say(t("Removing file {i} of {n}…", { i: i + 1, n: paths.length }), "busy");
@@ -520,6 +537,17 @@ function esc(text) {
     .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
 
+// An empty list: a large soft icon and a short sentence
+function emptyState(shape, message) {
+  return `<div class="empty-state"><span class="halo">${icon(shape)}</span><p>${t(message)}</p></div>`;
+}
+
+// "Mohammad Ali Hasan" gives "MH"
+function initials(name) {
+  const parts = String(name || "").trim().split(/\s+/).filter(Boolean);
+  return parts.length ? (parts[0][0] + (parts.length > 1 ? parts[parts.length - 1][0] : "")).toUpperCase() : "?";
+}
+
 // The text typed into a field, without spaces at the ends
 function typed(id) { return $(id).value.trim(); }
 
@@ -529,7 +557,7 @@ let toastTimer = null;
 function say(text, kind) {
   const toast = $("toast");
   clearTimeout(toastTimer);
-  toast.textContent = t(text);
+  toast.innerHTML = (kind === "done" ? icon("check") : kind === "error" ? icon("info") : "") + esc(t(text));
   toast.className = "toast " + (kind || "");
   toast.hidden = !text;
   if (kind === "done") toastTimer = setTimeout(() => { toast.hidden = true; }, 4000);
@@ -579,7 +607,6 @@ async function save(message, edit, doneText) {
     // The site no longer links to these files, so now they can be removed
     const failed = await deleteFiles(filesToDelete);
     if (failed) say(t("Saved, but {n} file(s) could not be removed from the repository.", { n: failed }), "error");
-    else if (preview) say("Preview only. Nothing was saved.", "done");
     else say(t(doneText || "Saved.") + " " + t("Students will see it in a minute or two."), "done");
     return true;
   } catch (error) {
@@ -597,10 +624,35 @@ function findStage(inData, stageId) {
   return stage;
 }
 function findCourse(inData, stageId, courseId) {
-  const course = findStage(inData, stageId).courses.find(c => c.id === courseId);
+  const labs = courseId.endsWith("-labs"); // a course's labs: see labView
+  const course = findStage(inData, stageId).courses.find(c => c.id === (labs ? courseId.slice(0, -5) : courseId));
   if (!course) throw new Error("That course no longer exists. Reload the page.");
-  return course;
+  return labs ? labView(course) : course;
 }
+
+// A course's labs, shaped like its lectures, so labs use the same pages, forms, Import and saving.
+// Its id ends in "-labs" (#stage1-cs101-labs), its "lectures" are the labs, and everything else
+// (title, sources, ...) is the course's own.
+function labView(course) {
+  if (!course.labs) course.labs = [];
+  return new Proxy(course, {
+    get(target, key) {
+      if (key === "id") return target.id + "-labs";
+      if (key === "lectures") return target.labs;
+      if (key === "isLabs") return true;
+      return target[key];
+    }
+  });
+}
+const courseHasLabs = course => !!course.hasLabs || (course.labs || []).length > 0;
+// Lectures (and labs) are kept in date order, unless an admin has put them in an order of their own.
+// Then new ones are added at the end. `course` may be a course or its labs (labView).
+function keepOrder(course) {
+  const flag = course.isLabs ? "labsOrdered" : "lecturesOrdered";
+  if (!course[flag]) course.lectures.sort((a, b) => a.date.localeCompare(b.date));
+}
+// Words that change between lectures and labs
+const W = (course, lectureWords, labWords) => t(course.isLabs ? labWords : lectureWords);
 
 // Uploads the chosen files into the course's folder. Returns them as { label, url } entries.
 async function uploadAll(files, stage, course) {
@@ -623,7 +675,7 @@ function tooBig(files) {
 function showStage(stage, semester) {
   document.title = stageName(stage) + " | " + t("Admin");
   const base = "#" + stage.id;
-  const news = (data.announcements || []).filter(item => item.stage === stage.id);
+  const news = (data.announcements || []).filter(item => reaches(item, stage.id));
   const segments = [1, 2].map(number => `
     <a class="segment" href="${base}-sem${number}" ${number === semester ? 'aria-current="page"' : ""}>${t("Semester {n}", { n: number })}</a>`).join("");
 
@@ -631,47 +683,307 @@ function showStage(stage, semester) {
     .filter(course => course.semester === semester)
     .sort((a, b) => a.code.localeCompare(b.code, "en", { numeric: true }));
 
+  const chevron = () => icon("chevron", "flip chev");
   const courseWidgets = courses.map(course => `
-    <a class="widget course ${esc(stage.color)}" href="${base}-${course.id}">
-      <span class="top">
-        <span class="pill">${esc(course.code)}</span>
-        <span class="secondary small">${plural(course.lectures.length, "lecture")}</span>
-      </span>
-      <span>
-        <span class="title">${esc(course.title)}</span><br>
-        <span class="secondary small">${esc(course.instructor)}</span>
-      </span>
-      <span class="secondary small">${plural((course.sources || []).length, "source")}</span>
+    <a class="widget course" href="${base}-${course.id}">
+      <span class="head"><span class="kicker" dir="ltr">${esc(course.code)}</span>${chevron()}</span>
+      <span class="title">${esc(course.title)}</span>
+      ${course.instructor ? `<span class="sub">${esc(course.instructor)}</span>` : ""}
+      <span class="foot meta-row"><span>${plural(course.lectures.length, "lecture")}</span>${courseHasLabs(course) ? `<span>${plural((course.labs || []).length, "lab")}</span>` : ""}<span>${plural((course.sources || []).length, "source")}</span></span>
     </a>`).join("");
+  const lectures = stage.courses.reduce((n, course) => n + course.lectures.length, 0);
 
+  const ownerView = isOwner();
   app.innerHTML = `
+    ${ownerView ? `<a class="back" href="#home">${esc(localName(dept))}</a>` : ""}
     <h1>${esc(stageName(stage))}</h1>
     <p class="lead secondary">${esc(localName(dept))}</p>
+    ${ownerView ? "" : `<div class="hero static who-hero">
+      <span class="avatar big ${settings.owner ? "indigo" : "blue"}">${esc(initials(settings.name))}</span>
+      <span class="hero-text">
+        <span class="kicker">${t("Connected as")}</span>
+        <span class="hero-title">${esc(settings.name)}</span>
+        <span class="sub">${esc(settings.username) + SEP}${plural(stage.courses.length, "course")}${SEP}${plural(lectures, "lecture")}</span>
+      </span>
+      <button class="glass-pill" type="button" id="heroSignOut">${t("Sign out")}</button>
+    </div>
+    `}
     <div class="widgets">
-        <a class="widget wide" href="#news">
-          <span class="kicker">${t("Announcements")}</span>
-          <span>
-            <span class="title">${news.length ? esc(news[0].title) : t("No announcements yet")}</span><br>
-            <span class="secondary small">${news.length ? plural(news.length, "announcement") + ". " : ""}${t("Post or remove")}</span>
-          </span>
+        <a class="widget wide" href="${ownerView ? base + "-news" : "#news"}">
+          <span class="head"><span class="kicker">${t("Announcements")}</span>${chevron()}</span>
+          <span class="title">${news.length ? esc(news[0].title) : t("No announcements yet")}</span>
+          <span class="meta-row">${news.length ? `<span>${plural(news.length, "announcement")}</span>` : ""}<span>${t("Post or remove")}</span></span>
         </a>
-        ${settings.owner ? `<a class="widget wide" href="#admins">
-          <span class="kicker">${t("Admins")}</span>
-          <span>
-            <span class="title">${plural(admins.length, "admin")}</span><br>
-            <span class="secondary small">${t("Add or remove")}</span>
-          </span>
+        ${settings.owner && !ownerView ? `<a class="widget wide" href="#admins">
+          <span class="head"><span class="kicker">${t("Admins")}</span>${chevron()}</span>
+          <span class="title">${plural(admins.length, "admin")}</span>
+          <span class="meta-row"><span>${t("Add or remove")}</span></span>
         </a>` : ""}
     </div>
     <nav class="segments" aria-label="${t("Semester")}">${segments}</nav>
-    <p class="count small secondary">${plural(courses.length, "course")}</p>
+    <p class="count">${plural(courses.length, "course")}</p>
     <div class="courses">
       ${courseWidgets}
       <a class="widget course add" href="${base}-sem${semester}-add">
-        <span class="plus">+</span>
+        <span class="plus">${icon("plus")}</span>
         <span class="title">${t("Add course")}</span>
       </a>
-    </div>`;
+    </div>
+    ${archivedCoursesRow(stage)}`;
+  if ($("heroSignOut")) $("heroSignOut").addEventListener("click", () => $("changeButton").click());
+}
+
+// ---------- The owner's home: every stage of a department, and a switch between departments ----------
+function showOwnerHome() {
+  document.title = localName(dept) + " | " + t("Admin");
+  const chevron = () => icon("chevron", "flip chev");
+  const totals = data.stages.reduce(([c, l], stage) =>
+    [c + stage.courses.length, l + stage.courses.reduce((n, course) => n + course.lectures.length, 0)], [0, 0]);
+  const switcher = departments.length > 1 ? `
+    <nav class="segments${departments.length === 3 ? " three" : ""}" aria-label="${t("Department")}">
+      ${departments.map(other => `<a class="segment" href="#dept-${esc(other.id)}" ${other.id === dept.id ? 'aria-current="page"' : ""}>${esc(other.short || localName(other))}</a>`).join("")}
+    </nav>` : "";
+  const stageTiles = data.stages.map((stage, i) => {
+    const lectures = stage.courses.reduce((n, course) => n + course.lectures.length, 0);
+    const news = (data.announcements || []).filter(item => reaches(item, stage.id)).length;
+    return `<a class="widget stage" href="#${stage.id}">
+      <span class="head"><span class="kicker">${t("Stage")}</span>${chevron()}</span>
+      <span class="big">${i + 1}</span>
+      <span class="sub">${plural(stage.courses.length, "course")}<br>${plural(lectures, "lecture")}${news ? "<br>" + plural(news, "announcement") : ""}</span>
+    </a>`;
+  }).join("");
+
+  app.innerHTML = `
+    <h1>${esc(localName(dept))}</h1>
+    <p class="lead secondary">${t("As the owner, you manage every stage of every department.")}</p>
+    <div class="hero static who-hero">
+      <span class="avatar big indigo">${esc(initials(settings.name))}</span>
+      <span class="hero-text">
+        <span class="kicker">${t("Connected as")}</span>
+        <span class="hero-title">${esc(settings.name)}</span>
+        <span class="sub">${esc(settings.username) + SEP}${plural(totals[0], "course")}${SEP}${plural(totals[1], "lecture")}</span>
+      </span>
+      <button class="glass-pill" type="button" id="heroSignOut">${t("Sign out")}</button>
+    </div>
+    
+    <div class="widgets">
+      <a class="widget wide" href="#news">
+        <span class="head"><span class="kicker">${t("Announcements")}</span>${chevron()}</span>
+        <span class="title">${(data.announcements || []).length ? esc(data.announcements[0].title) : t("No announcements yet")}</span>
+        <span class="meta-row">${(data.announcements || []).length ? `<span>${plural(data.announcements.length, "announcement")}</span>` : ""}<span>${t("Send to all stages or some")}</span></span>
+      </a>
+    </div>
+    <div class="widgets">
+      <a class="widget wide" href="#admins">
+        <span class="head"><span class="kicker">${t("Admins")}</span>${chevron()}</span>
+        <span class="title">${plural(admins.length, "admin")}</span>
+        <span class="meta-row"><span>${t("Add or remove")}</span></span>
+      </a>
+    </div>
+    <div class="widgets two-up">
+      <a class="widget" href="#notify">
+        <span class="head"><span class="kicker">${t("Notifications")}</span>${chevron()}</span>
+        <span class="title">${t("For students")}</span>
+        <span class="meta-row"><span>${t("Set up")}</span></span>
+      </a>
+      <a class="widget" href="#updates">
+        <span class="head"><span class="kicker">${t("Updates")}</span>${chevron()}</span>
+        <span class="title">${t("Update Opely")}</span>
+        <span class="meta-row"><span>${t("For every student")}</span></span>
+      </a>
+    </div>
+    ${switcher}
+    <p class="count">${t("Stages")}</p>
+    <div class="widgets stages" style="margin-top:0">${stageTiles}</div>`;
+  $("heroSignOut").addEventListener("click", () => $("changeButton").click());
+}
+
+// ---------- Files next to the page that the owner keeps: version.json and notify.json ----------
+async function readSiteFile(name) {
+  try {
+    const file = await github("/contents/" + name + "?ref=" + encodeURIComponent(BRANCH));
+    return { json: JSON.parse(base64ToText(file.content)), sha: file.sha };
+  } catch (error) {
+    if (error.status === 404) return { json: null, sha: null };
+    throw error;
+  }
+}
+function writeSiteFile(name, json, sha, message) {
+  const body = { message: signed(message), content: textToBase64(JSON.stringify(json, null, 2) + "\n"), branch: BRANCH };
+  if (sha) body.sha = sha;
+  return github("/contents/" + name, { method: "PUT", body: body });
+}
+const canRunSite = () => !!(settings && settings.owner); // only the owner
+
+// ---------- Updates for students: after we change Opely, every student's copy updates ----------
+async function showUpdates() {
+  document.title = t("Updates for students") + " | " + t("Admin");
+  app.innerHTML = `
+    <a class="back" href="#home">${t("Home")}</a>
+    <h1>${t("Updates for students")}</h1>
+    <p class="lead secondary">${t("After you change Opely’s code, send the update. Every student’s Opely then offers to update, or updates by itself at once.")}</p>
+    <div id="updateBody"><p class="secondary">${t("Loading…")}</p></div>`;
+  let current;
+  try { current = await readSiteFile("version.json"); } catch (error) { $("updateBody").innerHTML = `<p class="text-block error-text">${esc(explain(error))}</p>`; return; }
+  const now = current.json || { update: 0 };
+  $("updateBody").innerHTML = `
+    <ul class="group icons"><li><span class="row">${tile("download", "blue")}<span class="grow">${t("Last update sent")}<br>
+      <span class="secondary small">${now.update ? t("Update {n}", { n: now.update }) + (now.sent ? SEP + niceDate(now.sent.slice(0, 10)) : "") + (now.force ? SEP + t("Everyone at once") : "") : t("None yet")}</span></span></span></li></ul>
+    <form class="card" novalidate>
+      <div class="field"><label for="updateNote">${t("What changed (optional)")}</label><input id="updateNote" type="text" autocomplete="off" placeholder="${t("For example: a faster reader")}"></div>
+      <label class="switch-row" for="updateForce">
+        <span class="grow">${t("Make everyone update now")}<br><span class="secondary small">${t("Opely updates by itself on every phone and computer, without asking. Use it for an important fix.")}</span></span>
+        <input id="updateForce" type="checkbox" role="switch"><span class="switch" aria-hidden="true"></span>
+      </label>
+      <button class="primary" type="submit" id="sendUpdate">${icon("upload")}${t("Send the update")}</button>
+    </form>
+    <p class="hint-below">${t("Send it after your change is on the site (a minute or two after saving it on GitHub).")}</p>`;
+  onSubmit(async () => {
+    const button = $("sendUpdate");
+    if (!button.dataset.armed) { button.dataset.armed = "yes"; button.textContent = t("Tap again to send"); return; }
+    setBusy(true);
+    say("Saving…", "busy");
+    try {
+      const fresh = await readSiteFile("version.json");
+      const number = ((fresh.json && Number(fresh.json.update)) || 0) + 1;
+      await writeSiteFile("version.json", { update: number, force: $("updateForce").checked, note: typed("updateNote"), sent: new Date().toISOString() },
+        fresh.sha, "Update for students: " + number);
+      say("Sent. Students get it in the next minutes.", "done");
+      route(true);
+    } catch (error) {
+      say(explain(error), "error");
+    } finally {
+      setBusy(false);
+    }
+  });
+}
+
+// ---------- Notifications: setting them up, once ----------
+// Students' phones are reached through a small free helper on Cloudflare (cloudflare/worker.js),
+// and Opely's GitHub job sends the notifications. The keys are made here, in this browser:
+//   the public key   goes in notify.json, on the site (safe to show)
+//   the private key  and the secret go only into GitHub's and Cloudflare's secret settings
+const base64Url = bytes => btoa(String.fromCharCode(...bytes)).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+let madeKeys = null; // keys made on this page, until they are saved
+
+async function showNotifySetup() {
+  document.title = t("Notifications") + " | " + t("Admin");
+  app.innerHTML = `
+    <a class="back" href="#home">${t("Home")}</a>
+    <h1>${t("Notifications")}</h1>
+    <p class="lead secondary">${t("Students get a notification when a new lecture, lab or announcement is added to the stages they follow. It is set up once, for free, in about 15 minutes.")}</p>
+    <div id="notifyBody"><p class="secondary">${t("Loading…")}</p></div>`;
+  let current;
+  try { current = await readSiteFile("notify.json"); } catch (error) { $("notifyBody").innerHTML = `<p class="text-block error-text">${esc(explain(error))}</p>`; return; }
+  const setup = current.json && current.json.worker && current.json.key ? current.json : null;
+  let repo = null;
+  try { repo = repository(); } catch (error) { /* not on GitHub Pages */ }
+  const secretsPage = repo ? `https://github.com/${repo.owner}/${repo.name}/settings/secrets/actions` : "https://github.com";
+  const copyField = (id, label, value, note) => `
+    <div class="field"><label for="${id}">${t(label)}</label>
+      <div class="copy-field"><input id="${id}" type="text" readonly value="${esc(value || "")}" dir="ltr"><button type="button" class="move-button" data-copy="${id}">${t("Copy")}</button></div>
+      ${note ? `<p class="hint">${t(note)}</p>` : ""}</div>`;
+
+  $("notifyBody").innerHTML = `
+    ${setup ? `<ul class="group icons"><li><span class="row">${tile("bell", "red")}<span class="grow">${t("Notifications are on")}<br>
+      <span class="secondary small" dir="ltr">${esc(setup.worker)}</span></span></span></li></ul>
+      <p class="hint-below">${t("Everything below is only needed to set them up again.")}</p>` : ""}
+
+    <div class="card setup-step"><div class="card-head"><h2>${t("1. Make the keys")}</h2></div>
+      <p class="secondary small">${t("They are made in this browser. Keep this page open until step 4.")}${setup ? " " + t("Making new keys turns notifications off for everyone who has them on, until they turn them on again.") : ""}</p>
+      <button type="button" class="button secondary" id="makeKeys" style="width:100%">${icon("key")}${t(madeKeys ? "Make new keys" : "Make the keys")}</button>
+      <div id="keyFields" ${madeKeys ? "" : "hidden"}>
+        ${copyField("keySecret", "Secret", madeKeys && madeKeys.secret, "For Cloudflare (step 2) and GitHub (step 3).")}
+        ${copyField("keyPrivate", "Private key", madeKeys && madeKeys.privateKey, "For GitHub only (step 3). Never share it or put it on the site.")}
+      </div>
+    </div>
+
+    <div class="card setup-step"><div class="card-head"><h2>${t("2. Make the helper on Cloudflare")}</h2></div>
+      <ol class="steps">
+        <li>${t("Make a free account at dash.cloudflare.com and sign in.")}</li>
+        <li>${t("Storage & Databases → D1 → Create database. Name it opely.")}</li>
+        <li>${t("Compute → Workers & Pages → Create → Start with Hello World. Name it opely-notify, then Deploy.")}</li>
+        <li>${t("Edit code: delete everything, paste the helper’s code (the button below), then Deploy.")}</li>
+        <li>${t("The worker’s Bindings → Add binding → D1 database: the name DB, the database opely.")}</li>
+        <li>${t("Settings → Variables and Secrets → Add: type Secret, the name SECRET, the value the Secret from step 1.")}</li>
+        <li>${t("Copy the worker’s address (it ends in workers.dev) for step 3 and 4.")}</li>
+      </ol>
+      <button type="button" class="button secondary" id="copyWorker" style="width:100%">${t("Copy the helper’s code")}</button>
+    </div>
+
+    <div class="card setup-step"><div class="card-head"><h2>${t("3. Give GitHub the keys")}</h2></div>
+      <p class="secondary small">${t("In the repository: Settings → Secrets and variables → Actions → New repository secret. Add these three:")}</p>
+      <ul class="group key-list">
+        <li><span class="row"><code>OPELY_PUSH_URL</code><span class="grow secondary small">${t("the worker’s address")}</span></span></li>
+        <li><span class="row"><code>OPELY_PUSH_SECRET</code><span class="grow secondary small">${t("the Secret")}</span></span></li>
+        <li><span class="row"><code>OPELY_VAPID_PRIVATE</code><span class="grow secondary small">${t("the Private key")}</span></span></li>
+      </ul>
+      <a class="button secondary" href="${esc(secretsPage)}" target="_blank" rel="noopener" style="width:100%">${t("Open GitHub’s secrets")}</a>
+    </div>
+
+    <form class="card setup-step" novalidate><div class="card-head"><h2>${t("4. Turn them on")}</h2></div>
+      <div class="field"><label for="workerAddress">${t("The worker’s address")}</label>
+        <input id="workerAddress" type="url" dir="ltr" autocomplete="off" placeholder="https://opely-notify.name.workers.dev" value="${esc(setup ? setup.worker : "")}"></div>
+      <button class="primary" type="submit">${icon("check")}${t("Check and turn on")}</button>
+    </form>`;
+
+  app.querySelectorAll("[data-copy]").forEach(button => button.addEventListener("click", async () => {
+    const copied = await copyText($(button.dataset.copy).value);
+    button.textContent = t(copied ? "Copied" : "Can’t copy here");
+  }));
+  $("makeKeys").addEventListener("click", async () => {
+    const button = $("makeKeys");
+    if (setup && !button.dataset.armed) { button.dataset.armed = "yes"; button.textContent = t("Tap again to make new keys"); return; }
+    const pair = await crypto.subtle.generateKey({ name: "ECDSA", namedCurve: "P-256" }, true, ["sign", "verify"]);
+    const privateKey = (await crypto.subtle.exportKey("jwk", pair.privateKey)).d;
+    const publicKey = base64Url(new Uint8Array(await crypto.subtle.exportKey("raw", pair.publicKey)));
+    madeKeys = { privateKey: privateKey, publicKey: publicKey, secret: base64Url(crypto.getRandomValues(new Uint8Array(24))) };
+    $("keySecret").value = madeKeys.secret;
+    $("keyPrivate").value = madeKeys.privateKey;
+    $("keyFields").hidden = false;
+    button.textContent = t("Make new keys");
+    delete button.dataset.armed;
+  });
+  $("copyWorker").addEventListener("click", async () => {
+    const button = $("copyWorker");
+    try {
+      const response = await fetch("cloudflare/worker.js", { cache: "no-store" });
+      if (!response.ok) throw new Error();
+      button.textContent = t(await copyText(await response.text()) ? "Copied" : "Can’t copy here");
+    } catch (error) {
+      button.textContent = t("Couldn’t load it. It is the file cloudflare/worker.js in the repository.");
+    }
+  });
+  onSubmit(async () => {
+    const worker = typed("workerAddress").replace(/\/+$/, "");
+    if (!/^https:\/\//.test(worker)) return say("The link must start with https://", "error");
+    const key = madeKeys ? madeKeys.publicKey : setup && setup.key;
+    if (!key) return say("Make the keys first (step 1).", "error");
+    setBusy(true);
+    say("Checking the helper…", "busy");
+    try {
+      let answer = null;
+      try { answer = await (await fetch(worker + "/", { cache: "no-store" })).json(); } catch (error) { /* checked below */ }
+      if (!answer || !answer.ok) throw new Error(t(answer && answer.error ? answer.error : "The helper didn’t answer. Check its address, and that it was deployed."));
+      const fresh = await readSiteFile("notify.json");
+      await writeSiteFile("notify.json", { worker: worker, key: key }, fresh.sha, "Turn on notifications");
+      madeKeys = null;
+      say("Notifications are on.", "done");
+      route(true);
+    } catch (error) {
+      say(explain(error), "error");
+    } finally {
+      setBusy(false);
+    }
+  });
+}
+
+// The "This course has labs" switch, used when adding a course and in its details
+function labsSwitch(on) {
+  return `<label class="switch-row" for="courseLabs">
+    <span class="grow">${t("This course has labs")}<br><span class="secondary small">${t("Adds a Labs part to the course, next to Lectures and Sources.")}</span></span>
+    <input id="courseLabs" type="checkbox" role="switch" ${on ? "checked" : ""}><span class="switch" aria-hidden="true"></span>
+  </label>`;
 }
 
 // ---------- New course ----------
@@ -686,7 +998,8 @@ function showAddCourse(stage, semester) {
         <div class="field"><label for="courseLecturer">${t("Lecturer")}</label><input id="courseLecturer" type="text" autocomplete="off"></div>
       </div>
       <div class="field"><label for="courseTitle">${t("Course title")}</label><input id="courseTitle" type="text" autocomplete="off"></div>
-      <button class="primary" type="submit">${t("Add course")}</button>
+      ${labsSwitch(false)}
+      <button class="primary" type="submit">${icon("plus")}${t("Add course")}</button>
     </form>`;
 
   onSubmit(async () => {
@@ -699,7 +1012,9 @@ function showAddCourse(stage, semester) {
     const saved = await save("Add course: " + code, fresh => {
       const freshStage = findStage(fresh, stage.id);
       newId = makeCourseId(code, freshStage);
-      freshStage.courses.push({ id: newId, code: code, semester: semester, title: title, instructor: lecturer, sources: [], lectures: [] });
+      const labs = $("courseLabs").checked;
+      freshStage.courses.push(Object.assign({ id: newId, code: code, semester: semester, title: title, instructor: lecturer, sources: [], lectures: [] },
+        labs ? { hasLabs: true, labs: [] } : {}));
     }, "Course added.");
     if (saved) go("#" + stage.id + "-" + newId); // open the new course, ready for its first lecture
   });
@@ -714,16 +1029,18 @@ function showCourse(stage, course, tab) {
   let body;
   if (tab === "sources") {
     const rows = sources.map((source, i) => `
-      <li><span class="row">
+      <li><span class="row has-link">
+        <a class="row-link" ${viewAttrs(source, base + "-sources-" + (i + 1))}>
+        ${tile(fileKind(source.url)[0], source.url ? fileKind(source.url)[1] : "gray")}
         <span class="grow">${esc(source.label)}<br>
-          <span class="secondary small">${t(!source.url ? "Not added yet" : isWebLink(source.url) ? "Link" : "File")}</span></span>
-        <button class="delete" type="button" data-key="${i}">${t("Delete")}</button>
+          <span class="secondary small">${t(!source.url ? "Not added yet" : isWebLink(source.url) ? "Link" : "File")}</span></span></a>
+        <button class="delete" type="button" aria-label="${t("Delete")}" data-key="${i}">${icon("trash")}${t("Delete")}</button>
       </span></li>`).join("");
     body = `
-      <a class="button" href="${base}-sources-add">${t("Add source")}</a>
+      <a class="button" href="${base}-sources-add">${icon("plus")}${t("Add source")}</a>
       ${sources.length
-        ? `<p class="count small secondary">${plural(sources.length, "source")}</p><ul class="group">${rows}</ul>`
-        : `<p class="text-block secondary empty">${t("No sources yet.")}</p>`}`;
+        ? `<p class="count">${plural(sources.length, "source")}</p><ul class="group icons">${rows}</ul>`
+        : emptyState("book", "No sources yet.")}`;
   } else if (tab === "details") {
     body = `
       <form class="card" novalidate>
@@ -732,48 +1049,84 @@ function showCourse(stage, course, tab) {
           <div class="field"><label for="courseLecturer">${t("Lecturer")}</label><input id="courseLecturer" type="text" autocomplete="off" value="${esc(course.instructor)}"></div>
         </div>
         <div class="field"><label for="courseTitle">${t("Course title")}</label><input id="courseTitle" type="text" autocomplete="off" value="${esc(course.title)}"></div>
-        <button class="primary" type="submit">${t("Save changes")}</button>
+        ${labsSwitch(courseHasLabs(course))}
+        <button class="primary" type="submit">${icon("check")}${t("Save changes")}</button>
       </form>
-      <button class="danger" type="button" data-key="course">${t("Delete course")}</button>`;
+      <h2 class="label">${t("Archive")}</h2>
+      <form class="card new-version" novalidate id="versionForm">
+        <div class="card-head"><h2>${t("Archive the lectures")}</h2></div>
+        <p class="secondary small">${t("For a new year or a new lecturer: the course’s lectures, labs and sources move to its archive, where students can still open them, and the course starts empty. The archive takes no space on the site.")}</p>
+        <div class="field"><label for="versionName">${t("Name of the current version")}</label><input id="versionName" type="text" autocomplete="off" value="${esc(academicYear())}"></div>
+        <button class="button secondary" type="submit" id="versionButton" style="width:100%">${icon("clock")}${t("Archive the current version")}</button>
+      </form>
+      <div class="card new-version">
+        <div class="card-head"><h2>${t("Archive this course")}</h2></div>
+        <p class="secondary small">${t("When the course is no longer taught: the whole course leaves the stage and goes to the stage’s archived courses. Students can still open it, read only. You can bring it back at any time. It takes no space on the site.")}</p>
+        <button class="button secondary" type="button" id="archiveCourseButton" style="width:100%">${icon("clock")}${t("Archive this course")}</button>
+      </div>
+      <button class="danger" type="button" data-key="course">${icon("trash")}${t("Delete course")}</button>`;
   } else {
-    const rows = course.lectures.map((lecture, i) => `
-      <li><span class="row">
+    const shown = tab === "labs" ? labView(course) : course; // lectures, or labs
+    const listBase = "#" + stage.id + "-" + shown.id;
+    const rows = shown.lectures.map((lecture, i) => `
+      <li><span class="row has-link">
+        <a class="row-link" ${(lecture.files || []).length === 1 && lecture.files[0].url && !lecture.video && !lecture.summary
+          ? viewAttrs(lecture.files[0], listBase + "-" + (lecture.id || i + 1) + "-1")
+          : `href="${listBase}-${lecture.id || i + 1}"`}>
         <span class="num">${i + 1}</span>
         <span class="grow">${esc(lecture.title)}<br>
-          <span class="secondary small">${niceDate(lecture.date)}${SEP}${plural((lecture.files || []).length, "file")}</span></span>
-        <button class="delete" type="button" data-key="${i}">${t("Delete")}</button>
+          <span class="secondary small">${niceDate(lecture.date)}${SEP}${plural((lecture.files || []).length, "file")}</span></span></a>
+        <a class="edit-button" href="${listBase}-${lecture.id || i + 1}-edit" aria-label="${t("Edit")}" title="${t("Edit")}">${icon("pencil")}</a>
+        <button class="delete" type="button" aria-label="${t("Delete")}" data-key="${i}">${icon("trash")}${t("Delete")}</button>
       </span></li>`).join("");
     body = `
-      <a class="button" href="${base}-add">${t("Add lecture")}</a>
-      ${course.lectures.length
-        ? `<p class="count small secondary">${plural(course.lectures.length, "lecture")}</p><ol class="group">${rows}</ol>`
-        : `<p class="text-block secondary empty">${t("No lectures yet.")}</p>`}`;
+      <div class="button-pair">
+        <a class="button" href="${listBase}-add">${icon("plus")}${W(shown, "Add lecture", "Add lab")}</a>
+        <a class="button secondary" href="${base}${shown.isLabs ? "-labs" : ""}-import">${icon("layers")}${t("Import")}</a>
+      </div>
+      ${shown.lectures.length
+        ? `<div class="count-row"><p class="count">${plural(shown.lectures.length, shown.isLabs ? "lab" : "lecture")}</p>
+            ${shown.lectures.length > 1 ? `<button id="reorderButton" class="move-button" type="button">${t("Reorder")}</button>` : ""}</div>
+           <ol class="group icons" id="lectureList">${rows}</ol>`
+        : emptyState(shown.isLabs ? "flask" : "doc", shown.isLabs ? "No labs yet." : "No lectures yet.")}
+      ${archiveRow(course, base)}`;
   }
 
   const current = name => (tab === name ? 'aria-current="page"' : "");
   app.innerHTML = `
     <a class="back" href="#${stage.id}-sem${course.semester}">${esc(stageName(stage))}${SEP}${t("Semester {n}", { n: course.semester })}</a>
-    <div class="course-head ${esc(stage.color)}">
-      <span class="pill">${esc(course.code)}</span>
-      <h1>${esc(course.title)}</h1>
-      <p class="secondary">${esc(course.instructor)}</p>
+    <div class="hero static course-hero">
+      <span class="hero-text">
+        <span class="kicker" dir="ltr">${esc(course.code)}</span>
+        <h1>${esc(course.title)}</h1>
+        ${course.instructor ? `<span class="sub">${esc(course.instructor)}</span>` : ""}
+      </span>
     </div>
-    <nav class="segments three" aria-label="${t("Course")}">
+    <nav class="segments ${courseHasLabs(course) ? "four" : "three"}" aria-label="${t("Course")}">
       <a class="segment" href="${base}" ${current("lectures")}>${t("Lectures")}</a>
+      ${courseHasLabs(course) ? `<a class="segment" href="${base}-labs" ${current("labs")}>${t("Labs")}</a>` : ""}
       <a class="segment" href="${base}-sources" ${current("sources")}>${t("Sources")}</a>
       <a class="segment" href="${base}-details" ${current("details")}>${t("Details")}</a>
     </nav>
     ${body}`;
 
-  if (tab === "lectures") {
+  if (tab === "lectures" || tab === "labs") {
+    const shown = tab === "labs" ? labView(course) : course;
+    const reorder = $("reorderButton");
+    if (reorder) reorder.addEventListener("click", () => startReorder(stage, shown));
     onDelete(async key => {
-      const lecture = course.lectures[Number(key)];
-      const saved = await save("Delete lecture: " + lecture.title, fresh => {
-        const list = findCourse(fresh, stage.id, course.id).lectures;
+      const lecture = shown.lectures[Number(key)];
+      const commit = await headCommit();
+      const saved = await save((shown.isLabs ? "Archive lab: " : "Archive lecture: ") + lecture.title, fresh => {
+        const target = findCourse(fresh, stage.id, shown.id);
+        const list = target.lectures;
         const i = list.findIndex(other => lecture.id ? other.id === lecture.id : other.title === lecture.title && other.date === lecture.date);
-        if (i === -1) throw new Error("That lecture is already gone. Reload the page.");
-        return repoFiles(list.splice(i, 1)[0].files || []);
-      }, "Lecture deleted.");
+        if (i === -1) throw new Error(t(shown.isLabs ? "That lab is already gone. Reload the page." : "That lecture is already gone. Reload the page."));
+        const gone = list.splice(i, 1)[0];
+        archiveOf(target).removed.unshift({ id: "r" + Date.now().toString(36), kind: shown.isLabs ? "lab" : "lecture",
+          removedAt: today(), item: archivedItem(gone, commit) });
+        return repoFiles(gone.files || []); // they leave the site, and stay in its history
+      }, "Moved to the archive.");
       if (saved) route(true);
     });
   }
@@ -781,28 +1134,80 @@ function showCourse(stage, course, tab) {
   if (tab === "sources") {
     onDelete(async key => {
       const source = sources[Number(key)];
-      const saved = await save("Delete source: " + source.label, fresh => {
-        const list = findCourse(fresh, stage.id, course.id).sources || [];
+      const commit = await headCommit();
+      const saved = await save("Archive source: " + source.label, fresh => {
+        const target = findCourse(fresh, stage.id, course.id);
+        const list = target.sources || [];
         const i = list.findIndex(other => other.label === source.label && other.url === source.url);
         if (i === -1) throw new Error("That source is already gone. Reload the page.");
-        return repoFiles(list.splice(i, 1));
-      }, "Source deleted.");
+        const gone = list.splice(i, 1);
+        archiveOf(target).removed.unshift({ id: "r" + Date.now().toString(36), kind: "source", removedAt: today(), item: archived(gone[0], commit) });
+        return repoFiles(gone);
+      }, "Moved to the archive.");
       if (saved) route(true);
     });
   }
 
   if (tab === "details") {
+    $("versionForm").addEventListener("submit", async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      const name = typed("versionName") || academicYear();
+      const button = $("versionButton");
+      if (!course.lectures.length && !(course.labs || []).length && !(course.sources || []).length) return say("This course has nothing to archive yet.", "error");
+      if (!button.dataset.armed) { button.dataset.armed = "yes"; button.textContent = t("Tap again to archive everything in this course"); return; }
+      const commit = await headCommit();
+      const saved = await save("New version of " + course.code + ": " + name + " archived", fresh => {
+        const target = findCourse(fresh, stage.id, course.id);
+        const files = filesOfItems(target.lectures.concat(target.labs || [])).concat(target.sources || []);
+        archiveOf(target).versions.unshift({ id: "v" + Date.now().toString(36), name: name, archivedAt: today(),
+          lectures: target.lectures.map(item => archivedItem(item, commit)),
+          labs: (target.labs || []).map(item => archivedItem(item, commit)),
+          sources: (target.sources || []).map(file => archived(file, commit)) });
+        target.lectures = [];
+        if (target.labs) target.labs = [];
+        target.sources = [];
+        delete target.lecturesOrdered;
+        delete target.labsOrdered;
+        return repoFiles(files);
+      }, "The current version is in the archive.");
+      if (saved) go("#" + stage.id + "-" + course.id + "-archive");
+    });
+    $("archiveCourseButton").addEventListener("click", async () => {
+      const button = $("archiveCourseButton");
+      if (!button.dataset.armed) { button.dataset.armed = "yes"; button.textContent = t("Tap again to archive the whole course"); return; }
+      const commit = await headCommit();
+      const saved = await save("Archive course: " + course.code, fresh => {
+        const freshStage = findStage(fresh, stage.id);
+        const target = findCourse(fresh, stage.id, course.id);
+        freshStage.courses.splice(freshStage.courses.indexOf(target), 1);
+        const files = filesOfItems(target.lectures.concat(target.labs || [])).concat(target.sources || []);
+        const kept = Object.assign({}, target, {
+          archivedAt: today(),
+          lectures: target.lectures.map(item => archivedItem(item, commit)),
+          sources: (target.sources || []).map(file => archived(file, commit))
+        });
+        if (target.labs) kept.labs = target.labs.map(item => archivedItem(item, commit));
+        freshStage.archivedCourses = [kept].concat(freshStage.archivedCourses || []);
+        return repoFiles(files); // they leave the site, and stay in its history
+      }, "The course is in the archived courses.");
+      if (saved) go("#" + stage.id + "-archived");
+    });
     onSubmit(async () => {
       const code = typed("courseCode");
       const title = typed("courseTitle");
       const lecturer = typed("courseLecturer");
       if (!code || !title) return say("Enter the course’s code and title.", "error");
+      const labs = $("courseLabs").checked;
+      if (!labs && (course.labs || []).length) return say("Delete the course’s labs first, then turn labs off.", "error");
       // The course id stays the same, so links to the course keep working
       const saved = await save("Edit course: " + code, fresh => {
         const freshCourse = findCourse(fresh, stage.id, course.id);
         freshCourse.code = code;
         freshCourse.title = title;
         freshCourse.instructor = lecturer;
+        freshCourse.hasLabs = labs;
+        if (labs && !freshCourse.labs) freshCourse.labs = [];
       });
       if (saved) route(true);
     });
@@ -812,7 +1217,7 @@ function showCourse(stage, course, tab) {
         const freshCourse = findCourse(fresh, stage.id, course.id);
         freshStage.courses.splice(freshStage.courses.indexOf(freshCourse), 1);
         const entries = (freshCourse.sources || []).slice();
-        freshCourse.lectures.forEach(lecture => entries.push(...(lecture.files || [])));
+        freshCourse.lectures.concat(freshCourse.labs || []).forEach(lecture => entries.push(...(lecture.files || [])));
         return repoFiles(entries);
       }, "Course deleted.");
       if (saved) go("#" + stage.id + "-sem" + course.semester);
@@ -822,19 +1227,19 @@ function showCourse(stage, course, tab) {
 
 // ---------- New lecture ----------
 function showAddLecture(stage, course) {
-  document.title = localTitle("New lecture | Admin");
+  document.title = W(course, "New lecture", "New lab") + " | " + t("Admin");
   const back = "#" + stage.id + "-" + course.id;
   app.innerHTML = `
     <a class="back" href="${back}">${esc(course.title)}</a>
-    <h1>${t("New lecture")}</h1>
+    <h1>${W(course, "New lecture", "New lab")}</h1>
     <form class="card" novalidate>
-      <div class="field"><label for="lectureTitle">${t("Lecture title")}</label><input id="lectureTitle" type="text" autocomplete="off"></div>
+      <div class="field"><label for="lectureTitle">${W(course, "Lecture title", "Lab title")}</label><input id="lectureTitle" type="text" autocomplete="off"></div>
       <div class="field"><label for="lectureDate">${t("Date")}</label><input id="lectureDate" type="date" value="${today()}"></div>
       <div class="field"><label for="lectureFiles">${t("Files")}</label><input id="lectureFiles" type="file" multiple>
-        <p class="hint">${t("Slides, notes, or PDFs. Up to 25 MB each.")}</p></div>
+        <p class="hint">${t("Up to 25 MB each. Word and PowerPoint files become PDFs by themselves a few minutes after uploading.")}</p></div>
       <div class="field"><label for="lectureVideo">${t("Recording link (optional)")}</label><input id="lectureVideo" type="url" placeholder="https://youtube.com/…" autocomplete="off"></div>
       <div class="field"><label for="lectureSummary">${t("Summary (optional)")}</label><textarea id="lectureSummary"></textarea></div>
-      <button class="primary" type="submit">${t("Upload")}</button>
+      <button class="primary" type="submit">${icon("upload")}${t("Upload")}</button>
     </form>`;
 
   onSubmit(async () => {
@@ -843,7 +1248,7 @@ function showAddLecture(stage, course) {
     const video = typed("lectureVideo");
     const summary = typed("lectureSummary");
     const files = Array.from($("lectureFiles").files);
-    if (!title) return say("Enter the lecture title.", "error");
+    if (!title) return say(course.isLabs ? "Enter the lab title." : "Enter the lecture title.", "error");
     if (!date) return say("Choose the lecture date.", "error");
     if (video && !isWebLink(video)) return say("The link must start with https://", "error");
     if (tooBig(files)) return say(tooBig(files), "error");
@@ -856,15 +1261,338 @@ function showAddLecture(stage, course) {
       setBusy(false);
       return say(explain(error), "error");
     }
-    const saved = await save("Add lecture: " + title, fresh => { // 2. the lecture itself
-      const lectures = findCourse(fresh, stage.id, course.id).lectures;
-      lectures.push({
+    const saved = await save((course.isLabs ? "Add lab: " : "Add lecture: ") + title, fresh => { // 2. the lecture (or lab) itself
+      const target = findCourse(fresh, stage.id, course.id);
+      target.lectures.push({
         id: "l" + Date.now().toString(36), // never changes, so links to this lecture keep working
         title: title, date: date, summary: summary, video: video, files: uploaded
       });
-      lectures.sort((a, b) => a.date.localeCompare(b.date)); // oldest first
+      keepOrder(target); // oldest first, unless the admin chose an order
     }, "Uploaded.");
     if (saved) go(back);
+  });
+}
+
+// ---------- The archive ----------
+// Nothing an admin replaces or deletes is lost. GitHub keeps every file ever uploaded in the
+// repository's history, so the archive only records which saved version ("commit") still has each
+// file. The files themselves leave the site, so they take no space on it.
+//   course.archive.versions: whole earlier versions of the course (its lectures, labs and sources)
+//   course.archive.removed:  single lectures, labs and sources that were deleted
+//   lecture.earlier:         files removed from a lecture when it was edited
+function archiveOf(course) {
+  if (!course.archive) course.archive = { versions: [], removed: [] };
+  return course.archive;
+}
+// The newest saved version of the site: the one that still has the files about to be removed
+async function headCommit() {
+  try { return (await github("/git/ref/heads/" + BRANCH)).object.sha; } catch (error) { return ""; }
+}
+// A file entry, as kept in the archive
+const archived = (file, commit) => Object.assign({}, file, file.url && !isWebLink(file.url) && commit ? { commit: commit } : {});
+const archivedItem = (item, commit) => Object.assign({}, item, { files: (item.files || []).map(file => archived(file, commit)) });
+// Every file of a list of lectures or labs
+const filesOfItems = items => items.reduce((all, item) => all.concat(item.files || []), []);
+
+// The "Archive" row at the bottom of a course
+function archiveRow(course, base) {
+  const archive = course.archive;
+  if (!archive || (!archive.versions.length && !archive.removed.length)) return "";
+  const parts = [archive.versions.length ? plural(archive.versions.length, "earlier version") : "",
+    archive.removed.length ? plural(archive.removed.length, "removed item") : ""].filter(Boolean).join(SEP);
+  return `<ul class="group icons archive-row"><li><a class="row" href="${base}-archive">${tile("clock", "gray")}
+    <span class="grow">${t("Archive")}<br><span class="secondary small">${parts}</span></span></a></li></ul>`;
+}
+// "2025–2026": the academic year, which starts in September
+function academicYear() {
+  const now = new Date();
+  const start = now.getMonth() >= 8 ? now.getFullYear() : now.getFullYear() - 1;
+  return start + "–" + (start + 1);
+}
+
+// ---------- The archive page: earlier versions and removed items ----------
+function showArchiveAdmin(stage, course) {
+  const base = "#" + stage.id + "-" + course.id;
+  const archive = archiveOf(course);
+  document.title = t("Archive") + " | " + course.title;
+  const versions = archive.versions.map(version => {
+    const counts = [plural(version.lectures.length, "lecture"), version.labs.length ? plural(version.labs.length, "lab") : "", version.sources.length ? plural(version.sources.length, "source") : ""].filter(Boolean).join(SEP);
+    return `<div class="widget wide version-card">
+      <span class="head"><span class="kicker">${t("Archived {date}", { date: niceDate(version.archivedAt) })}</span></span>
+      <span class="title">${esc(version.name)}</span>
+      <span class="sub">${counts}</span>
+      <span class="version-actions">
+        <a class="move-button" href="index.html#${dept.id}-${stage.id}-${course.id}-archive-${version.id}" target="_blank" rel="noopener">${t("Open")}</a>
+        <button class="move-button danger-text" type="button" data-forget-version="${version.id}">${t("Delete for good")}</button>
+      </span>
+    </div>`;
+  }).join("");
+  const kinds = { lecture: ["doc", "indigo", "Lecture"], lab: ["flask", "green", "Lab"], source: ["book", "gray", "Source"] };
+  const removed = archive.removed.map(entry => {
+    const [shape, color, word] = kinds[entry.kind];
+    const title = entry.kind === "source" ? entry.item.label : entry.item.title;
+    return `<li><span class="row">${tile(shape, color)}
+      <span class="grow">${esc(title)}<br><span class="secondary small">${t(word)}${SEP}${t("Removed {date}", { date: niceDate(entry.removedAt) })}</span></span>
+      <button class="move-button" type="button" data-restore="${entry.id}">${t("Restore")}</button>
+      <button class="delete" type="button" aria-label="${t("Delete for good")}" data-key="${entry.id}">${icon("trash")}${t("Delete for good")}</button>
+    </span></li>`;
+  }).join("");
+  app.innerHTML = `
+    <a class="back" href="${base}">${esc(course.title)}</a>
+    <h1>${t("Archive")}</h1>
+    <p class="lead secondary">${t("Earlier versions and removed items. Students can open them too. They take no space on the site: GitHub keeps them in the site’s history.")}</p>
+    <h2 class="label">${t("Earlier versions")}</h2>
+    ${versions ? `<div class="widgets">${versions}</div>` : `<p class="text-block secondary">${t("No earlier versions. Start one from the course’s Details.")}</p>`}
+    <h2 class="label">${t("Removed")}</h2>
+    ${removed ? `<ul class="group icons">${removed}</ul>` : `<p class="text-block secondary">${t("Nothing removed.")}</p>`}`;
+
+  // Delete for good: the entry leaves the archive (the files are already off the site)
+  onDelete(async id => {
+    const saved = await save("Delete from the archive: " + course.code, fresh => {
+      const target = archiveOf(findCourse(fresh, stage.id, course.id));
+      target.removed = target.removed.filter(entry => entry.id !== id);
+    }, "Deleted for good.");
+    if (saved) route(true);
+  });
+  app.querySelectorAll("[data-forget-version]").forEach(button => button.addEventListener("click", () => confirmThen(button, async () => {
+    const id = button.dataset.forgetVersion;
+    const saved = await save("Delete an archived version: " + course.code, fresh => {
+      const target = archiveOf(findCourse(fresh, stage.id, course.id));
+      target.versions = target.versions.filter(version => version.id !== id);
+    }, "Deleted for good.");
+    if (saved) route(true);
+  })));
+  // Restore: the item goes back into the course, and its files are put back on the site from the history
+  app.querySelectorAll("[data-restore]").forEach(button => button.addEventListener("click", async () => {
+    const entry = archive.removed.find(other => other.id === button.dataset.restore);
+    const files = entry.kind === "source" ? [entry.item] : entry.item.files || [];
+    const edit = fresh => {
+      const real = findCourse(fresh, stage.id, course.id);
+      const target = entry.kind === "lab" ? labView(real) : real;
+      archiveOf(real).removed = archiveOf(real).removed.filter(other => other.id !== entry.id);
+      const clean = file => { const copy = Object.assign({}, file); delete copy.commit; return copy; };
+      if (entry.kind === "source") real.sources = (real.sources || []).concat([clean(entry.item)]);
+      else {
+        const item = Object.assign({}, entry.item, { files: (entry.item.files || []).map(clean) });
+        target.lectures.push(item);
+        if (entry.kind === "lab") real.hasLabs = true;
+        keepOrder(target);
+      }
+    };
+    setBusy(true);
+    try {
+      await restoreFromHistory(files, edit, "Restore from the archive: " + (entry.item.title || entry.item.label));
+      say("Restored.", "done");
+      route(true);
+    } catch (error) {
+      say(explain(error), "error");
+    } finally {
+      setBusy(false);
+    }
+  }));
+}
+
+// ---------- Archived courses: whole courses that are no longer taught ----------
+// stage.archivedCourses keeps each one as it was, with archivedAt. Its files left the site and
+// are read from the site's history, like everything else in the archive.
+function archivedCoursesRow(stage) {
+  const list = stage.archivedCourses || [];
+  if (!list.length) return "";
+  return `<ul class="group icons archive-row"><li><a class="row" href="#${stage.id}-archived">${tile("clock", "gray")}
+    <span class="grow">${t("Archived courses")}<br><span class="secondary small">${plural(list.length, "course")}</span></span></a></li></ul>`;
+}
+// Every file of a course that is on the site (or was, before it was archived)
+const filesOfCourse = course => filesOfItems(course.lectures.concat(course.labs || [])).concat(course.sources || []);
+
+function showArchivedCourses(stage) {
+  document.title = t("Archived courses") + " | " + stageName(stage);
+  const list = stage.archivedCourses || [];
+  const rows = list.map(course => `<li><span class="row">${tile("book", "gray")}
+      <span class="grow"><bdi dir="ltr">${esc(course.code)}</bdi>${SEP}${esc(course.title)}<br>
+        <span class="secondary small">${t("Archived {date}", { date: niceDate(course.archivedAt) })}${SEP}${plural(course.lectures.length, "lecture")}</span></span>
+      <a class="move-button" href="index.html#${dept.id}-${stage.id}-${course.id}" target="_blank" rel="noopener">${t("Open")}</a>
+      <button class="move-button" type="button" data-restore-course="${esc(course.id)}">${t("Restore")}</button>
+      <button class="delete" type="button" aria-label="${t("Delete for good")}" data-key="${esc(course.id)}">${icon("trash")}${t("Delete for good")}</button>
+    </span></li>`).join("");
+  app.innerHTML = `
+    <a class="back" href="#${stage.id}">${esc(stageName(stage))}</a>
+    <h1>${t("Archived courses")}</h1>
+    <p class="lead secondary">${t("Courses that are no longer taught. Students can still open them, read only. They take no space on the site: GitHub keeps them in the site’s history.")}</p>
+    ${rows ? `<ul class="group icons">${rows}</ul>` : emptyState("clock", "No archived courses.")}`;
+
+  onDelete(async id => {
+    const saved = await save("Delete an archived course for good", fresh => {
+      const freshStage = findStage(fresh, stage.id);
+      freshStage.archivedCourses = (freshStage.archivedCourses || []).filter(course => course.id !== id);
+      if (!freshStage.archivedCourses.length) delete freshStage.archivedCourses;
+    }, "Deleted for good.");
+    if (saved) route(true);
+  });
+  // Restore: the course goes back into its semester, and its files back on the site from the history
+  app.querySelectorAll("[data-restore-course]").forEach(button => button.addEventListener("click", async () => {
+    const id = button.dataset.restoreCourse;
+    const course = list.find(other => other.id === id);
+    const clean = file => { const copy = Object.assign({}, file); delete copy.commit; return copy; };
+    const cleanItem = item => Object.assign({}, item, { files: (item.files || []).map(clean) });
+    const edit = fresh => {
+      const freshStage = findStage(fresh, stage.id);
+      const found = (freshStage.archivedCourses || []).find(other => other.id === id);
+      if (!found) throw new Error(t("That course is no longer in the archive. Reload the page."));
+      freshStage.archivedCourses = freshStage.archivedCourses.filter(other => other.id !== id);
+      if (!freshStage.archivedCourses.length) delete freshStage.archivedCourses;
+      const back = Object.assign({}, found, {
+        lectures: found.lectures.map(cleanItem),
+        sources: (found.sources || []).map(clean)
+      });
+      if (found.labs) back.labs = found.labs.map(cleanItem);
+      delete back.archivedAt;
+      if (freshStage.courses.some(other => other.id === back.id)) back.id = makeCourseId(back.code, freshStage);
+      freshStage.courses.push(back);
+    };
+    setBusy(true);
+    try {
+      await restoreFromHistory(filesOfCourse(course), edit, "Restore course: " + course.code);
+      say("Restored.", "done");
+      go("#" + stage.id + "-sem" + course.semester);
+    } catch (error) {
+      say(explain(error), "error");
+    } finally {
+      setBusy(false);
+    }
+  }));
+}
+
+// Puts files back on the site from the history (no download or upload), together with an edit
+async function restoreFromHistory(files, edit, message) {
+  const back = files.filter(file => file.commit && file.url && !isWebLink(file.url));
+  if (!back.length) { // nothing to bring back from GitHub
+    const saved = await save(message, edit);
+    if (!saved) throw new Error(t("Couldn’t restore it."));
+    return;
+  }
+  const tree = [];
+  for (const file of back) {
+    say(t("Restoring file {i} of {n}…", { i: tree.length + 1, n: back.length }), "busy");
+    const old = await github("/contents/" + encodeURI(file.url) + "?ref=" + file.commit);
+    tree.push({ path: file.url, mode: "100644", type: "blob", sha: old.sha });
+  }
+  await commitTree(tree, edit, message);
+}
+
+// ---------- Reorder: up and down buttons, then one save ----------
+function startReorder(stage, course) {
+  const order = course.lectures.slice(); // moved here first, saved together
+  const list = $("lectureList");
+  const word = course.isLabs ? "Lab {n}" : "Lecture {n}";
+  const draw = () => {
+    list.innerHTML = order.map((lecture, i) => `
+      <li><span class="row">
+        <span class="num">${i + 1}</span>
+        <span class="grow">${esc(lecture.title)}<br><span class="secondary small">${niceDate(lecture.date)}</span></span>
+        <button type="button" class="order-button" data-up="${i}" ${i === 0 ? "disabled" : ""} aria-label="${t("Move up")}">${icon("chevron", "up")}</button>
+        <button type="button" class="order-button" data-down="${i}" ${i === order.length - 1 ? "disabled" : ""} aria-label="${t("Move down")}">${icon("chevron", "down")}</button>
+      </span></li>`).join("");
+    list.querySelectorAll("[data-up],[data-down]").forEach(button => button.addEventListener("click", () => {
+      const i = Number(button.dataset.up !== undefined ? button.dataset.up : button.dataset.down);
+      const j = button.dataset.up !== undefined ? i - 1 : i + 1;
+      [order[i], order[j]] = [order[j], order[i]];
+      draw();
+    }));
+  };
+  draw();
+  list.classList.add("reordering");
+  $("reorderButton").outerHTML = `<span class="reorder-actions"><button id="reorderCancel" class="move-button" type="button">${t("Cancel")}</button>
+    <button id="reorderSave" class="move-button save" type="button">${t("Save order")}</button></span>`;
+  $("reorderCancel").addEventListener("click", () => route(true));
+  $("reorderSave").addEventListener("click", async () => {
+    const ids = order.map(lecture => lecture.id || lecture.title);
+    const saved = await save((course.isLabs ? "Reorder labs: " : "Reorder lectures: ") + course.code, fresh => {
+      const target = findCourse(fresh, stage.id, course.id);
+      const key = lecture => lecture.id || lecture.title;
+      const known = target.lectures.filter(lecture => ids.includes(key(lecture))).sort((a, b) => ids.indexOf(key(a)) - ids.indexOf(key(b)));
+      const others = target.lectures.filter(lecture => !ids.includes(key(lecture))); // added by someone else meanwhile
+      target.lectures.splice(0, target.lectures.length, ...known, ...others);
+      target[course.isLabs ? "labsOrdered" : "lecturesOrdered"] = true; // from now on, new ones are added at the end
+    }, "Saved.");
+    if (saved) route(true);
+  });
+}
+
+// ---------- Edit a lecture (or a lab): its title, date, recording, summary and files ----------
+function showEditLecture(stage, course, index) {
+  const lecture = course.lectures[index];
+  const base = "#" + stage.id + "-" + course.id;
+  const here = base + "-" + (lecture.id || index + 1);
+  document.title = W(course, "Edit lecture", "Edit lab") + " | " + t("Admin");
+  const removing = new Set(); // files marked to be removed
+  const fileRows = () => (lecture.files || []).map((file, i) => {
+    const [shape, color] = fileKind(file.url);
+    const gone = removing.has(i);
+    return `<li class="${gone ? "removing" : ""}"><span class="row">${tile(shape, gone ? "gray" : color)}
+      <span class="grow">${esc(file.label)}${gone ? `<br><span class="secondary small">${t("Will be removed")}</span>` : ""}</span>
+      <button type="button" class="move-button" data-remove="${i}">${t(gone ? "Undo" : "Remove")}</button></span></li>`;
+  }).join("");
+
+  app.innerHTML = `
+    <a class="back" href="${here}">${esc(lecture.title)}</a>
+    <h1>${W(course, "Edit lecture", "Edit lab")}</h1>
+    <form class="card" novalidate>
+      <div class="field"><label for="lectureTitle">${W(course, "Lecture title", "Lab title")}</label><input id="lectureTitle" type="text" autocomplete="off" value="${esc(lecture.title)}"></div>
+      <div class="field"><label for="lectureDate">${t("Date")}</label><input id="lectureDate" type="date" value="${esc(lecture.date)}"></div>
+      <div class="field"><label for="lectureVideo">${t("Recording link (optional)")}</label><input id="lectureVideo" type="url" placeholder="https://youtube.com/…" autocomplete="off" value="${esc(lecture.video || "")}"></div>
+      <div class="field"><label for="lectureSummary">${t("Summary (optional)")}</label><textarea id="lectureSummary">${esc(lecture.summary || "")}</textarea></div>
+      <div class="field"><label>${t("Files")}</label>
+        ${(lecture.files || []).length ? `<ul class="group icons import-files" id="editFiles">${fileRows()}</ul>` : `<p class="hint">${t("No files yet.")}</p>`}</div>
+      <div class="field"><label for="lectureFiles">${t("Add files")}</label><input id="lectureFiles" type="file" multiple>
+        <p class="hint">${t("Up to 25 MB each. Word and PowerPoint files become PDFs by themselves a few minutes after uploading.")}</p></div>
+      <button class="primary" type="submit">${icon("check")}${t("Save changes")}</button>
+    </form>`;
+
+  // Remove marks a file; Undo brings it back. Nothing changes until Save.
+  const wireRemove = () => app.querySelectorAll("[data-remove]").forEach(button => button.addEventListener("click", () => {
+    const i = Number(button.dataset.remove);
+    removing.has(i) ? removing.delete(i) : removing.add(i);
+    $("editFiles").innerHTML = fileRows();
+    wireRemove();
+  }));
+  wireRemove();
+
+  onSubmit(async () => {
+    const title = typed("lectureTitle");
+    const date = $("lectureDate").value;
+    const video = typed("lectureVideo");
+    const summary = typed("lectureSummary");
+    const added = Array.from($("lectureFiles").files);
+    if (!title) return say(course.isLabs ? "Enter the lab title." : "Enter the lecture title.", "error");
+    if (!date) return say("Choose the lecture date.", "error");
+    if (video && !isWebLink(video)) return say("The link must start with https://", "error");
+    if (tooBig(added)) return say(tooBig(added), "error");
+
+    setBusy(true);
+    let uploaded;
+    try {
+      uploaded = await uploadAll(added, stage, course); // 1. the new files
+    } catch (error) {
+      setBusy(false);
+      return say(explain(error), "error");
+    }
+    const removed = (lecture.files || []).filter((file, i) => removing.has(i));
+    const commit = removed.length ? await headCommit() : "";
+    const saved = await save((course.isLabs ? "Edit lab: " : "Edit lecture: ") + title, fresh => { // 2. the changes
+      const target = findCourse(fresh, stage.id, course.id);
+      const list = target.lectures;
+      const item = list.find(other => lecture.id ? other.id === lecture.id : other.title === lecture.title && other.date === lecture.date);
+      if (!item) throw new Error(t(course.isLabs ? "That lab is already gone. Reload the page." : "That lecture is already gone. Reload the page."));
+      item.title = title;
+      item.date = date;
+      item.video = video;
+      item.summary = summary;
+      item.files = (item.files || []).filter(file => !removed.some(gone => gone.url === file.url && gone.label === file.label)).concat(uploaded);
+      if (removed.length) item.earlier = removed.map(file => Object.assign(archived(file, commit), { removedAt: today() })).concat(item.earlier || []);
+      keepOrder(target); // the order follows the dates, unless the admin chose an order
+      return repoFiles(removed); // the removed files are deleted from the repository too
+    }, "Saved.");
+    if (saved) go(here);
   });
 }
 
@@ -880,7 +1608,7 @@ function showAddSource(stage, course) {
       <div class="field"><label for="sourceFile">${t("File")}</label><input id="sourceFile" type="file">
         <p class="hint">${t("Up to 25 MB. Or use a link instead.")}</p></div>
       <div class="field"><label for="sourceLink">${t("Link")}</label><input id="sourceLink" type="url" placeholder="https://…" autocomplete="off"></div>
-      <button class="primary" type="submit">${t("Upload")}</button>
+      <button class="primary" type="submit">${icon("upload")}${t("Upload")}</button>
     </form>`;
 
   onSubmit(async () => {
@@ -910,38 +1638,689 @@ function showAddSource(stage, course) {
   });
 }
 
+// ---------- Looking at a lecture and its files, as students see them ----------
+// A PDF stored in the site opens inside the page; text files open in a new tab;
+// links open in a new tab; other files download.
+const FILE_CACHE = "opely-files"; // the same store the student page uses, so files opened here are saved for both
+const isPdfFile = url => canView(url); // anything Opely can show inside the page (see viewer.js)
+function viewAttrs(file, viewer) {
+  if (!file.url) return "";
+  if (isPdfFile(file.url)) return `href="${viewer}"`;
+  if (/^https?:/.test(file.url) || /\.txt$/i.test(file.url)) return `href="${esc(fileAddress(file.url))}" target="_blank" rel="noopener"`;
+  return `href="${esc(fileAddress(file.url))}" download`;
+}
+// Where a file can be read from. A file uploaded a moment ago may not be on the site yet,
+// so files are read straight from the repository on GitHub when the site is on github.io.
+function fileAddress(url) {
+  if (/^https?:/.test(url) || !location.hostname.endsWith(".github.io")) return url;
+  let target;
+  try { target = repository(); } catch (error) { return url; }
+  return target.owner && location.hostname.endsWith(".github.io")
+    ? "https://raw.githubusercontent.com/" + target.owner + "/" + target.name + "/" + BRANCH + "/" + url.split("/").map(encodeURIComponent).join("/")
+    : url;
+}
+
+function showLectureView(stage, course, index) {
+  const lecture = course.lectures[index];
+  const number = index + 1;
+  const base = "#" + stage.id + "-" + course.id;
+  const here = base + "-" + (lecture.id || number);
+  document.title = lecture.title + " | " + t("Admin");
+  const files = (lecture.files || []).map((file, i) => {
+    const [shape, color] = fileKind(file.url);
+    return `<li><a class="row" ${viewAttrs(file, here + "-" + (i + 1))}>${tile(shape, file.url ? color : "gray")}<span class="grow">${esc(file.label)}</span></a></li>`;
+  }).join("");
+  const before = course.lectures[index - 1];
+  const after = course.lectures[index + 1];
+  const dept_ = dept;
+  app.innerHTML = `
+    <a class="back" href="${base}">${esc(course.title)}</a>
+    <div class="course-head">
+      <span class="pill">${W(course, "Lecture {n}", "Lab {n}").replace("{n}", number)}${SEP}<bdi>${esc(course.code)}</bdi></span>
+      <h1>${esc(lecture.title)}</h1>
+      <p class="meta-row"><span>${niceDate(lecture.date)}</span></p>
+    </div>
+    <h2 class="label">${t("Recording")}</h2>
+    <ul class="group icons"><li>${lecture.video
+      ? `<a class="row" href="${esc(lecture.video)}" target="_blank" rel="noopener">${tile("play", "pink")}<span class="grow">${t("Watch recording")}</span></a>`
+      : `<span class="row secondary">${tile("play", "gray")}<span class="grow">${t("No recording yet")}</span></span>`}</li></ul>
+    ${lecture.summary ? `<h2 class="label">${t("Summary")}</h2><p class="text-block">${esc(lecture.summary)}</p>` : ""}
+    <h2 class="label">${t("Files")}</h2>
+    ${files ? `<ul class="group icons">${files}</ul>` : `<p class="text-block secondary">${t("No files yet.")}</p>`}
+    <a class="button secondary edit-wide" href="${here}-edit">${icon("pencil")}${W(course, "Edit lecture", "Edit lab")}</a>
+    <ul class="group icons" style="margin-top:12px"><li><a class="row" href="index.html#${dept_.id}-${stage.id}-${course.id}-${lecture.id || number}" target="_blank" rel="noopener">${tile("eye", "teal")}<span class="grow">${t("Open on the student site")}</span></a></li></ul>
+    <nav class="pager" aria-label="${t("Lectures")}">
+      ${before ? `<a href="${base}-${before.id || number - 1}">${icon("back", "flip")}${t("Previous")}</a>` : "<span></span>"}
+      ${after ? `<a class="next" href="${base}-${after.id || number + 1}">${t("Next")}${icon("chevron", "flip")}</a>` : "<span></span>"}
+    </nav>`;
+}
+
+// Gets a file: from this browser if it was saved before, otherwise from the site or GitHub
+async function getSavedFile(url) {
+  let cache = null;
+  try { if (window.caches) cache = await caches.open(FILE_CACHE); } catch (error) { cache = null; }
+  if (cache) {
+    const saved = await cache.match(url);
+    if (saved) return saved.blob();
+  }
+  let response = await fetch(url);
+  if (!response.ok && fileAddress(url) !== url) response = await fetch(fileAddress(url));
+  if (!response.ok) throw new Error("HTTP " + response.status);
+  if (cache) { try { await cache.put(url, response.clone()); } catch (error) { /* storage full */ } }
+  return response.blob();
+}
+
+let pdfLibrary = null;
+function loadPdfLibrary() {
+  if (!pdfLibrary) {
+    pdfLibrary = new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = "lib/pdf.min.js";
+      script.onload = () => { pdfjsLib.GlobalWorkerOptions.workerSrc = "lib/pdf.worker.min.js"; resolve(pdfjsLib); };
+      script.onerror = () => { pdfLibrary = null; reject(new Error("The PDF reader didn’t load.")); };
+      document.head.append(script);
+    });
+  }
+  return pdfLibrary;
+}
+
+let viewing = 0;          // goes up with each page drawn, so slow work for an old page stops
+let viewedFileUrl = null; // the downloaded copy, for the Download button
+let pageWatcher = null;
+async function showFileView(file, backAddress, backLabel) {
+  const view = ++viewing;
+  document.title = file.label + " | " + t("Admin");
+  app.innerHTML = `
+    <a class="back" href="${backAddress}">${esc(backLabel)}</a>
+    <h1>${esc(file.label)}</h1>
+    <p id="fileStatus" class="secondary" role="status">${t("Downloading…")}</p>
+    <p class="file-actions"><a id="fileDownload" class="button" hidden>${icon("download")}${t("Download")}</a>
+      <button id="fileCopy" class="button secondary" type="button" hidden>${t("Copy")}</button></p>
+    <div id="pages" class="pages"></div>
+    <div id="shown" class="shown"></div>`;
+  const status = $("fileStatus");
+  const type = fileType(file.url) || { kind: "pdf", name: "PDF" };
+  try {
+    const blob = await getSavedFile(file.url);
+    if (view !== viewing) return;
+    viewedFileUrl = URL.createObjectURL(blob);
+    const download = $("fileDownload");
+    download.href = viewedFileUrl;
+    const ending = (file.url.split(".").pop() || "").toLowerCase();
+    download.download = ending && !file.label.toLowerCase().endsWith("." + ending) ? file.label + "." + ending : file.label;
+    download.hidden = false;
+    status.textContent = t("Opening…");
+    if (type.kind !== "pdf") { // text, code, notebooks and pictures, shown by viewer.js
+      const shown = await showInPage($("shown"), blob, type, file.label);
+      if (view !== viewing) return;
+      status.textContent = t(type.name) + (shown.lines ? SEP + plural(shown.lines, "line") : "");
+      if (shown.text !== null) {
+        $("fileCopy").hidden = false;
+        $("fileCopy").addEventListener("click", async () => {
+          $("fileCopy").textContent = t(await copyText(shown.text) ? "Copied" : "Can’t copy here");
+          setTimeout(() => { if ($("fileCopy")) $("fileCopy").textContent = t("Copy"); }, 2000);
+        });
+      }
+      return;
+    }
+    const library = await loadPdfLibrary();
+    const pdf = await library.getDocument({ data: await blob.arrayBuffer() }).promise;
+    if (view !== viewing) return;
+    status.textContent = plural(pdf.numPages, "page");
+    const holder = $("pages");
+    const size = (await pdf.getPage(1)).getViewport({ scale: 1 });
+    pageWatcher = new IntersectionObserver(entries => entries.forEach(async entry => {
+      if (!entry.isIntersecting) return;
+      pageWatcher.unobserve(entry.target);
+      const page = await pdf.getPage(Number(entry.target.dataset.page));
+      if (view !== viewing) return;
+      const natural = page.getViewport({ scale: 1 });
+      const viewport = page.getViewport({ scale: entry.target.clientWidth / natural.width * Math.min(window.devicePixelRatio || 1, 2) });
+      const canvas = document.createElement("canvas");
+      canvas.width = viewport.width; canvas.height = viewport.height;
+      canvas.setAttribute("role", "img");
+      canvas.setAttribute("aria-label", t("Page {n}", { n: entry.target.dataset.page }));
+      entry.target.append(canvas);
+      await page.render({ canvasContext: canvas.getContext("2d"), viewport: viewport }).promise;
+    }), { rootMargin: "800px 0px" });
+    for (let number = 1; number <= pdf.numPages; number += 1) {
+      const box = document.createElement("div");
+      box.className = "page";
+      box.dataset.page = number;
+      box.style.aspectRatio = size.width + " / " + size.height;
+      holder.append(box);
+      pageWatcher.observe(box);
+    }
+  } catch (error) {
+    if (view !== viewing) return;
+    status.textContent = viewedFileUrl
+      ? t("Can’t show this file here. You can still download it.")
+      : t("Can’t get this file. Check your connection, then reload.");
+  }
+}
+// Tidies up after a PDF when another page is opened
+function leaveFileView() {
+  viewing += 1;
+  if (viewedFileUrl) { URL.revokeObjectURL(viewedFileUrl); viewedFileUrl = null; }
+  if (pageWatcher) { pageWatcher.disconnect(); pageWatcher = null; }
+}
+
+// ---------- Import: many lectures at once, from files and zip files ----------
+// 1. The admin picks files and zips. Zips are opened in the browser, even zips inside zips.
+// 2. The files are sorted into lectures: a folder per lecture, or the lecture number in the
+//    file's name ("Lecture 3", "L03", "Week 3", "المحاضرة 3"). Files without a number become sources.
+// 3. The admin checks and corrects everything on a review screen.
+// 4. Everything is saved to GitHub as one single change.
+
+let zipLibrary = null;
+function loadZipLibrary() {
+  if (!zipLibrary) {
+    zipLibrary = new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = "lib/jszip.min.js";
+      script.onload = () => resolve(window.JSZip);
+      script.onerror = () => { zipLibrary = null; reject(new Error(t("The zip reader didn’t load. Check your connection."))); };
+      document.head.append(script);
+    });
+  }
+  return zipLibrary;
+}
+
+// Files that computers add to zips by themselves, never lecture material
+const JUNK = /(^|\/)(__MACOSX|\.DS_Store|Thumbs\.db|desktop\.ini)(\/|$)|(^|\/)\._/i;
+
+// Opens the picked files. Returns [{ name, folders, blob, size, date }]
+async function readPicked(fileList) {
+  const found = [];
+  async function openZip(blob, folders, depth) {
+    const JSZip = await loadZipLibrary();
+    const zip = await JSZip.loadAsync(blob);
+    const entries = Object.values(zip.files).filter(entry => !entry.dir && !JUNK.test(entry.name));
+    for (const entry of entries) {
+      const parts = entry.name.split("/").filter(Boolean);
+      const name = parts.pop();
+      const data = await entry.async("blob");
+      const inner = folders.concat(parts);
+      if (/\.zip$/i.test(name) && depth < 3) await openZip(data, inner.concat([name.replace(/\.zip$/i, "")]), depth + 1);
+      else found.push({ name: name, folders: inner, blob: data, size: data.size, date: entry.date });
+    }
+  }
+  for (const file of fileList) {
+    if (/\.zip$/i.test(file.name)) await openZip(file, [file.name.replace(/\.zip$/i, "")], 0);
+    else found.push({ name: file.name, folders: [], blob: file, size: file.size, date: new Date(file.lastModified) });
+  }
+  // A folder every file sits in (like the zip's own name) says nothing about lectures
+  while (found.length && found.every(item => item.folders.length && item.folders[0] === found[0].folders[0])) {
+    found.forEach(item => item.folders.shift());
+  }
+  return found;
+}
+
+function dayOf(date) {
+  const value = date instanceof Date && !isNaN(date) ? date : new Date();
+  const two = number => String(number).padStart(2, "0");
+  return value.getFullYear() + "-" + two(value.getMonth() + 1) + "-" + two(value.getDate());
+}
+function sizeText(bytes) {
+  const big = bytes >= 1024 * 1024;
+  const amount = big ? bytes / (1024 * 1024) : Math.max(1, Math.round(bytes / 1024)); // tiny files show as 1 KB
+  return "\u2066" + amount.toLocaleString(locale, { maximumFractionDigits: big ? 1 : 0 }) + (big ? " MB" : " KB") + "\u2069";
+}
+
+// Sorts the files into lectures and sources. Returns the plan the review screen shows.
+function planImport(items, course, startKind) {
+  const groups = new Map(); // key -> group
+  const files = [];
+  const existing = course.lectures.concat(course.labs || []);
+  const natural = (a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" });
+  items = items.slice().sort((a, b) => natural(a.folders.concat([a.name]).join("/"), b.folders.concat([b.name]).join("/")));
+  items.forEach((item, i) => {
+    const file = { id: "f" + i, name: item.name, blob: item.blob, size: item.size, date: item.date, place: "sources", note: "" };
+    files.push(file);
+    // Files in the same folder become one lecture, named after the folder.
+    // Files outside any folder are each their own lecture, named after the file.
+    // On the review screen the admin can Split a lecture, Move files, or make one a source.
+    const folder = item.folders.join("/");
+    const key = folder ? "f" + folder : "s" + i, number = null;
+    const title = folder ? item.folders[item.folders.length - 1] : item.name.replace(/\.[a-z0-9]{1,5}$/i, "").trim() || item.name;
+    if (!groups.has(key)) groups.set(key, { id: "g" + groups.size, number: number, title: title, order: folder || item.name, dates: [] });
+    const group = groups.get(key);
+    group.dates.push(item.date);
+    file.place = group.id;
+  });
+
+  // In the order of the files' names (and folders), counting "test2" before "test10"
+  const list = [...groups.values()].sort((a, b) => natural(a.order, b.order));
+  list.forEach(group => {
+    const valid = group.dates.filter(date => date instanceof Date && !isNaN(date)).sort((a, b) => a - b);
+    group.date = dayOf(valid[0]);
+    group.kind = startKind || "lecture"; // "lecture", "lab" or "source": a toggle on the review screen changes it
+  });
+
+  // Files that are too big, or already in this course, are left out (the admin can still change that)
+  const onSite = new Set(existing.flatMap(lecture => (lecture.files || []).map(entry => entry.label))
+    .concat((course.sources || []).map(entry => entry.label)));
+  files.forEach(file => {
+    if (file.size > MAX_FILE_SIZE) { file.place = "skip"; file.note = t("Larger than 25 MB"); return; }
+    if (onSite.has(file.name)) { file.place = "skip"; file.note = t("Already on the site"); }
+  });
+  return { groups: list, files: files };
+}
+
+// A list of choices that rises from the bottom of the screen, like an iPhone action sheet.
+// Resolves with the chosen value, or null.
+function chooseFrom(title, choices) {
+  return new Promise(resolve => {
+    const backdrop = document.createElement("div");
+    backdrop.className = "sheet-backdrop";
+    backdrop.innerHTML = `<div class="sheet" role="dialog" aria-label="${esc(title)}">
+      <p class="sheet-title">${esc(title)}</p>
+      <div class="group">${choices.map((choice, i) => `<button type="button" class="row sheet-option${choice.current ? " current" : ""}" data-i="${i}">
+        <span class="grow">${esc(choice.label)}</span>${choice.current ? icon("check") : ""}</button>`).join("")}</div>
+      <button type="button" class="sheet-cancel">${t("Cancel")}</button>
+    </div>`;
+    const close = value => { backdrop.classList.add("closing"); setTimeout(() => backdrop.remove(), 200); resolve(value); };
+    backdrop.addEventListener("click", event => { if (event.target === backdrop) close(null); });
+    backdrop.querySelector(".sheet-cancel").addEventListener("click", () => close(null));
+    backdrop.querySelectorAll(".sheet-option").forEach(button =>
+      button.addEventListener("click", () => close(choices[Number(button.dataset.i)].value)));
+    document.body.append(backdrop);
+    backdrop.querySelector(".sheet-option, .sheet-cancel").focus();
+  });
+}
+
+let importPlan = null; // the plan being reviewed
+
+// One Import fills the whole course: lectures, labs and sources. Opened from the Labs tab,
+// the cards start as labs; otherwise as lectures.
+function showImport(stage, course, startKind) {
+  document.title = localTitle("Import | Admin");
+  const back = "#" + stage.id + "-" + course.id + (startKind === "lab" ? "-labs" : "");
+  importPlan = null;
+  app.innerHTML = `
+    <a class="back" href="${back}">${esc(course.title)}</a>
+    <h1>${t("Import")}</h1>
+    <p class="lead secondary">${t("Add many lectures at once. Opely sorts your files into lectures, and you check everything before it’s uploaded.")}</p>
+    <form class="card drop-zone" novalidate>
+      <div class="field"><label for="importFiles">${t("Files or zip files")}</label><input id="importFiles" type="file" multiple>
+        <p class="hint">${t("Zip files are opened for you, even zips inside zips.")}</p></div>
+      <button class="primary" type="submit">${icon("layers")}${t("Sort into lectures")}</button>
+    </form>
+    <h2 class="label">${t("How it works")}</h2>
+    <ul class="group">
+      <li><span class="row"><span class="grow">${t("Files in the same folder become one lecture, named after the folder.")}</span></span></li>
+      <li><span class="row"><span class="grow">${t("Files outside any folder each become their own lecture, named after the file.")}</span></span></li>
+      <li><span class="row"><span class="grow">${t("Before uploading, you can Split a lecture into one per file, Move files, rename lectures, or turn a lecture into a source.")}</span></span></li>
+      <li><span class="row"><span class="grow">${t("Word and PowerPoint files become PDFs by themselves a few minutes after uploading, so students can read them inside Opely.")}</span></span></li>
+    </ul>`;
+
+  // On a computer, files can also be dropped on the card
+  let dropped = null;
+  const zone = app.querySelector(".drop-zone");
+  zone.addEventListener("dragover", event => { event.preventDefault(); zone.classList.add("over"); });
+  zone.addEventListener("dragleave", () => zone.classList.remove("over"));
+  zone.addEventListener("drop", event => {
+    event.preventDefault(); zone.classList.remove("over");
+    dropped = Array.from(event.dataTransfer.files);
+    zone.querySelector(".hint").textContent = plural(dropped.length, "file");
+  });
+
+  onSubmit(async () => {
+    const picked = dropped || Array.from($("importFiles").files);
+    if (!picked.length) return say("Choose some files or zip files first.", "error");
+    setBusy(true);
+    say("Opening the files…", "busy");
+    try {
+      const items = await readPicked(picked);
+      if (!items.length) throw new Error(t("No files were found inside."));
+      importPlan = planImport(items, course, startKind === "lab" && courseHasLabs(course) ? "lab" : "lecture");
+      importPlan.startKind = startKind;
+      say("");
+      renderReview(stage, course);
+    } catch (error) {
+      say(explain(error), "error");
+    } finally {
+      setBusy(false);
+    }
+  });
+}
+
+// The review screen: one card per lecture or source, then what is left out
+function renderReview(stage, course) {
+  const plan = importPlan;
+  const back = "#" + stage.id + "-" + course.id + (plan.startKind === "lab" ? "-labs" : "");
+  const labs = courseHasLabs(course);
+  plan.groups = plan.groups.filter(group => plan.files.some(file => file.place === group.id)); // empty cards go away
+  const lectures = plan.groups.filter(group => group.kind === "lecture");
+  const labGroups = plan.groups.filter(group => group.kind === "lab");
+  const isItem = group => group.kind === "lecture" || group.kind === "lab"; // a lecture or a lab, with a title and a date
+  // Each list is numbered on its own, after what the course already has
+  const numberOf = group => group.kind === "lab"
+    ? t("Lab {n}", { n: (course.labs || []).length + labGroups.indexOf(group) + 1 })
+    : t("Lecture {n}", { n: course.lectures.length + lectures.indexOf(group) + 1 });
+  const groupName = group => isItem(group) ? numberOf(group) + SEP + group.title
+    : t("Source") + ": " + plan.files.filter(file => file.place === group.id).map(file => file.name).join(SEP);
+  const fileRows = place => plan.files.filter(file => file.place === place).map(file => {
+    const [shape, color] = fileKind(file.name);
+    return `<li><span class="row">${tile(shape, place === "skip" ? "gray" : color)}
+      <span class="grow">${esc(file.name)}<br><span class="secondary small">${sizeText(file.size)}${file.note ? SEP + esc(file.note) : ""}</span></span>
+      <button type="button" class="move-button" data-file="${file.id}">${t("Move")}</button></span></li>`;
+  }).join("");
+  const choice = (group, value, words) =>
+    `<button type="button" data-kind="${group.id}" data-value="${value}" aria-pressed="${group.kind === value}">${t(words)}</button>`;
+
+  const cards = plan.groups.map(group => `
+    <div class="card import-card is-${group.kind}">
+      <div class="import-head">
+        <span class="kicker">${isItem(group) ? numberOf(group) : t("Course source")}</span>
+        ${isItem(group) && plan.files.filter(file => file.place === group.id).length > 1
+          ? `<button type="button" class="move-button split-button" data-split="${group.id}">${t("Split")}</button>` : ""}
+      </div>
+      <div class="kind-toggle${labs ? " three" : ""}" role="group" aria-label="${t("What this becomes")}">
+        ${choice(group, "lecture", "Lecture")}${labs ? choice(group, "lab", "Lab") : ""}${choice(group, "source", "Source")}
+      </div>
+      ${isItem(group) ? `<div class="two">
+          <div class="field"><label for="title-${group.id}">${t(group.kind === "lab" ? "Lab title" : "Lecture title")}</label><input id="title-${group.id}" type="text" data-group="${group.id}" data-field="title" value="${esc(group.title)}"></div>
+          <div class="field"><label for="date-${group.id}">${t("Date")}</label><input id="date-${group.id}" type="date" data-group="${group.id}" data-field="date" value="${group.date}"></div>
+        </div>` : ""}
+      <ul class="group icons import-files">${fileRows(group.id)}</ul>
+    </div>`).join("");
+
+  const skipped = fileRows("skip");
+  const sourceCount = plan.files.filter(file => plan.groups.some(group => group.kind === "source" && group.id === file.place)).length;
+  const fileCount = plan.files.filter(file => file.place !== "skip").length;
+
+  app.innerHTML = `
+    <a class="back" href="${back}">${esc(course.title)}</a>
+    <h1>${t("Check and upload")}</h1>
+    <p class="lead secondary">${[
+      lectures.length ? plural(lectures.length, "new lecture") : "",
+      labGroups.length ? plural(labGroups.length, "new lab") : "",
+      sourceCount ? plural(sourceCount, "source") : ""
+    ].filter(Boolean).join(SEP) || t("Nothing to upload yet.")}</p>
+    <p class="hint-below">${t(labs
+      ? "Choose Lecture, Lab or Source on each card. Split makes one card per file, and Move puts a file in another card."
+      : "Choose Lecture or Source on each card. Split makes one card per file, and Move puts a file in another card.")}</p>
+    ${cards}
+    ${skipped ? `<h2 class="label">${t("Left out")}</h2><ul class="group icons">${skipped}</ul>` : ""}
+    <form novalidate><button class="primary" type="submit" ${fileCount ? "" : "disabled"}>${icon("upload")}${t("Upload {n} files", { n: fileCount })}</button></form>`;
+  const firstTime = !plan.shown;
+  plan.shown = true;
+  afterDraw(firstTime ? "push" : "", firstTime ? 0 : null); // the back link moves into the bar
+
+  // Typing in a title or a date updates the plan
+  app.querySelectorAll("[data-field]").forEach(input => input.addEventListener("input", () => {
+    plan.groups.find(group => group.id === input.dataset.group)[input.dataset.field] = input.value;
+  }));
+
+  // The toggle: lecture, lab or source
+  app.querySelectorAll("[data-kind]").forEach(button => button.addEventListener("click", () => {
+    const group = plan.groups.find(g => g.id === button.dataset.kind);
+    if (group.kind === button.dataset.value) return;
+    group.kind = button.dataset.value;
+    renderReview(stage, course);
+  }));
+
+  // Split: every file of a card becomes a card of its own, of the same kind, in the same place
+  app.querySelectorAll("[data-split]").forEach(button => button.addEventListener("click", () => {
+    const at = plan.groups.findIndex(g => g.id === button.dataset.split);
+    const group = plan.groups[at];
+    const stamp = Date.now().toString(36);
+    const parts = plan.files.filter(file => file.place === group.id).map((file, i) => {
+      const id = "g" + stamp + i;
+      file.place = id;
+      return { id: id, number: null, kind: group.kind, title: file.name.replace(/\.[a-z0-9]{1,5}$/i, "") || file.name, date: group.date };
+    });
+    plan.groups.splice(at, 1, ...parts);
+    renderReview(stage, course);
+  }));
+
+  // Move a file: to another card, a new lecture or lab, or leave it out
+  app.querySelectorAll("[data-file]").forEach(button => button.addEventListener("click", async () => {
+    const file = plan.files.find(f => f.id === button.dataset.file);
+    const choices = plan.groups.map(group => ({ label: groupName(group), value: group.id, current: file.place === group.id }))
+      .concat([{ label: t("A new lecture"), value: "new-lecture" }])
+      .concat(labs ? [{ label: t("A new lab"), value: "new-lab" }] : [])
+      .concat([{ label: t("Leave out"), value: "skip", current: file.place === "skip" }]);
+    const picked = await chooseFrom(file.name, choices);
+    if (!picked) return;
+    if (picked.startsWith("new-")) {
+      const id = "g" + Date.now().toString(36);
+      plan.groups.push({ id: id, number: null, kind: picked.slice(4), title: file.name.replace(/\.[a-z0-9]{1,5}$/i, "") || file.name, date: dayOf(file.date) });
+      file.place = id;
+    } else file.place = picked;
+    file.note = "";
+    renderReview(stage, course);
+  }));
+
+  onSubmit(() => uploadPlan(stage, course));
+}
+
+// Saves the whole plan as one change: every file, plus the updated content file
+async function uploadPlan(stage, course) {
+  const plan = importPlan;
+  for (const group of plan.groups) {
+    if (group.kind !== "source" && !group.title.trim()) return say(group.kind === "lab" ? "Every new lab needs a title." : "Every new lecture needs a title.", "error");
+    if (group.kind !== "source" && !group.date) return say(group.kind === "lab" ? "Every new lab needs a date." : "Every new lecture needs a date.", "error");
+  }
+  const chosen = plan.files.filter(file => file.place !== "skip");
+  if (chosen.some(file => file.size > MAX_FILE_SIZE)) return say(tooBig(chosen), "error");
+  const stamp = Date.now().toString(36);
+  chosen.forEach((file, i) => { file.path = "files/" + dept.id + "/" + stage.id + "/" + course.id + "/" + stamp + i.toString(36) + "-" + safeName(file.name); });
+  const entry = file => ({ label: file.name, url: file.path });
+
+  // What changes in the content file
+  const edit = fresh => {
+    const target = findCourse(fresh, stage.id, course.id);
+    plan.groups.forEach((group, i) => {
+      const files = chosen.filter(file => file.place === group.id).map(entry);
+      if (!files.length) return;
+      const item = { id: (group.kind === "lab" ? "b" : "l") + stamp + i.toString(36), title: group.title.trim(), date: group.date, summary: "", video: "", files: files };
+      if (group.kind === "lecture") target.lectures.push(item);
+      else if (group.kind === "lab") { target.labs = target.labs || []; target.labs.push(item); target.hasLabs = true; }
+      else target.sources = (target.sources || []).concat(files); // each file is one source, named after the file
+    });
+    keepOrder(target); // oldest first, unless the admin chose an order
+    if (target.labs) keepOrder(labView(target));
+  };
+  const message = "Import " + plural(chosen.length, "file") + " into " + course.code;
+
+  setBusy(true);
+  try {
+    await commitTogether(chosen, edit, message);
+    say(t("Uploaded {n} files.", { n: chosen.length }) + " " + t("Students will see it in a minute or two."), "done");
+    const startKind = plan.startKind;
+    importPlan = null;
+    go("#" + stage.id + "-" + course.id + (startKind === "lab" ? "-labs" : ""));
+  } catch (error) {
+    say(explain(error), "error");
+  } finally {
+    setBusy(false);
+  }
+}
+
+// GitHub's lower-level API: send each file once, then make one change that adds them all
+// together with the new content file. If someone else saved in between, it tries again.
+async function commitTogether(files, edit, message) {
+  const tree = [];
+  for (let i = 0; i < files.length; i += 1) {
+    say(t("Uploading file {i} of {n}…", { i: i + 1, n: files.length }), "busy");
+    const made = await github("/git/blobs", { method: "POST", body: { content: await fileToBase64(files[i].blob), encoding: "base64" } });
+    tree.push({ path: files[i].path, mode: "100644", type: "blob", sha: made.sha });
+  }
+  await commitTree(tree, edit, message);
+}
+// One change: these files (already on GitHub, by their "sha") plus the edited content file
+async function commitTree(tree, edit, message) {
+  say("Saving…", "busy");
+  for (let attempt = 1; ; attempt += 1) {
+    const ref = await github("/git/ref/heads/" + BRANCH);
+    const head = await github("/git/commits/" + ref.object.sha);
+    const fresh = await readData();
+    edit(fresh.data);
+    fresh.data.updated = new Date().toISOString();
+    const newTree = await github("/git/trees", { method: "POST", body: { base_tree: head.tree.sha,
+      tree: tree.concat([{ path: dept.data, mode: "100644", type: "blob", content: JSON.stringify(fresh.data, null, 2) + "\n" }]) } });
+    const commit = await github("/git/commits", { method: "POST", body: { message: signed(message), tree: newTree.sha, parents: [ref.object.sha] } });
+    try {
+      await github("/git/refs/heads/" + BRANCH, { method: "PATCH", body: { sha: commit.sha } });
+      data = fresh.data;
+      return;
+    } catch (error) {
+      if (error.status !== 422 || attempt >= 3) throw error; // 422: someone saved first, so try again on top of theirs
+    }
+  }
+}
+
 // ---------- Announcements: post a new one, or delete an old one ----------
-function showNews() {
+// An announcement reaches one stage ("stage": "stage2"), several ("stages": [...]), or all ("stage": "all").
+function audienceOf(item) {
+  if (item.stage === "all") return data.stages.map(stage => stage.id);
+  return item.stages || [item.stage];
+}
+const reaches = (item, stageId) => audienceOf(item).includes(stageId);
+function audienceName(item) {
+  if (item.stage === "all") return t("All stages");
+  return audienceOf(item).map(id => { const stage = data.stages.find(s => s.id === id); return stage ? stageName(stage) : id; }).join(SEP);
+}
+
+// `stage` is the stage the page was opened from. The owner can send to any stages;
+// other admins send to their own stage only.
+// The two optional times of an announcement: an exam or event (shown as a countdown to students)
+// and when it stops being shown. Each is a date with an optional time: "2026-11-20" or "2026-11-20T09:00".
+function timeFields(item) {
+  const [eventDay, eventTime] = (item && item.event || "").split("T");
+  const [untilDay, untilTime] = (item && item.until || "").split("T");
+  return `
+      <div class="field"><label for="newsEventDay">${t("Exam or event (optional)")}</label>
+        <div class="two"><input id="newsEventDay" type="date" value="${esc(eventDay || "")}" aria-label="${t("Date")}"><input id="newsEventTime" type="time" value="${esc(eventTime || "")}" aria-label="${t("Time")}"></div>
+        <p class="hint">${t("Students see a countdown to it, like “Midterm in 5 days”.")}</p></div>
+      <div class="field"><label for="newsUntilDay">${t("Remove it after (optional)")}</label>
+        <div class="two"><input id="newsUntilDay" type="date" value="${esc(untilDay || "")}" aria-label="${t("Date")}"><input id="newsUntilTime" type="time" value="${esc(untilTime || "")}" aria-label="${t("Time")}"></div>
+        <p class="hint">${t("After this time, students no longer see it, and it is deleted the next night. Without a time, it lasts the whole day.")}</p></div>`;
+}
+// Reads the two times from the form into an announcement
+function readTimes(item) {
+  const join = (day, time) => day ? (time ? day + "T" + time : day) : "";
+  const event = join($("newsEventDay").value, $("newsEventTime").value);
+  const until = join($("newsUntilDay").value, $("newsUntilTime").value);
+  if (event) item.event = event; else delete item.event;
+  if (until) item.until = until; else delete item.until;
+}
+// Whether an announcement's "remove after" time has passed
+function hasEnded(item) {
+  if (!item.until) return false;
+  return item.until.length <= 10 ? item.until < today() : new Date(item.until) < new Date();
+}
+// "Nov 20, 2026" or "Nov 20, 2026, 09:00"
+function whenText(value) {
+  const [day, time] = value.split("T");
+  return niceDate(day) + (time ? SEP + new Date(value).toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" }) : "");
+}
+
+let newsBack = "#news"; // the announcements page an edit was opened from
+function showNews(stage) {
   document.title = localTitle("Announcements | Admin");
-  const own = ownStage();
-  const news = (data.announcements || []).filter(item => item.stage === own.id); // only this stage's
+  newsBack = location.hash || "#news";
+  const owner = isOwner();
+  const own = stage || ownStage();
+  const fromStage = owner && stage && location.hash !== "#news";
+  // The owner sees every announcement of the department; an admin, the ones that reach their stage
+  const news = (data.announcements || []).filter(item => owner && !fromStage ? true : reaches(item, own.id));
+  // An admin can only remove announcements sent to their stage alone
+  const removable = item => owner || (audienceOf(item).length === 1 && audienceOf(item)[0] === own.id);
   const rows = news.map((item, i) => `
     <li><span class="row">
       <span class="grow">${esc(item.title)}<br>
-        <span class="secondary small">${niceDate(item.date)}</span></span>
-      <button class="delete" type="button" data-key="${i}">${t("Delete")}</button>
+        <span class="secondary small">${niceDate(item.date)}${SEP}${esc(audienceName(item))}${item.event ? SEP + t("Event: {when}", { when: whenText(item.event) }) : ""}${item.until ? SEP + (hasEnded(item) ? t("Ended") : t("Until {date}", { date: whenText(item.until) })) : ""}</span></span>
+      ${removable(item) ? `<a class="edit-button" href="#newsedit-${esc(item.id || "")}" aria-label="${t("Edit")}">${icon("pencil")}</a>` : ""}
+      ${removable(item) ? `<button class="delete" type="button" aria-label="${t("Delete")}" data-key="${i}">${icon("trash")}${t("Delete")}</button>` : `<span class="end small">${t("From the owner")}</span>`}
     </span></li>`).join("");
 
+  // The owner chooses who receives it: all stages, or any of them
+  const chosen = new Set(fromStage ? [own.id] : []);
+  const departmentChoice = owner && departments.length > 1 ? `
+    <div class="field">
+      <label>${t("Departments")}</label>
+      <div class="chips" role="group" aria-label="${t("Departments")}">
+        <button type="button" class="chip-toggle dept-chip" data-dept="all" aria-pressed="false">${t("All departments")}</button>
+        ${departments.map(other => `<button type="button" class="chip-toggle dept-chip" data-dept="${esc(other.id)}" aria-pressed="${other.id === dept.id}">${esc(localName(other))}</button>`).join("")}
+      </div>
+    </div>` : "";
+  const recipients = owner ? `
+    ${departmentChoice}
+    <div class="field">
+      <label>${t("Stages")}</label>
+      <div class="chips" role="group" aria-label="${t("Send to")}">
+        <button type="button" class="chip-toggle" data-stage="all" aria-pressed="${chosen.size === 0}">${t("All stages")}</button>
+        ${data.stages.map(other => `<button type="button" class="chip-toggle" data-stage="${esc(other.id)}" aria-pressed="${chosen.has(other.id)}">${esc(stageName(other))}</button>`).join("")}
+      </div>
+      <p class="hint">${t(departmentChoice ? "The stages you choose receive it in every department you choose." : "Choose all stages, or one or more stages.")}</p>
+    </div>` : "";
+
+  const back = owner ? (fromStage ? "#" + own.id : "#home") : "#home";
   app.innerHTML = `
-    <a class="back" href="#home">${esc(stageName(own))}</a>
+    <a class="back" href="${back}">${esc(owner && !fromStage ? localName(dept) : stageName(own))}</a>
     <h1>${t("Announcements")}</h1>
-    <p class="lead secondary">${esc(t("Students of {stage} see these.", { stage: stageName(own) }))}</p>
+    <p class="lead secondary">${owner && !fromStage ? esc(localName(dept)) : esc(t("Students of {stage} see these.", { stage: stageName(own) }))}</p>
     <form class="card" novalidate>
+      ${recipients}
       <div class="field"><label for="newsTitle">${t("Title")}</label><input id="newsTitle" type="text" placeholder="${t("Midterm exam dates")}" autocomplete="off"></div>
       <div class="field"><label for="newsText">${t("Message")}</label><textarea id="newsText"></textarea></div>
-      <button class="primary" type="submit">${t("Post announcement")}</button>
+      ${timeFields(null)}
+      <button class="primary" type="submit">${icon("megaphone")}${t("Post announcement")}</button>
     </form>
     <h2>${t("Posted")}</h2>
-    ${news.length ? `<ul class="group">${rows}</ul>` : `<p class="text-block secondary">${t("No announcements yet.")}</p>`}`;
+    ${news.length ? `<ul class="group">${rows}</ul>` : emptyState("megaphone", "No announcements yet.")}`;
+
+  // A group of pills: tapping one adds or removes it; the "All" pill clears the others;
+  // choosing every one is the same as All, and nothing chosen means All
+  function pillGroup(selector, key) {
+    const chips = [...app.querySelectorAll(selector)];
+    const all = chips.find(chip => chip.dataset[key] === "all");
+    const others = chips.filter(chip => chip !== all);
+    chips.forEach(chip => chip.addEventListener("click", () => {
+      if (chip === all) chips.forEach(other => other.setAttribute("aria-pressed", String(other === all)));
+      else {
+        chip.setAttribute("aria-pressed", String(chip.getAttribute("aria-pressed") !== "true"));
+        const picked = others.filter(other => other.getAttribute("aria-pressed") === "true");
+        if (picked.length === others.length) chips.forEach(other => other.setAttribute("aria-pressed", String(other === all)));
+        else all.setAttribute("aria-pressed", String(picked.length === 0));
+      }
+    }));
+    // The chosen ones; every one of them when "All" (or nothing) is chosen
+    return () => {
+      const picked = others.filter(chip => chip.getAttribute("aria-pressed") === "true").map(chip => chip.dataset[key]);
+      return { all: picked.length === 0, picked: picked.length ? picked : others.map(chip => chip.dataset[key]) };
+    };
+  }
+  const chosenStages = owner ? pillGroup(".chip-toggle:not(.dept-chip)", "stage") : null;
+  const chosenDepartments = owner && departmentChoice ? pillGroup(".dept-chip", "dept") : null;
 
   onSubmit(async () => {
     const title = typed("newsTitle");
     const text = typed("newsText");
     if (!title) return say("Enter the announcement’s title.", "error");
-    const saved = await save("Add announcement: " + title, fresh => {
-      fresh.announcements = fresh.announcements || [];
-      fresh.announcements.unshift({ id: "n" + Date.now().toString(36), title: title, text: text, date: today(), stage: own.id });
-    }, "Posted.");
+    const entry = { id: "n" + Date.now().toString(36), title: title, text: text, date: today() };
+    readTimes(entry);
+    if (!owner) entry.stage = own.id;
+    else {
+      const stages = chosenStages();
+      if (stages.all) entry.stage = "all";
+      else if (stages.picked.length === 1) entry.stage = stages.picked[0];
+      else entry.stages = stages.picked;
+    }
+    // The departments it goes to: this one, or the ones the owner chose
+    const targets = chosenDepartments ? chosenDepartments().picked : [dept.id];
+    const elsewhere = targets.filter(id => id !== dept.id);
+    let saved = true;
+    if (targets.includes(dept.id)) {
+      saved = await save("Add announcement: " + title, fresh => {
+        fresh.announcements = fresh.announcements || [];
+        fresh.announcements.unshift(entry);
+      }, "Posted.");
+    }
+    if (saved && elsewhere.length) saved = await postElsewhere(elsewhere, entry, targets.length);
     if (saved) route(true);
   });
 
@@ -957,18 +2336,74 @@ function showNews() {
   });
 }
 
+// Adds an announcement to other departments' files, one after another (owner only)
+async function postElsewhere(ids, entry, total) {
+  const here = dept;
+  setBusy(true);
+  say("Saving…", "busy");
+  try {
+    for (const id of ids) {
+      dept = departments.find(other => other.id === id);
+      if (!dept) continue;
+      const fresh = await readData();
+      fresh.data.announcements = fresh.data.announcements || [];
+      fresh.data.announcements.unshift(entry);
+      fresh.data.updated = new Date().toISOString();
+      await writeData(fresh.data, fresh.sha, "Add announcement: " + entry.title);
+    }
+    say(t("Posted to {n} departments.", { n: total }) + " " + t("Students will see it in a minute or two."), "done");
+    return true;
+  } catch (error) {
+    say(explain(error), "error");
+    return false;
+  } finally {
+    dept = here;
+    setBusy(false);
+  }
+}
+
+// ---------- Edit an announcement: title, message, end date ----------
+function showNewsEdit(id) {
+  const item = (data.announcements || []).find(other => other.id === id);
+  if (!item) return showNotFound();
+  document.title = t("Edit announcement") + " | " + t("Admin");
+  app.innerHTML = `
+    <a class="back" href="${newsBack}">${t("Announcements")}</a>
+    <h1>${t("Edit announcement")}</h1>
+    <p class="lead secondary">${esc(t("Sent to: {who}", { who: audienceName(item) }))}${SEP}${niceDate(item.date)}</p>
+    <form class="card" novalidate>
+      <div class="field"><label for="newsTitle">${t("Title")}</label><input id="newsTitle" type="text" autocomplete="off" value="${esc(item.title)}"></div>
+      <div class="field"><label for="newsText">${t("Message")}</label><textarea id="newsText">${esc(item.text || "")}</textarea></div>
+      ${timeFields(item)}
+      <button class="primary" type="submit">${icon("check")}${t("Save changes")}</button>
+    </form>`;
+  onSubmit(async () => {
+    const title = typed("newsTitle");
+    if (!title) return say("Enter the announcement’s title.", "error");
+    const saved = await save("Edit announcement: " + title, fresh => {
+      const found = (fresh.announcements || []).find(other => other.id === id);
+      if (!found) throw new Error(t("That announcement is already gone. Reload the page."));
+      found.title = title;
+      found.text = typed("newsText");
+      readTimes(found);
+    }, "Saved.");
+    if (saved) go(newsBack);
+  });
+}
+
 // ---------- Admins (owner only): register a token for someone, or remove them ----------
 function showAdmins() {
   document.title = localTitle("Admins | Admin");
   const rows = admins.map((admin, i) => `
     <li><span class="row">
+      <span class="avatar ${admin.owner ? "indigo" : "blue"}" style="width:34px;height:34px;font-size:13px">${esc(initials(admin.name))}</span>
       <span class="grow">${esc(admin.name)}${admin.owner ? " (" + t("owner") + ")" : ""}<br>
         <span class="secondary small">${esc(admin.username)}${SEP}${esc(departmentName(admin.department))}${SEP}${esc(t(admin.stage.replace("stage", "Stage ")))}</span></span>
-      ${admin.key === settings.key ? "" : `<button class="delete" type="button" data-key="${i}">${t("Delete")}</button>`}
+      ${admin.key === settings.key ? "" : `<button class="delete" type="button" aria-label="${t("Delete")}" data-key="${i}">${icon("trash")}${t("Delete")}</button>`}
     </span></li>`).join("");
 
   app.innerHTML = `
-    <a class="back" href="#home">${esc(stageName(ownStage()))}</a>
+    <a class="back" href="#home">${esc(isOwner() ? localName(dept) : stageName(ownStage()))}</a>
     <h1>${t("Admins")}</h1>
     <p class="lead secondary">${t("Make a token on GitHub for each admin, register it here, then send it to them privately.")}</p>
     <form class="card" novalidate>
@@ -979,7 +2414,7 @@ function showAdmins() {
       <div class="field"><label for="newStage">${t("Stage")}</label><select id="newStage"></select></div>
       <div class="field"><label for="newToken">${t("Their access token")}</label><input id="newToken" type="password" autocomplete="off">
         <p class="hint">${t("Only its fingerprint is saved, never the token itself.")}</p></div>
-      <button class="primary" type="submit">${t("Add admin")}</button>
+      <button class="primary" type="submit">${icon("plus")}${t("Add admin")}</button>
     </form>
     <h2>${t("Registered")}</h2>
     <ul class="group">${rows}</ul>`;
@@ -1047,32 +2482,128 @@ function showNotFound() {
 // Examples: #home   #news   #admins (owner only)   #stage1   #stage1-sem2   #stage1-sem2-add (new course)
 //           #stage1-cs101   #stage1-cs101-add (new lecture)
 //           #stage1-cs101-sources   #stage1-cs101-sources-add   #stage1-cs101-details
+// How deep a page is, so deeper pages slide in and going back slides out
+function depthOf(name) {
+  if (name === "" || name === "home" || name.startsWith("dept-")) return 0;
+  if (name === "news" || name === "admins" || name === "updates" || name === "notify") return 1;
+  if (name.startsWith("newsedit-")) return 3;
+  const parts = name.split("-");
+  if (/^(sem\d|sources|details|labs)$/.test(parts[parts.length - 1])) parts.pop();
+  if (parts[2] === "archive") return 3;
+  if (/^sem\d$/.test(parts[1] || "")) parts.splice(1, 1);
+  return parts.length;
+}
+let shownName = null;
+const scrollPlaces = {};
+
 function route(keepScroll) {
   if (!data) return; // not signed in yet
   const name = location.hash.replace("#", "");
-  if (!keepScroll) window.scrollTo(0, 0);
+  const previous = shownName;
+  if (previous !== null && previous !== name) scrollPlaces[previous] = window.scrollY;
+  shownName = name;
+  let motion = "";
+  if (!keepScroll && previous !== null && previous !== name) {
+    if (depthOf(name) > depthOf(previous)) motion = "push";
+    else if (depthOf(name) < depthOf(previous)) motion = "pop";
+  }
+  drawRoute(name);
+  afterDraw(motion, keepScroll ? null : motion === "pop" ? (scrollPlaces[name] || 0) : 0);
+}
+
+// After a page is drawn: its back link moves into the bar, and its title appears small when scrolled away
+let titleWatcher = null;
+// Once a slide has played, it is cleared, so it never plays again by itself
+// (for example when a hidden part of the page is shown again)
+app.addEventListener("animationend", event => { if (event.target === app) app.classList.remove("push", "pop"); });
+function afterDraw(motion, scrollTo) {
+  const back = $("navBack");
+  const link = app.querySelector(":scope > .back");
+  back.hidden = !link;
+  $("navBrand").hidden = !!link;
+  if (link) {
+    back.href = link.getAttribute("href");
+    back.setAttribute("aria-label", t("Back") + ": " + link.textContent);
+    link.remove();
+  }
+  watchTitle(app.querySelector("h1"));
+  if (scrollTo !== null) window.scrollTo(0, scrollTo);
+  if (motion) {
+    app.classList.remove("push", "pop");
+    void app.offsetWidth; // restarts the animation
+    app.classList.add(motion);
+  }
+}
+function watchTitle(h1) {
+  $("navTitle").textContent = h1 ? h1.textContent : "";
+  if (titleWatcher) titleWatcher.disconnect();
+  document.body.classList.remove("scrolled-title");
+  if (!h1) return;
+  titleWatcher = new IntersectionObserver(([entry]) =>
+    document.body.classList.toggle("scrolled-title", !entry.isIntersecting && entry.boundingClientRect.top < 60),
+    { rootMargin: "-60px 0px 0px 0px" });
+  titleWatcher.observe(h1);
+}
+
+function drawRoute(name) {
+  leaveFileView();
 
   const own = ownStage();
-  if (name === "" || name === "home") return showStage(own, 1);
-  if (name === "news") return showNews();
+  if (name === "" || name === "home") return isOwner() ? showOwnerHome() : showStage(own, 1);
+  if (name === "news") return isOwner() ? showNews(null) : showNews(own);
   if (name === "admins") return settings.owner ? showAdmins() : showNotFound();
+  if (name === "updates") return canRunSite() ? showUpdates() : showNotFound();
+  if (name === "notify") return canRunSite() ? showNotifySetup() : showNotFound();
+  if (name.startsWith("newsedit-")) return showNewsEdit(name.slice(9));
+  if (name.startsWith("dept-")) return isOwner() ? switchDepartment(name.slice(5)) : showNotFound();
 
   const [stageId, courseId, part, extra] = name.split("-");
   const stage = data.stages.find(s => s.id === stageId);
   if (!stage) return showNotFound();
-  if (stage !== own) return showNotFound(); // an admin stays inside their own stage
+  if (!canManage(stage)) return showNotFound(); // an admin stays inside their own stage
+  if (courseId === "news") return showNews(stage);
   if (courseId === undefined || courseId === "sem1" || courseId === "sem2") {
     const semester = courseId === "sem2" ? 2 : 1;
     return part === "add" ? showAddCourse(stage, semester) : showStage(stage, semester);
   }
 
+  if (courseId === "archived") return showArchivedCourses(stage);
   const course = stage.courses.find(c => c.id === courseId);
   if (!course) return showNotFound();
   if (part === undefined) return showCourse(stage, course, "lectures");
   if (part === "add") return showAddLecture(stage, course);
+  if (part === "import") return showImport(stage, course, "lecture");
   if (part === "details") return showCourse(stage, course, "details");
-  if (part === "sources") return extra === "add" ? showAddSource(stage, course) : showCourse(stage, course, "sources");
-  showNotFound();
+  if (part === "archive") return showArchiveAdmin(stage, course);
+  if (part === "labs") { // the course's labs: the same pages as lectures, through labView
+    const labs = labView(course);
+    const [labKey, labFile] = name.split("-").slice(3);
+    if (labKey === undefined) return courseHasLabs(course) ? showCourse(stage, course, "labs") : showNotFound();
+    if (labKey === "add") return showAddLecture(stage, labs);
+    if (labKey === "import") return showImport(stage, course, "lab");
+    return openLectureView(stage, labs, labKey, labFile);
+  }
+  if (part === "sources") {
+    if (extra === "add") return showAddSource(stage, course);
+    if (extra === undefined) return showCourse(stage, course, "sources");
+    const source = (course.sources || [])[Number(extra) - 1];
+    return source && isPdfFile(source.url) ? showFileView(source, "#" + stage.id + "-" + course.id + "-sources", course.title) : showNotFound();
+  }
+  openLectureView(stage, course, part, extra);
+}
+
+// A lecture (or a lab, through labView) by its id or number, and one of its files
+function openLectureView(stage, course, part, extra) {
+  let index = course.lectures.findIndex(lecture => lecture.id === part);
+  if (index === -1 && /^\d+$/.test(part)) index = Number(part) - 1;
+  const lecture = course.lectures[index];
+  if (!lecture) return showNotFound();
+  if (extra === undefined) return showLectureView(stage, course, index);
+  if (extra === "edit") return showEditLecture(stage, course, index);
+  const file = (lecture.files || [])[Number(extra) - 1];
+  if (!file || !isPdfFile(file.url)) return showNotFound();
+  const single = (lecture.files || []).length === 1 && !lecture.video && !lecture.summary; // opened straight from the course
+  showFileView(file, "#" + stage.id + "-" + course.id + (single ? "" : "-" + part), single ? course.title : lecture.title);
 }
 
 window.addEventListener("hashchange", () => route());
@@ -1081,20 +2612,24 @@ window.addEventListener("hashchange", () => route());
 function showConnected() {
   $("signIn").hidden = true;
   $("session").hidden = false;
-  $("connectedLabel").textContent = t(preview ? "Preview of" : "Connected as");
-  $("connectedName").textContent = preview ? localName(dept) : settings.name;
-  $("connectedDetails").textContent = (preview ? "" : settings.username + SEP + localName(dept) + SEP) + stageName(ownStage());
-  $("changeButton").textContent = t(preview ? "Close" : "Sign out");
-  $("previewNote").hidden = !preview;
+  $("connectedLabel").textContent = t("Connected as");
+  $("connectedName").textContent = settings.name;
+  $("avatar").innerHTML = esc(initials(settings.name));
+  $("avatar").className = "avatar " + (settings.owner ? "indigo" : "blue");
+  $("connectedDetails").textContent = settings.username + SEP + localName(dept) + SEP + stageName(ownStage());
+  $("changeButton").innerHTML = icon("signout", "flip") + t("Sign out");
   route();
 }
 
 function showSignIn() {
+  $("navBack").hidden = true;
+  $("navBrand").hidden = false;
+  shownName = null; // the next session starts fresh, without a slide
+  watchTitle(document.querySelector("#signIn h1"));
   $("signIn").hidden = false;
   $("session").hidden = true;
   $("connectForm").hidden = false;
   $("setupForm").hidden = true;
-  $("previewCard").hidden = false;
   say("");
 }
 
@@ -1102,7 +2637,6 @@ function showSignIn() {
 async function signIn(token) {
   const status = $("connectStatus");
   setStatus(status, "Signing in…");
-  preview = false;
   settings = { token: token };
   try {
     const key = await fingerprint(token);
@@ -1117,7 +2651,6 @@ async function signIn(token) {
     if (admins.length === 0) {
       setStatus(status, "");
       $("connectForm").hidden = true;
-      $("previewCard").hidden = true;
       $("setupForm").hidden = false;
       return;
     }
@@ -1179,22 +2712,6 @@ $("setupForm").addEventListener("submit", async event => {
   }
 });
 
-// Preview mode: no token needed
-$("previewButton").addEventListener("click", async () => {
-  preview = true;
-  settings = { name: "", username: "", department: $("department").value, stage: $("adminStage").value, token: "" };
-  dept = departments.find(department => department.id === settings.department);
-  history.replaceState(null, "", "#home");
-  try {
-    previewData = null;
-    data = (await readData()).data;
-    showConnected();
-  } catch (error) {
-    data = null;
-    setStatus($("connectStatus"), explain(error), "error");
-  }
-});
-
 // Sign out: forget the token on this device and go back to the sign-in page
 $("changeButton").addEventListener("click", () => {
   try { localStorage.removeItem(SETTINGS_KEY); } catch (error) { /* storage blocked */ }
@@ -1205,12 +2722,12 @@ $("changeButton").addEventListener("click", () => {
 
 // ---------- Start ----------
 // Load the list of departments, then sign in straight away if this device remembers a token
+
 async function start() {
   let saved = null;
   try { saved = JSON.parse(localStorage.getItem(SETTINGS_KEY)); } catch (error) { saved = null; }
   try {
     await loadCatalog();
-    await linkPickers($("department"), $("adminStage"));        // the preview card
     await linkPickers($("ownerDepartment"), $("ownerStage"));   // the first-time setup card
   } catch (error) {
     showSignIn();
