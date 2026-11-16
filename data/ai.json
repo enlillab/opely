@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-16T18:11:02.888Z",
+  "updated": "2026-11-16T18:11:09.452Z",
   "stages": [
     {
       "id": "stage1",
@@ -30,19 +30,6 @@
                 {
                   "label": "NN L1.pdf",
                   "url": "files/ai/stage2/ai013/mwjkaq3t-nn-l1.pdf"
-                }
-              ]
-            },
-            {
-              "id": "lmwjkwu7t2",
-              "title": "README",
-              "date": "2026-11-09",
-              "summary": "",
-              "video": "",
-              "files": [
-                {
-                  "label": "README.md",
-                  "url": "files/ai/stage2/ai013/mwjkwu7t2-readme.md"
                 }
               ]
             },
@@ -78,6 +65,25 @@
           "archive": {
             "versions": [],
             "removed": [
+              {
+                "id": "rmwjkxr7w",
+                "kind": "lecture",
+                "removedAt": "2026-11-16",
+                "item": {
+                  "id": "lmwjkwu7t2",
+                  "title": "README",
+                  "date": "2026-11-09",
+                  "summary": "",
+                  "video": "",
+                  "files": [
+                    {
+                      "label": "README.md",
+                      "url": "files/ai/stage2/ai013/mwjkwu7t2-readme.md",
+                      "commit": "2601d88567ae7329b1ef040b936592ca69ceddfc"
+                    }
+                  ]
+                }
+              },
               {
                 "id": "rmwjkxm5k",
                 "kind": "lecture",
