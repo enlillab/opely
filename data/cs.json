@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-16T15:26:33.918Z",
+  "updated": "2026-11-16T15:27:03.824Z",
   "stages": [
     {
       "id": "stage1",
@@ -27,19 +27,6 @@
           "sources": [],
           "lectures": [
             {
-              "id": "lmwjf1rlc0",
-              "title": "LECTURE 2",
-              "date": "2026-10-04",
-              "summary": "",
-              "video": "",
-              "files": [
-                {
-                  "label": "LECTURE 2 (7).pdf",
-                  "url": "files/cs/stage3/01/mwjf1rlc0-lecture-2-7.pdf"
-                }
-              ]
-            },
-            {
               "id": "lmwjf1rlc5",
               "title": "LECTURE 1",
               "date": "2026-10-08",
@@ -49,6 +36,19 @@
                 {
                   "label": "UI Design System.pptx",
                   "url": "files/cs/stage3/01/mwjf1rlc5-ui-design-system.pptx"
+                }
+              ]
+            },
+            {
+              "id": "lmwjf1rlc0",
+              "title": "LECTURE 2",
+              "date": "2026-10-04",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "LECTURE 2 (7).pdf",
+                  "url": "files/cs/stage3/01/mwjf1rlc0-lecture-2-7.pdf"
                 }
               ]
             },
@@ -104,7 +104,8 @@
                 }
               ]
             }
-          ]
+          ],
+          "lecturesOrdered": true
         }
       ]
     },
