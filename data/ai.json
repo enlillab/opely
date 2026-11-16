@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-16T18:01:39.621Z",
+  "updated": "2026-11-16T18:10:35.022Z",
   "stages": [
     {
       "id": "stage1",
@@ -30,6 +30,71 @@
                 {
                   "label": "NN L1.pdf",
                   "url": "files/ai/stage2/ai013/mwjkaq3t-nn-l1.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwjkwu7t3",
+              "title": "README",
+              "date": "2026-11-08",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "README.txt",
+                  "url": "files/ai/stage2/ai013/mwjkwu7t3-readme.txt"
+                }
+              ]
+            },
+            {
+              "id": "lmwjkwu7t1",
+              "title": "manifest.webmanifest",
+              "date": "2026-11-09",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "manifest.webmanifest",
+                  "url": "files/ai/stage2/ai013/mwjkwu7t1-manifest.webmanifest"
+                }
+              ]
+            },
+            {
+              "id": "lmwjkwu7t2",
+              "title": "README",
+              "date": "2026-11-09",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "README.md",
+                  "url": "files/ai/stage2/ai013/mwjkwu7t2-readme.md"
+                }
+              ]
+            },
+            {
+              "id": "lmwjkwu7t0",
+              "title": "index",
+              "date": "2026-11-14",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "index.html",
+                  "url": "files/ai/stage2/ai013/mwjkwu7t0-index.html"
+                }
+              ]
+            },
+            {
+              "id": "lmwjkwu7t4",
+              "title": "sw",
+              "date": "2026-11-14",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "sw.js",
+                  "url": "files/ai/stage2/ai013/mwjkwu7t4-sw.js"
                 }
               ]
             }
