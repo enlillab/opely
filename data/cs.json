@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-16T15:24:42.635Z",
+  "updated": "2026-11-16T15:26:33.918Z",
   "stages": [
     {
       "id": "stage1",
@@ -25,7 +25,86 @@
           "title": "تطوير تطبيقات الموبايل",
           "instructor": "قبس عامر",
           "sources": [],
-          "lectures": []
+          "lectures": [
+            {
+              "id": "lmwjf1rlc0",
+              "title": "LECTURE 2",
+              "date": "2026-10-04",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "LECTURE 2 (7).pdf",
+                  "url": "files/cs/stage3/01/mwjf1rlc0-lecture-2-7.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwjf1rlc5",
+              "title": "LECTURE 1",
+              "date": "2026-10-08",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "UI Design System.pptx",
+                  "url": "files/cs/stage3/01/mwjf1rlc5-ui-design-system.pptx"
+                }
+              ]
+            },
+            {
+              "id": "lmwjf1rlc1",
+              "title": "LECTURE 3",
+              "date": "2026-10-10",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "LECTURE 3.pdf",
+                  "url": "files/cs/stage3/01/mwjf1rlc1-lecture-3.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwjf1rlc2",
+              "title": "LECTURE 4",
+              "date": "2026-10-18",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "LECTURE 4.pdf",
+                  "url": "files/cs/stage3/01/mwjf1rlc2-lecture-4.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwjf1rlc3",
+              "title": "LECTURE 5",
+              "date": "2026-11-01",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "LECTURE 5 (4).pdf",
+                  "url": "files/cs/stage3/01/mwjf1rlc3-lecture-5-4.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwjf1rlc4",
+              "title": "LECTURE 6",
+              "date": "2026-11-12",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "LECTURE 6 (3).pdf",
+                  "url": "files/cs/stage3/01/mwjf1rlc4-lecture-6-3.pdf"
+                }
+              ]
+            }
+          ]
         }
       ]
     },
