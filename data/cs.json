@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-16T03:49:55.713Z",
+  "updated": "2026-11-16T03:51:06.141Z",
   "stages": [
     {
       "id": "stage1",
@@ -130,13 +130,5 @@
       "courses": []
     }
   ],
-  "announcements": [
-    {
-      "id": "nmwiq6725",
-      "title": "ها عبدالغفور",
-      "text": "ادرس زين",
-      "date": "2026-11-16",
-      "stage": "stage3"
-    }
-  ]
+  "announcements": []
 }
