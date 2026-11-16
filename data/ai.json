@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-11T13:52:48.000Z",
+  "updated": "2026-11-16T17:52:25.597Z",
   "stages": [
     {
       "id": "stage1",
@@ -11,7 +11,19 @@
       "id": "stage2",
       "name": "Stage 2",
       "color": "orange",
-      "courses": []
+      "courses": [
+        {
+          "id": "ai013",
+          "code": "AI 013",
+          "semester": 1,
+          "title": "Neural Networks",
+          "instructor": "Dr. Ahmed Saadi",
+          "sources": [],
+          "lectures": [],
+          "hasLabs": true,
+          "labs": []
+        }
+      ]
     },
     {
       "id": "stage3",
