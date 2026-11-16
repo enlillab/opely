@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-16T18:11:44.050Z",
+  "updated": "2026-11-16T19:36:25.627Z",
   "stages": [
     {
       "id": "stage1",
@@ -30,6 +30,45 @@
                 {
                   "label": "NN L1.pdf",
                   "url": "files/ai/stage2/ai013/mwjkaq3t-nn-l1.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwjnz6fs0",
+              "title": "Activation_Functions_Lecture3",
+              "date": "2026-11-07",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "Activation_Functions_Lecture3.pdf",
+                  "url": "files/ai/stage2/ai013/mwjnz6fs0-activation-functions-lecture3.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwjnz6fs1",
+              "title": "Network_Architecture_Lecture_04",
+              "date": "2026-11-07",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "Network_Architecture_Lecture_04.pdf",
+                  "url": "files/ai/stage2/ai013/mwjnz6fs1-network-architecture-lecture-04.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwjnz6fs2",
+              "title": "Perceptron_From_Scratch_Lecture_2 (1)",
+              "date": "2026-11-07",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "Perceptron_From_Scratch_Lecture_2 (1).pdf",
+                  "url": "files/ai/stage2/ai013/mwjnz6fs2-perceptron-from-scratch-lecture-2-1.pdf"
                 }
               ]
             }
