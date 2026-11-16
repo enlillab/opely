@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-16T03:56:13.087Z",
+  "updated": "2026-11-16T15:24:42.635Z",
   "stages": [
     {
       "id": "stage1",
@@ -17,7 +17,17 @@
       "id": "stage3",
       "name": "Stage 3",
       "color": "green",
-      "courses": []
+      "courses": [
+        {
+          "id": "01",
+          "code": "01",
+          "semester": 1,
+          "title": "تطوير تطبيقات الموبايل",
+          "instructor": "قبس عامر",
+          "sources": [],
+          "lectures": []
+        }
+      ]
     },
     {
       "id": "stage4",
