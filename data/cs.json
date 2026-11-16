@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-16T03:51:06.141Z",
+  "updated": "2026-11-16T03:56:13.087Z",
   "stages": [
     {
       "id": "stage1",
@@ -17,111 +17,7 @@
       "id": "stage3",
       "name": "Stage 3",
       "color": "green",
-      "courses": [
-        {
-          "id": "101",
-          "code": "101",
-          "semester": 1,
-          "title": "Test",
-          "instructor": "Test",
-          "sources": [],
-          "lectures": [],
-          "hasLabs": true,
-          "labs": [
-            {
-              "id": "bmwipwx4u0",
-              "title": "test",
-              "date": "2026-11-16",
-              "summary": "",
-              "video": "",
-              "files": [
-                {
-                  "label": "test.cpp",
-                  "url": "files/cs/stage3/101/mwipwx4u0-test.cpp"
-                }
-              ]
-            },
-            {
-              "id": "bmwipwx4u1",
-              "title": "test",
-              "date": "2026-11-16",
-              "summary": "",
-              "video": "",
-              "files": [
-                {
-                  "label": "test.html",
-                  "url": "files/cs/stage3/101/mwipwx4u1-test.html"
-                }
-              ]
-            },
-            {
-              "id": "bmwipwx4u2",
-              "title": "test",
-              "date": "2026-11-16",
-              "summary": "",
-              "video": "",
-              "files": [
-                {
-                  "label": "test.js",
-                  "url": "files/cs/stage3/101/mwipwx4u2-test.js"
-                }
-              ]
-            },
-            {
-              "id": "bmwipwx4u3",
-              "title": "test",
-              "date": "2026-11-16",
-              "summary": "",
-              "video": "",
-              "files": [
-                {
-                  "label": "test.md",
-                  "url": "files/cs/stage3/101/mwipwx4u3-test.md"
-                }
-              ]
-            },
-            {
-              "id": "bmwipwx4u4",
-              "title": "test",
-              "date": "2026-11-16",
-              "summary": "",
-              "video": "",
-              "files": [
-                {
-                  "label": "test.pdf",
-                  "url": "files/cs/stage3/101/mwipwx4u4-test.pdf"
-                }
-              ]
-            },
-            {
-              "id": "bmwipwx4u5",
-              "title": "test",
-              "date": "2026-11-16",
-              "summary": "",
-              "video": "",
-              "files": [
-                {
-                  "label": "test.py",
-                  "url": "files/cs/stage3/101/mwipwx4u5-test.py"
-                }
-              ]
-            },
-            {
-              "id": "bmwipwx4u6",
-              "title": "test",
-              "date": "2026-11-16",
-              "summary": "",
-              "video": "",
-              "files": [
-                {
-                  "label": "test.txt",
-                  "url": "files/cs/stage3/101/mwipwx4u6-test.txt"
-                }
-              ]
-            }
-          ]
-        }
-      ]
+      "courses": []
     },
     {
       "id": "stage4",
