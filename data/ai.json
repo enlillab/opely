@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-16T19:41:51.100Z",
+  "updated": "2026-11-16T19:42:32.067Z",
   "stages": [
     {
       "id": "stage1",
@@ -20,19 +20,6 @@
           "instructor": "Dr. Ahmed Saadi",
           "sources": [],
           "lectures": [
-            {
-              "id": "lmwjnz6fs1",
-              "title": "Network_Architecture_Lecture_04",
-              "date": "2026-11-07",
-              "summary": "",
-              "video": "",
-              "files": [
-                {
-                  "label": "Network_Architecture_Lecture_04.pdf",
-                  "url": "files/ai/stage2/ai013/mwjnz6fs1-network-architecture-lecture-04.pdf"
-                }
-              ]
-            },
             {
               "id": "lmwjnz6fs2",
               "title": "Perceptron_From_Scratch_Lecture_2 (1)",
@@ -91,6 +78,25 @@
           "archive": {
             "versions": [],
             "removed": [
+              {
+                "id": "rmwjo79mr",
+                "kind": "lecture",
+                "removedAt": "2026-11-16",
+                "item": {
+                  "id": "lmwjnz6fs1",
+                  "title": "Network_Architecture_Lecture_04",
+                  "date": "2026-11-07",
+                  "summary": "",
+                  "video": "",
+                  "files": [
+                    {
+                      "label": "Network_Architecture_Lecture_04.pdf",
+                      "url": "files/ai/stage2/ai013/mwjnz6fs1-network-architecture-lecture-04.pdf",
+                      "commit": "32997f735154187e7d849e385560708c05a5018e"
+                    }
+                  ]
+                }
+              },
               {
                 "id": "rmwjo6e0r",
                 "kind": "lecture",
