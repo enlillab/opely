@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-16T20:44:11.663Z",
+  "updated": "2026-11-16T20:47:32.551Z",
   "stages": [
     {
       "id": "stage1",
@@ -233,7 +233,12 @@
           "semester": 1,
           "title": "Data Structure",
           "instructor": "Dr. Mustafa abdulfattah",
-          "sources": [],
+          "sources": [
+            {
+              "label": "Date Structures and Algorithm Analytics in C++ by Mark Allen",
+              "url": "files/ai/stage2/ai014/mwjqin2u-datastructures.pdf"
+            }
+          ],
           "lectures": [
             {
               "id": "lmwjq5ibu0",
