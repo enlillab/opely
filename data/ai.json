@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-16T19:44:11.134Z",
+  "updated": "2026-11-16T19:45:01.885Z",
   "stages": [
     {
       "id": "stage1",
@@ -19,26 +19,31 @@
           "title": "Neural Networks",
           "instructor": "Dr. Ahmed Saadi",
           "sources": [],
-          "lectures": [
-            {
-              "id": "lmwjo288z1",
-              "title": "NN L3",
-              "date": "2026-11-07",
-              "summary": "",
-              "video": "",
-              "files": [
-                {
-                  "label": "NN L3.pdf",
-                  "url": "files/ai/stage2/ai013/mwjo288z1-nn-l3.pdf"
-                }
-              ]
-            }
-          ],
+          "lectures": [],
           "hasLabs": true,
           "labs": [],
           "archive": {
             "versions": [],
             "removed": [
+              {
+                "id": "rmwjoah8d",
+                "kind": "lecture",
+                "removedAt": "2026-11-16",
+                "item": {
+                  "id": "lmwjo288z1",
+                  "title": "NN L3",
+                  "date": "2026-11-07",
+                  "summary": "",
+                  "video": "",
+                  "files": [
+                    {
+                      "label": "NN L3.pdf",
+                      "url": "files/ai/stage2/ai013/mwjo288z1-nn-l3.pdf",
+                      "commit": "70c93cb755df8759b7a04577b87252079323cde5"
+                    }
+                  ]
+                }
+              },
               {
                 "id": "rmwjo9e2m",
                 "kind": "lecture",
