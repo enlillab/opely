@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-16T19:43:21.019Z",
+  "updated": "2026-11-16T19:44:00.431Z",
   "stages": [
     {
       "id": "stage1",
@@ -20,19 +20,6 @@
           "instructor": "Dr. Ahmed Saadi",
           "sources": [],
           "lectures": [
-            {
-              "id": "lmwjo288z0",
-              "title": "NN L2",
-              "date": "2026-11-07",
-              "summary": "",
-              "video": "",
-              "files": [
-                {
-                  "label": "NN L2.pdf",
-                  "url": "files/ai/stage2/ai013/mwjo288z0-nn-l2.pdf"
-                }
-              ]
-            },
             {
               "id": "lmwjo288z1",
               "title": "NN L3",
@@ -65,6 +52,25 @@
           "archive": {
             "versions": [],
             "removed": [
+              {
+                "id": "rmwjo95tb",
+                "kind": "lecture",
+                "removedAt": "2026-11-16",
+                "item": {
+                  "id": "lmwjo288z0",
+                  "title": "NN L2",
+                  "date": "2026-11-07",
+                  "summary": "",
+                  "video": "",
+                  "files": [
+                    {
+                      "label": "NN L2.pdf",
+                      "url": "files/ai/stage2/ai013/mwjo288z0-nn-l2.pdf",
+                      "commit": "a83895e1decd28d0549c36b6fcaa32e618165153"
+                    }
+                  ]
+                }
+              },
               {
                 "id": "rmwjo8bej",
                 "kind": "lecture",
