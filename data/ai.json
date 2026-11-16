@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-16T17:59:47.298Z",
+  "updated": "2026-11-16T18:00:33.615Z",
   "stages": [
     {
       "id": "stage1",
@@ -110,23 +110,34 @@
                   "url": "files/ai/stage2/ai013/mwjkirqg4-part-ii-implementing-ethernet-lans-261010-144055.pdf"
                 }
               ]
-            },
-            {
-              "id": "lmwjkirqg0",
-              "title": "LECTURE 6",
-              "date": "2026-11-16",
-              "summary": "",
-              "video": "",
-              "files": [
-                {
-                  "label": "LECTURE 6.pdf",
-                  "url": "files/ai/stage2/ai013/mwjkirqg0-lecture-6.pdf"
-                }
-              ]
             }
           ],
           "hasLabs": true,
-          "labs": []
+          "labs": [],
+          "archive": {
+            "versions": [],
+            "removed": [
+              {
+                "id": "rmwjkk4lo",
+                "kind": "lecture",
+                "removedAt": "2026-11-16",
+                "item": {
+                  "id": "lmwjkirqg0",
+                  "title": "LECTURE 6",
+                  "date": "2026-11-16",
+                  "summary": "",
+                  "video": "",
+                  "files": [
+                    {
+                      "label": "LECTURE 6.pdf",
+                      "url": "files/ai/stage2/ai013/mwjkirqg0-lecture-6.pdf",
+                      "commit": "4d673c3e6b9777e86c7b3ad2526c83d139d33184"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         }
       ]
     },
