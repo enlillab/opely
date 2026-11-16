@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-16T17:52:25.597Z",
+  "updated": "2026-11-16T17:53:34.059Z",
   "stages": [
     {
       "id": "stage1",
@@ -19,7 +19,21 @@
           "title": "Neural Networks",
           "instructor": "Dr. Ahmed Saadi",
           "sources": [],
-          "lectures": [],
+          "lectures": [
+            {
+              "id": "lmwjkb4vf",
+              "title": "L1 ( Main concepts )",
+              "date": "2026-09-27",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "NN L1.pdf",
+                  "url": "files/ai/stage2/ai013/mwjkaq3t-nn-l1.pdf"
+                }
+              ]
+            }
+          ],
           "hasLabs": true,
           "labs": []
         }
