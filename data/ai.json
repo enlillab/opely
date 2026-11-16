@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-16T20:38:01.129Z",
+  "updated": "2026-11-16T20:44:11.663Z",
   "stages": [
     {
       "id": "stage1",
@@ -315,7 +315,59 @@
             }
           ],
           "hasLabs": true,
-          "labs": []
+          "labs": [
+            {
+              "id": "bmwjqeabw0",
+              "title": "Basics arrays",
+              "date": "2026-10-01",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "Dictionary .ipynb",
+                  "url": "files/ai/stage2/ai014/mwjqeabw0-dictionary.ipynb"
+                },
+                {
+                  "label": "List.ipynb",
+                  "url": "files/ai/stage2/ai014/mwjqeabw2-list.ipynb"
+                },
+                {
+                  "label": "Set.ipynb",
+                  "url": "files/ai/stage2/ai014/mwjqeabw3-set.ipynb"
+                },
+                {
+                  "label": "Tuple.ipynb",
+                  "url": "files/ai/stage2/ai014/mwjqeabw5-tuple.ipynb"
+                }
+              ]
+            },
+            {
+              "id": "bmwjqeabw1",
+              "title": "Linked List",
+              "date": "2026-10-28",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "Linked list.ipynb",
+                  "url": "files/ai/stage2/ai014/mwjqeabw1-linked-list.ipynb"
+                }
+              ]
+            },
+            {
+              "id": "bmwjqeabw2",
+              "title": "STACK",
+              "date": "2026-11-08",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "STACK.ipynb",
+                  "url": "files/ai/stage2/ai014/mwjqeabw4-stack.ipynb"
+                }
+              ]
+            }
+          ]
         }
       ]
     },
