@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-16T18:00:56.985Z",
+  "updated": "2026-11-16T18:01:02.183Z",
   "stages": [
     {
       "id": "stage1",
@@ -30,19 +30,6 @@
                 {
                   "label": "NN L1.pdf",
                   "url": "files/ai/stage2/ai013/mwjkaq3t-nn-l1.pdf"
-                }
-              ]
-            },
-            {
-              "id": "lmwjkirqg2",
-              "title": "mo-focus-backup-2026-11-10",
-              "date": "2026-11-10",
-              "summary": "",
-              "video": "",
-              "files": [
-                {
-                  "label": "mo-focus-backup-2026-11-10.json",
-                  "url": "files/ai/stage2/ai013/mwjkirqg2-mo-focus-backup-2026-11-10.json"
                 }
               ]
             },
@@ -78,6 +65,25 @@
           "archive": {
             "versions": [],
             "removed": [
+              {
+                "id": "rmwjkkqnb",
+                "kind": "lecture",
+                "removedAt": "2026-11-16",
+                "item": {
+                  "id": "lmwjkirqg2",
+                  "title": "mo-focus-backup-2026-11-10",
+                  "date": "2026-11-10",
+                  "summary": "",
+                  "video": "",
+                  "files": [
+                    {
+                      "label": "mo-focus-backup-2026-11-10.json",
+                      "url": "files/ai/stage2/ai013/mwjkirqg2-mo-focus-backup-2026-11-10.json",
+                      "commit": "94d49f7085522af60c26b266278221d5c7396a2f"
+                    }
+                  ]
+                }
+              },
               {
                 "id": "rmwjkkmmw",
                 "kind": "lecture",
