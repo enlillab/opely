@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-16T19:42:32.067Z",
+  "updated": "2026-11-16T19:43:21.019Z",
   "stages": [
     {
       "id": "stage1",
@@ -20,19 +20,6 @@
           "instructor": "Dr. Ahmed Saadi",
           "sources": [],
           "lectures": [
-            {
-              "id": "lmwjnz6fs2",
-              "title": "Perceptron_From_Scratch_Lecture_2 (1)",
-              "date": "2026-11-07",
-              "summary": "",
-              "video": "",
-              "files": [
-                {
-                  "label": "Perceptron_From_Scratch_Lecture_2 (1).pdf",
-                  "url": "files/ai/stage2/ai013/mwjnz6fs2-perceptron-from-scratch-lecture-2-1.pdf"
-                }
-              ]
-            },
             {
               "id": "lmwjo288z0",
               "title": "NN L2",
@@ -78,6 +65,25 @@
           "archive": {
             "versions": [],
             "removed": [
+              {
+                "id": "rmwjo8bej",
+                "kind": "lecture",
+                "removedAt": "2026-11-16",
+                "item": {
+                  "id": "lmwjnz6fs2",
+                  "title": "Perceptron_From_Scratch_Lecture_2 (1)",
+                  "date": "2026-11-07",
+                  "summary": "",
+                  "video": "",
+                  "files": [
+                    {
+                      "label": "Perceptron_From_Scratch_Lecture_2 (1).pdf",
+                      "url": "files/ai/stage2/ai013/mwjnz6fs2-perceptron-from-scratch-lecture-2-1.pdf",
+                      "commit": "3d082d2217edcbd4097c5148266a4d2f41def89d"
+                    }
+                  ]
+                }
+              },
               {
                 "id": "rmwjo79mr",
                 "kind": "lecture",
