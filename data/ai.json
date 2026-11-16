@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-16T18:00:40.111Z",
+  "updated": "2026-11-16T18:00:50.668Z",
   "stages": [
     {
       "id": "stage1",
@@ -30,19 +30,6 @@
                 {
                   "label": "NN L1.pdf",
                   "url": "files/ai/stage2/ai013/mwjkaq3t-nn-l1.pdf"
-                }
-              ]
-            },
-            {
-              "id": "lmwjkirqg3",
-              "title": "Mohammed_Learner_Profile",
-              "date": "2026-11-08",
-              "summary": "",
-              "video": "",
-              "files": [
-                {
-                  "label": "Mohammed_Learner_Profile.pdf",
-                  "url": "files/ai/stage2/ai013/mwjkirqg3-mohammed-learner-profile.pdf"
                 }
               ]
             },
@@ -104,6 +91,25 @@
           "archive": {
             "versions": [],
             "removed": [
+              {
+                "id": "rmwjkkhrg",
+                "kind": "lecture",
+                "removedAt": "2026-11-16",
+                "item": {
+                  "id": "lmwjkirqg3",
+                  "title": "Mohammed_Learner_Profile",
+                  "date": "2026-11-08",
+                  "summary": "",
+                  "video": "",
+                  "files": [
+                    {
+                      "label": "Mohammed_Learner_Profile.pdf",
+                      "url": "files/ai/stage2/ai013/mwjkirqg3-mohammed-learner-profile.pdf",
+                      "commit": "59872c082da8f89183268d36f9cbbf2cc603cb4d"
+                    }
+                  ]
+                }
+              },
               {
                 "id": "rmwjkk9m6",
                 "kind": "lecture",
