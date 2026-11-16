@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-16T19:36:25.627Z",
+  "updated": "2026-11-16T19:39:01.140Z",
   "stages": [
     {
       "id": "stage1",
@@ -69,6 +69,45 @@
                 {
                   "label": "Perceptron_From_Scratch_Lecture_2 (1).pdf",
                   "url": "files/ai/stage2/ai013/mwjnz6fs2-perceptron-from-scratch-lecture-2-1.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwjo288z0",
+              "title": "NN L2",
+              "date": "2026-11-07",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "NN L2.pdf",
+                  "url": "files/ai/stage2/ai013/mwjo288z0-nn-l2.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwjo288z1",
+              "title": "NN L3",
+              "date": "2026-11-07",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "NN L3.pdf",
+                  "url": "files/ai/stage2/ai013/mwjo288z1-nn-l3.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwjo288z2",
+              "title": "NN L4",
+              "date": "2026-11-07",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "NN L4.pdf",
+                  "url": "files/ai/stage2/ai013/mwjo288z2-nn-l4.pdf"
                 }
               ]
             }
