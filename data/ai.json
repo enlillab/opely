@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-16T18:01:27.462Z",
+  "updated": "2026-11-16T18:01:30.342Z",
   "stages": [
     {
       "id": "stage1",
@@ -39,25 +39,6 @@
           "archive": {
             "versions": [],
             "removed": [
-              {
-                "id": "rmwjkkmmw",
-                "kind": "lecture",
-                "removedAt": "2026-11-16",
-                "item": {
-                  "id": "lmwjkirqg1",
-                  "title": "mo-focus-backup-2026-11-10 2",
-                  "date": "2026-11-10",
-                  "summary": "",
-                  "video": "",
-                  "files": [
-                    {
-                      "label": "mo-focus-backup-2026-11-10 2.json",
-                      "url": "files/ai/stage2/ai013/mwjkirqg1-mo-focus-backup-2026-11-10-2.json",
-                      "commit": "9afc492bf69791d73a3099db3b3abd5042c76d8f"
-                    }
-                  ]
-                }
-              },
               {
                 "id": "rmwjkkhrg",
                 "kind": "lecture",
