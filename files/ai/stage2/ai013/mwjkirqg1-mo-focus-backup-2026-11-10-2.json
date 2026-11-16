@@ -1,0 +1,121 @@
+{
+ "settings": {
+  "focus": 51,
+  "short": 10,
+  "long": 30,
+  "interval": 3,
+  "goal": 14,
+  "sound": "chime",
+  "volume": 100,
+  "repeat": 1,
+  "vibrate": true,
+  "notify": true,
+  "autoBreak": false,
+  "autoFocus": false,
+  "wake": true,
+  "theme": "light",
+  "askNote": true
+ },
+ "timer": {
+  "phase": "short",
+  "running": false,
+  "endAt": 1794301712795,
+  "remaining": 600000,
+  "done": 1,
+  "parked": {}
+ },
+ "sessions": [
+  {
+   "t": 1794175134413,
+   "min": 25,
+   "task": null,
+   "taskName": null
+  },
+  {
+   "t": 1794194264941,
+   "min": 25,
+   "task": null,
+   "taskName": null
+  },
+  {
+   "t": 1794197410786,
+   "min": 25,
+   "task": null,
+   "taskName": null
+  },
+  {
+   "t": 1794235116225,
+   "min": 25,
+   "task": null,
+   "taskName": null
+  },
+  {
+   "t": 1794237692411,
+   "min": 25,
+   "task": null,
+   "taskName": null
+  },
+  {
+   "t": 1794239939831,
+   "min": 25,
+   "task": null,
+   "taskName": null
+  },
+  {
+   "t": 1794242740760,
+   "min": 25,
+   "task": null,
+   "taskName": null
+  },
+  {
+   "t": 1794246578655,
+   "min": 26,
+   "task": null,
+   "taskName": null
+  },
+  {
+   "t": 1794248647268,
+   "min": 26,
+   "task": null,
+   "taskName": null
+  },
+  {
+   "t": 1794250753111,
+   "min": 26,
+   "task": null,
+   "taskName": null
+  },
+  {
+   "t": 1794257340095,
+   "min": 26,
+   "task": null,
+   "taskName": null
+  },
+  {
+   "t": 1794260076902,
+   "min": 26,
+   "task": null,
+   "taskName": null
+  }
+ ],
+ "tasks": [
+  {
+   "id": "tmwa5br29",
+   "name": "Coding",
+   "est": 8,
+   "done": 0,
+   "complete": true
+  }
+ ],
+ "currentTask": null,
+ "music": {
+  "amb": "white",
+  "vol": 0,
+  "withTimer": false,
+  "links": []
+ },
+ "v": 2,
+ "presets": [],
+ "app": "mofocus",
+ "exportedAt": "2026-11-10T09:05:48.170Z"
+}

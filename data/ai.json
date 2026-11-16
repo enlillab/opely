@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-16T17:53:34.059Z",
+  "updated": "2026-11-16T17:59:47.298Z",
   "stages": [
     {
       "id": "stage1",
@@ -30,6 +30,97 @@
                 {
                   "label": "NN L1.pdf",
                   "url": "files/ai/stage2/ai013/mwjkaq3t-nn-l1.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwjkirqg3",
+              "title": "Mohammed_Learner_Profile",
+              "date": "2026-11-08",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "Mohammed_Learner_Profile.pdf",
+                  "url": "files/ai/stage2/ai013/mwjkirqg3-mohammed-learner-profile.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwjkirqg1",
+              "title": "mo-focus-backup-2026-11-10 2",
+              "date": "2026-11-10",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "mo-focus-backup-2026-11-10 2.json",
+                  "url": "files/ai/stage2/ai013/mwjkirqg1-mo-focus-backup-2026-11-10-2.json"
+                }
+              ]
+            },
+            {
+              "id": "lmwjkirqg2",
+              "title": "mo-focus-backup-2026-11-10",
+              "date": "2026-11-10",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "mo-focus-backup-2026-11-10.json",
+                  "url": "files/ai/stage2/ai013/mwjkirqg2-mo-focus-backup-2026-11-10.json"
+                }
+              ]
+            },
+            {
+              "id": "lmwjkirqg5",
+              "title": "text 2",
+              "date": "2026-11-10",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "text 2.txt",
+                  "url": "files/ai/stage2/ai013/mwjkirqg5-text-2.txt"
+                }
+              ]
+            },
+            {
+              "id": "lmwjkirqg6",
+              "title": "text",
+              "date": "2026-11-10",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "text.txt",
+                  "url": "files/ai/stage2/ai013/mwjkirqg6-text.txt"
+                }
+              ]
+            },
+            {
+              "id": "lmwjkirqg4",
+              "title": "Part II Implementing Ethernet LANs_261010_144055",
+              "date": "2026-11-12",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "Part II Implementing Ethernet LANs_261010_144055.pdf",
+                  "url": "files/ai/stage2/ai013/mwjkirqg4-part-ii-implementing-ethernet-lans-261010-144055.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwjkirqg0",
+              "title": "LECTURE 6",
+              "date": "2026-11-16",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "LECTURE 6.pdf",
+                  "url": "files/ai/stage2/ai013/mwjkirqg0-lecture-6.pdf"
                 }
               ]
             }
