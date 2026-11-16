@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-16T20:31:32.049Z",
+  "updated": "2026-11-16T20:37:40.258Z",
   "stages": [
     {
       "id": "stage1",
@@ -234,7 +234,86 @@
           "title": "Data Structure",
           "instructor": "Dr. Mustafa abdulfattah",
           "sources": [],
-          "lectures": [],
+          "lectures": [
+            {
+              "id": "lmwjq5ibu0",
+              "title": "L1 ( Introduction )",
+              "date": "2026-10-01",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "1.pdf",
+                  "url": "files/ai/stage2/ai014/mwjq5ibu0-1.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwjq5ibu1",
+              "title": "L2 ( Algorithms and Complexity )",
+              "date": "2026-10-07",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "2.pdf",
+                  "url": "files/ai/stage2/ai014/mwjq5ibu1-2.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwjq5ibu2",
+              "title": "L3 ( Arrays and Pointers )",
+              "date": "2026-10-14",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "3.pdf",
+                  "url": "files/ai/stage2/ai014/mwjq5ibu2-3.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwjq5ibu3",
+              "title": "L4 ( Linked List )",
+              "date": "2026-10-21",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "4.pdf",
+                  "url": "files/ai/stage2/ai014/mwjq5ibu3-4.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwjq5ibu5",
+              "title": "L6 ( Stack )",
+              "date": "2026-11-10",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "6.pdf",
+                  "url": "files/ai/stage2/ai014/mwjq5ibu5-6.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwjq5ibu4",
+              "title": "L5 ( Linked List Operations Algorithms )",
+              "date": "2026-11-28",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "5.pdf",
+                  "url": "files/ai/stage2/ai014/mwjq5ibu4-5.pdf"
+                }
+              ]
+            }
+          ],
           "hasLabs": true,
           "labs": []
         }
