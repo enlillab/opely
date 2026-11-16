@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-16T18:00:33.615Z",
+  "updated": "2026-11-16T18:00:40.111Z",
   "stages": [
     {
       "id": "stage1",
@@ -97,19 +97,6 @@
                   "url": "files/ai/stage2/ai013/mwjkirqg6-text.txt"
                 }
               ]
-            },
-            {
-              "id": "lmwjkirqg4",
-              "title": "Part II Implementing Ethernet LANs_261010_144055",
-              "date": "2026-11-12",
-              "summary": "",
-              "video": "",
-              "files": [
-                {
-                  "label": "Part II Implementing Ethernet LANs_261010_144055.pdf",
-                  "url": "files/ai/stage2/ai013/mwjkirqg4-part-ii-implementing-ethernet-lans-261010-144055.pdf"
-                }
-              ]
             }
           ],
           "hasLabs": true,
@@ -117,6 +104,25 @@
           "archive": {
             "versions": [],
             "removed": [
+              {
+                "id": "rmwjkk9m6",
+                "kind": "lecture",
+                "removedAt": "2026-11-16",
+                "item": {
+                  "id": "lmwjkirqg4",
+                  "title": "Part II Implementing Ethernet LANs_261010_144055",
+                  "date": "2026-11-12",
+                  "summary": "",
+                  "video": "",
+                  "files": [
+                    {
+                      "label": "Part II Implementing Ethernet LANs_261010_144055.pdf",
+                      "url": "files/ai/stage2/ai013/mwjkirqg4-part-ii-implementing-ethernet-lans-261010-144055.pdf",
+                      "commit": "50f0d064c2cec648a7673e9496179790f5fffad8"
+                    }
+                  ]
+                }
+              },
               {
                 "id": "rmwjkk4lo",
                 "kind": "lecture",
