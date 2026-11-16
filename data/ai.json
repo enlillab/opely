@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-16T19:45:01.885Z",
+  "updated": "2026-11-16T20:18:46.772Z",
   "stages": [
     {
       "id": "stage1",
@@ -19,7 +19,60 @@
           "title": "Neural Networks",
           "instructor": "Dr. Ahmed Saadi",
           "sources": [],
-          "lectures": [],
+          "lectures": [
+            {
+              "id": "lmwjphcb20",
+              "title": "L1 ( Main Concepts )",
+              "date": "2026-09-27",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "NN L1.pdf",
+                  "url": "files/ai/stage2/ai013/mwjphcb20-nn-l1.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwjphcb21",
+              "title": "L2 ( Perceptron )",
+              "date": "2026-10-04",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "NN L2.pdf",
+                  "url": "files/ai/stage2/ai013/mwjphcb21-nn-l2.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwjphcb22",
+              "title": "L3 ( Activation functions )",
+              "date": "2026-10-25",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "NN L3.pdf",
+                  "url": "files/ai/stage2/ai013/mwjphcb22-nn-l3.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwjphcb23",
+              "title": "L4 ( Network Architecture )",
+              "date": "2026-11-01",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "NN L4.pdf",
+                  "url": "files/ai/stage2/ai013/mwjphcb23-nn-l4.pdf"
+                }
+              ]
+            }
+          ],
           "hasLabs": true,
           "labs": [],
           "archive": {
