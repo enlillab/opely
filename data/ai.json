@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-16T19:39:01.140Z",
+  "updated": "2026-11-16T19:40:20.393Z",
   "stages": [
     {
       "id": "stage1",
@@ -20,19 +20,6 @@
           "instructor": "Dr. Ahmed Saadi",
           "sources": [],
           "lectures": [
-            {
-              "id": "lmwjkb4vf",
-              "title": "L1 ( Main concepts )",
-              "date": "2026-09-27",
-              "summary": "",
-              "video": "",
-              "files": [
-                {
-                  "label": "NN L1.pdf",
-                  "url": "files/ai/stage2/ai013/mwjkaq3t-nn-l1.pdf"
-                }
-              ]
-            },
             {
               "id": "lmwjnz6fs0",
               "title": "Activation_Functions_Lecture3",
@@ -116,7 +103,27 @@
           "labs": [],
           "archive": {
             "versions": [],
-            "removed": []
+            "removed": [
+              {
+                "id": "rmwjo4g14",
+                "kind": "lecture",
+                "removedAt": "2026-11-16",
+                "item": {
+                  "id": "lmwjkb4vf",
+                  "title": "L1 ( Main concepts )",
+                  "date": "2026-09-27",
+                  "summary": "",
+                  "video": "",
+                  "files": [
+                    {
+                      "label": "NN L1.pdf",
+                      "url": "files/ai/stage2/ai013/mwjkaq3t-nn-l1.pdf",
+                      "commit": "6a69a9276e8f81af517ef66cfe0945393d050200"
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]
