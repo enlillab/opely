@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-16T18:10:55.952Z",
+  "updated": "2026-11-16T18:11:02.888Z",
   "stages": [
     {
       "id": "stage1",
@@ -30,19 +30,6 @@
                 {
                   "label": "NN L1.pdf",
                   "url": "files/ai/stage2/ai013/mwjkaq3t-nn-l1.pdf"
-                }
-              ]
-            },
-            {
-              "id": "lmwjkwu7t1",
-              "title": "manifest.webmanifest",
-              "date": "2026-11-09",
-              "summary": "",
-              "video": "",
-              "files": [
-                {
-                  "label": "manifest.webmanifest",
-                  "url": "files/ai/stage2/ai013/mwjkwu7t1-manifest.webmanifest"
                 }
               ]
             },
@@ -91,6 +78,25 @@
           "archive": {
             "versions": [],
             "removed": [
+              {
+                "id": "rmwjkxm5k",
+                "kind": "lecture",
+                "removedAt": "2026-11-16",
+                "item": {
+                  "id": "lmwjkwu7t1",
+                  "title": "manifest.webmanifest",
+                  "date": "2026-11-09",
+                  "summary": "",
+                  "video": "",
+                  "files": [
+                    {
+                      "label": "manifest.webmanifest",
+                      "url": "files/ai/stage2/ai013/mwjkwu7t1-manifest.webmanifest",
+                      "commit": "b82c2a31a782a0589efceca5c71b63810143bea2"
+                    }
+                  ]
+                }
+              },
               {
                 "id": "rmwjkxgsw",
                 "kind": "lecture",
