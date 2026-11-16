@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-16T19:40:20.393Z",
+  "updated": "2026-11-16T19:41:51.100Z",
   "stages": [
     {
       "id": "stage1",
@@ -20,19 +20,6 @@
           "instructor": "Dr. Ahmed Saadi",
           "sources": [],
           "lectures": [
-            {
-              "id": "lmwjnz6fs0",
-              "title": "Activation_Functions_Lecture3",
-              "date": "2026-11-07",
-              "summary": "",
-              "video": "",
-              "files": [
-                {
-                  "label": "Activation_Functions_Lecture3.pdf",
-                  "url": "files/ai/stage2/ai013/mwjnz6fs0-activation-functions-lecture3.pdf"
-                }
-              ]
-            },
             {
               "id": "lmwjnz6fs1",
               "title": "Network_Architecture_Lecture_04",
@@ -104,6 +91,25 @@
           "archive": {
             "versions": [],
             "removed": [
+              {
+                "id": "rmwjo6e0r",
+                "kind": "lecture",
+                "removedAt": "2026-11-16",
+                "item": {
+                  "id": "lmwjnz6fs0",
+                  "title": "Activation_Functions_Lecture3",
+                  "date": "2026-11-07",
+                  "summary": "",
+                  "video": "",
+                  "files": [
+                    {
+                      "label": "Activation_Functions_Lecture3.pdf",
+                      "url": "files/ai/stage2/ai013/mwjnz6fs0-activation-functions-lecture3.pdf",
+                      "commit": "f7514ffc336eab9d945b135170ac378959f2859f"
+                    }
+                  ]
+                }
+              },
               {
                 "id": "rmwjo4g14",
                 "kind": "lecture",
