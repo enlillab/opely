@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-16T18:11:09.452Z",
+  "updated": "2026-11-16T18:11:15.970Z",
   "stages": [
     {
       "id": "stage1",
@@ -34,19 +34,6 @@
               ]
             },
             {
-              "id": "lmwjkwu7t0",
-              "title": "index",
-              "date": "2026-11-14",
-              "summary": "",
-              "video": "",
-              "files": [
-                {
-                  "label": "index.html",
-                  "url": "files/ai/stage2/ai013/mwjkwu7t0-index.html"
-                }
-              ]
-            },
-            {
               "id": "lmwjkwu7t4",
               "title": "sw",
               "date": "2026-11-14",
@@ -65,6 +52,25 @@
           "archive": {
             "versions": [],
             "removed": [
+              {
+                "id": "rmwjkxw8y",
+                "kind": "lecture",
+                "removedAt": "2026-11-16",
+                "item": {
+                  "id": "lmwjkwu7t0",
+                  "title": "index",
+                  "date": "2026-11-14",
+                  "summary": "",
+                  "video": "",
+                  "files": [
+                    {
+                      "label": "index.html",
+                      "url": "files/ai/stage2/ai013/mwjkwu7t0-index.html",
+                      "commit": "61b392c55ffd84b4feb80db0e1ff31b9ee2e0572"
+                    }
+                  ]
+                }
+              },
               {
                 "id": "rmwjkxr7w",
                 "kind": "lecture",
