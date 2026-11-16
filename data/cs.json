@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-16T03:38:38.993Z",
+  "updated": "2026-11-16T03:41:33.303Z",
   "stages": [
     {
       "id": "stage1",
@@ -17,111 +17,7 @@
       "id": "stage3",
       "name": "Stage 3",
       "color": "green",
-      "courses": [
-        {
-          "id": "001",
-          "code": "001",
-          "semester": 1,
-          "title": "Test",
-          "instructor": "Test",
-          "sources": [],
-          "lectures": [
-            {
-              "id": "lmwiprkt50",
-              "title": "test",
-              "date": "2026-11-16",
-              "summary": "",
-              "video": "",
-              "files": [
-                {
-                  "label": "test.cpp",
-                  "url": "files/cs/stage3/001/mwiprkt50-test.cpp"
-                }
-              ]
-            },
-            {
-              "id": "lmwiprkt51",
-              "title": "test",
-              "date": "2026-11-16",
-              "summary": "",
-              "video": "",
-              "files": [
-                {
-                  "label": "test.html",
-                  "url": "files/cs/stage3/001/mwiprkt51-test.html"
-                }
-              ]
-            },
-            {
-              "id": "lmwiprkt52",
-              "title": "test",
-              "date": "2026-11-16",
-              "summary": "",
-              "video": "",
-              "files": [
-                {
-                  "label": "test.js",
-                  "url": "files/cs/stage3/001/mwiprkt52-test.js"
-                }
-              ]
-            },
-            {
-              "id": "lmwiprkt53",
-              "title": "test",
-              "date": "2026-11-16",
-              "summary": "",
-              "video": "",
-              "files": [
-                {
-                  "label": "test.md",
-                  "url": "files/cs/stage3/001/mwiprkt53-test.md"
-                }
-              ]
-            },
-            {
-              "id": "lmwiprkt54",
-              "title": "test",
-              "date": "2026-11-16",
-              "summary": "",
-              "video": "",
-              "files": [
-                {
-                  "label": "test.pdf",
-                  "url": "files/cs/stage3/001/mwiprkt54-test.pdf"
-                }
-              ]
-            },
-            {
-              "id": "lmwiprkt55",
-              "title": "test",
-              "date": "2026-11-16",
-              "summary": "",
-              "video": "",
-              "files": [
-                {
-                  "label": "test.py",
-                  "url": "files/cs/stage3/001/mwiprkt55-test.py"
-                }
-              ]
-            },
-            {
-              "id": "lmwiprkt56",
-              "title": "test",
-              "date": "2026-11-16",
-              "summary": "",
-              "video": "",
-              "files": [
-                {
-                  "label": "test.txt",
-                  "url": "files/cs/stage3/001/mwiprkt56-test.txt"
-                }
-              ]
-            }
-          ],
-          "hasLabs": true,
-          "labs": []
-        }
-      ]
+      "courses": []
     },
     {
       "id": "stage4",
