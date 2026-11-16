@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-16T20:37:40.258Z",
+  "updated": "2026-11-16T20:38:01.129Z",
   "stages": [
     {
       "id": "stage1",
@@ -288,6 +288,19 @@
               ]
             },
             {
+              "id": "lmwjq5ibu4",
+              "title": "L5 ( Linked List Operations Algorithms )",
+              "date": "2026-10-28",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "5.pdf",
+                  "url": "files/ai/stage2/ai014/mwjq5ibu4-5.pdf"
+                }
+              ]
+            },
+            {
               "id": "lmwjq5ibu5",
               "title": "L6 ( Stack )",
               "date": "2026-11-10",
@@ -297,19 +310,6 @@
                 {
                   "label": "6.pdf",
                   "url": "files/ai/stage2/ai014/mwjq5ibu5-6.pdf"
-                }
-              ]
-            },
-            {
-              "id": "lmwjq5ibu4",
-              "title": "L5 ( Linked List Operations Algorithms )",
-              "date": "2026-11-28",
-              "summary": "",
-              "video": "",
-              "files": [
-                {
-                  "label": "5.pdf",
-                  "url": "files/ai/stage2/ai014/mwjq5ibu4-5.pdf"
                 }
               ]
             }
