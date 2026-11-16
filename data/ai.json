@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-16T20:18:46.772Z",
+  "updated": "2026-11-16T20:25:18.234Z",
   "stages": [
     {
       "id": "stage1",
@@ -69,6 +69,19 @@
                 {
                   "label": "NN L4.pdf",
                   "url": "files/ai/stage2/ai013/mwjphcb23-nn-l4.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwjpq9p6",
+              "title": "L5 ( Loss Function )",
+              "date": "2026-11-08",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "NN L5.pdf",
+                  "url": "files/ai/stage2/ai013/mwjpq2cq-nn-l5.pdf"
                 }
               ]
             }
