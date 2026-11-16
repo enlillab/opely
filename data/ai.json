@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-16T18:01:14.350Z",
+  "updated": "2026-11-16T18:01:20.744Z",
   "stages": [
     {
       "id": "stage1",
@@ -39,25 +39,6 @@
           "archive": {
             "versions": [],
             "removed": [
-              {
-                "id": "rmwjkl01a",
-                "kind": "lecture",
-                "removedAt": "2026-11-16",
-                "item": {
-                  "id": "lmwjkirqg6",
-                  "title": "text",
-                  "date": "2026-11-10",
-                  "summary": "",
-                  "video": "",
-                  "files": [
-                    {
-                      "label": "text.txt",
-                      "url": "files/ai/stage2/ai013/mwjkirqg6-text.txt",
-                      "commit": "7888ef356b0e474eb8492b260ff1f91d85623b95"
-                    }
-                  ]
-                }
-              },
               {
                 "id": "rmwjkkvc7",
                 "kind": "lecture",
