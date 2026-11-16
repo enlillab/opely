@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-16T20:25:18.234Z",
+  "updated": "2026-11-16T20:31:32.049Z",
   "stages": [
     {
       "id": "stage1",
@@ -226,6 +226,17 @@
               }
             ]
           }
+        },
+        {
+          "id": "ai014",
+          "code": "AI 014",
+          "semester": 1,
+          "title": "Data Structure",
+          "instructor": "Dr. Mustafa abdulfattah",
+          "sources": [],
+          "lectures": [],
+          "hasLabs": true,
+          "labs": []
         }
       ]
     },
