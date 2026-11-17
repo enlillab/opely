@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-17T17:55:37.891Z",
+  "updated": "2026-11-17T17:56:53.252Z",
   "stages": [
     {
       "id": "stage1",
@@ -410,7 +410,60 @@
           "title": "التبديل والتوجيه والاساسيات الاسلكية",
           "instructor": "وسام داوود",
           "sources": [],
-          "lectures": [],
+          "lectures": [
+            {
+              "id": "lmwkzv24d0",
+              "title": "Part I",
+              "date": "2026-10-09",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "Part I Introduction to Networking (2).pdf",
+                  "url": "files/cs/stage3/05/mwkzv24d0-part-i-introduction-to-networking-2.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwkzv24d1",
+              "title": "Part II (2)",
+              "date": "2026-10-10",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "Part II Implementing Ethernet LANs_261010_144055.pdf",
+                  "url": "files/cs/stage3/05/mwkzv24d1-part-ii-implementing-ethernet-lans-261010-144055.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwkzv24d2",
+              "title": "Part III (3)",
+              "date": "2026-10-11",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "Part III Implementing VLANs and STP.pdf",
+                  "url": "files/cs/stage3/05/mwkzv24d2-part-iii-implementing-vlans-and-stp.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwkzv24d3",
+              "title": "Part IV (4)",
+              "date": "2026-10-11",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "Part IV IPv4 Addressing.pdf",
+                  "url": "files/cs/stage3/05/mwkzv24d3-part-iv-ipv4-addressing.pdf"
+                }
+              ]
+            }
+          ],
           "hasLabs": true,
           "labs": []
         }
