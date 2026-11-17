@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-17T17:41:08.976Z",
+  "updated": "2026-11-17T17:41:34.385Z",
   "stages": [
     {
       "id": "stage1",
@@ -203,7 +203,7 @@
           "code": "03",
           "semester": 1,
           "title": "هندسة برمجيات",
-          "instructor": "لؤي خلف , مهند داوود",
+          "instructor": "لؤي ابراهيم , مهند داوود",
           "sources": [],
           "lectures": [
             {
