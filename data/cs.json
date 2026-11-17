@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-17T17:36:32.333Z",
+  "updated": "2026-11-17T17:37:59.068Z",
   "stages": [
     {
       "id": "stage1",
@@ -156,7 +156,47 @@
             }
           ],
           "hasLabs": true,
-          "labs": []
+          "labs": [
+            {
+              "id": "bmwkz6teq0",
+              "title": "numpy",
+              "date": "2026-10-23",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "first lecture numpy.pdf",
+                  "url": "files/cs/stage3/02/mwkz6teq0-first-lecture-numpy.pdf"
+                }
+              ]
+            },
+            {
+              "id": "bmwkz6teq1",
+              "title": "pandas 1",
+              "date": "2026-11-13",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "panda 1.pdf",
+                  "url": "files/cs/stage3/02/mwkz6teq1-panda-1.pdf"
+                }
+              ]
+            },
+            {
+              "id": "bmwkz6teq2",
+              "title": "pandas 2",
+              "date": "2026-11-14",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "pandas 2.pdf",
+                  "url": "files/cs/stage3/02/mwkz6teq2-pandas-2.pdf"
+                }
+              ]
+            }
+          ]
         }
       ]
     },
