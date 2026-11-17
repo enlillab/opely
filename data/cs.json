@@ -1,47 +1,11 @@
 {
-  "updated": "2026-11-17T07:28:42.451Z",
+  "updated": "2026-11-17T11:29:38.954Z",
   "stages": [
     {
       "id": "stage1",
       "name": "Stage 1",
       "color": "blue",
-      "courses": [
-        {
-          "id": "g",
-          "code": "G",
-          "semester": 1,
-          "title": "G",
-          "instructor": "B",
-          "sources": [],
-          "lectures": [],
-          "hasLabs": true,
-          "labs": [],
-          "archive": {
-            "versions": [],
-            "removed": [
-              {
-                "id": "rmwkdfett",
-                "kind": "lecture",
-                "removedAt": "2026-11-17",
-                "item": {
-                  "id": "lmwkdfa2x",
-                  "title": "B",
-                  "date": "2026-11-17",
-                  "summary": "",
-                  "video": "",
-                  "files": [
-                    {
-                      "label": "test_files.zip",
-                      "url": "files/cs/stage1/g/mwkdf8j4-test-files.zip",
-                      "commit": "44f36d5a33414bcbcd4983e7834aecaac72e6e71"
-                    }
-                  ]
-                }
-              }
-            ]
-          }
-        }
-      ]
+      "courses": []
     },
     {
       "id": "stage2",
