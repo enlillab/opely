@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-17T17:39:33.122Z",
+  "updated": "2026-11-17T17:41:08.976Z",
   "stages": [
     {
       "id": "stage1",
@@ -205,7 +205,86 @@
           "title": "هندسة برمجيات",
           "instructor": "لؤي خلف , مهند داوود",
           "sources": [],
-          "lectures": [],
+          "lectures": [
+            {
+              "id": "lmwkzandi0",
+              "title": "lecture 1",
+              "date": "2026-09-28",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "lecture(NO.1)-Software Engineering-2026 - 2027.pdf",
+                  "url": "files/cs/stage3/03/mwkzandi0-lecture-no.1-software-engineering-2026-2027.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwkzandi1",
+              "title": "lecture 2",
+              "date": "2026-10-03",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "lecture(NO.2)-Software Engineering-2026 - 2027.pdf",
+                  "url": "files/cs/stage3/03/mwkzandi1-lecture-no.2-software-engineering-2026-2027.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwkzandi2",
+              "title": "lecture 3",
+              "date": "2026-10-14",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "lecture(NO.3)-Software Engineering-2025 - 2026.pdf",
+                  "url": "files/cs/stage3/03/mwkzandi2-lecture-no.3-software-engineering-2025-2026.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwkzandi3",
+              "title": "lecture 4",
+              "date": "2026-11-12",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "lecture(NO.4)-Software Engineering-2026 - 2027.pdf",
+                  "url": "files/cs/stage3/03/mwkzandi3-lecture-no.4-software-engineering-2026-2027.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwkzandi4",
+              "title": "lecture 5",
+              "date": "2026-11-12",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "lecture(NO.5)-Software Engineering-2026 - 2027.pdf",
+                  "url": "files/cs/stage3/03/mwkzandi4-lecture-no.5-software-engineering-2026-2027.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwkzandi5",
+              "title": "lecture 6",
+              "date": "2026-11-12",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "lecture(NO.6)-Software Engineering-2026 - 2027.pdf",
+                  "url": "files/cs/stage3/03/mwkzandi5-lecture-no.6-software-engineering-2026-2027.pdf"
+                }
+              ]
+            }
+          ],
           "hasLabs": true,
           "labs": []
         }
