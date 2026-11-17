@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-17T17:34:27.941Z",
+  "updated": "2026-11-17T17:36:32.333Z",
   "stages": [
     {
       "id": "stage1",
@@ -114,7 +114,47 @@
           "title": "علم البيانات",
           "instructor": "رشا عبدالله",
           "sources": [],
-          "lectures": [],
+          "lectures": [
+            {
+              "id": "lmwkz4x430",
+              "title": "lec 1",
+              "date": "2026-10-14",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "المحاضرة الاولى علم البيانات.pdf",
+                  "url": "files/cs/stage3/02/mwkz4x430-المحاضرة-الاولى-علم-البيانات.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwkz4x432",
+              "title": "lec 2",
+              "date": "2026-11-06",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "المحاضره الثانيه علم البيانات.pdf",
+                  "url": "files/cs/stage3/02/mwkz4x432-المحاضره-الثانيه-علم-البيانات.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwkz4x431",
+              "title": "lec 3",
+              "date": "2026-11-13",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "المحاضره الثالثه علم البيانات.pdf",
+                  "url": "files/cs/stage3/02/mwkz4x431-المحاضره-الثالثه-علم-البيانات.pdf"
+                }
+              ]
+            }
+          ],
           "hasLabs": true,
           "labs": []
         }
