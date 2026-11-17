@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-17T17:47:04.235Z",
+  "updated": "2026-11-17T17:49:15.810Z",
   "stages": [
     {
       "id": "stage1",
@@ -335,7 +335,73 @@
           "title": "نظم تشغيل",
           "instructor": "اياد احمد",
           "sources": [],
-          "lectures": []
+          "lectures": [
+            {
+              "id": "lmwkzl5n61",
+              "title": "lec 1",
+              "date": "2026-10-08",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "OS-Lec1.pdf",
+                  "url": "files/cs/stage3/04/mwkzl5n61-os-lec1.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwkzl5n62",
+              "title": "lec 2",
+              "date": "2026-10-17",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "OS-Lec2.pdf",
+                  "url": "files/cs/stage3/04/mwkzl5n62-os-lec2.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwkzl5n63",
+              "title": "lec 3",
+              "date": "2026-10-23",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "OS-Lec3.pdf",
+                  "url": "files/cs/stage3/04/mwkzl5n63-os-lec3.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwkzl5n64",
+              "title": "lec 4",
+              "date": "2026-11-02",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "OS-Lec4.pdf",
+                  "url": "files/cs/stage3/04/mwkzl5n64-os-lec4.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwkzl5n60",
+              "title": "lec 5",
+              "date": "2026-11-07",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "OS_Lec5.pdf",
+                  "url": "files/cs/stage3/04/mwkzl5n60-os-lec5.pdf"
+                }
+              ]
+            }
+          ]
         }
       ]
     },
