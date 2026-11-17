@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-17T17:56:53.252Z",
+  "updated": "2026-11-17T17:57:35.992Z",
   "stages": [
     {
       "id": "stage1",
@@ -465,7 +465,21 @@
             }
           ],
           "hasLabs": true,
-          "labs": []
+          "labs": [
+            {
+              "id": "bmwkzw3do0",
+              "title": "Labs Parts I to IV",
+              "date": "2026-10-13",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "Hands-on Labs Parts I to IV_261013_121644.pdf",
+                  "url": "files/cs/stage3/05/mwkzw3do0-hands-on-labs-parts-i-to-iv-261013-121644.pdf"
+                }
+              ]
+            }
+          ]
         }
       ]
     },
