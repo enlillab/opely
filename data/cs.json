@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-17T07:28:21.004Z",
+  "updated": "2026-11-17T07:28:36.297Z",
   "stages": [
     {
       "id": "stage1",
@@ -13,7 +13,21 @@
           "title": "G",
           "instructor": "B",
           "sources": [],
-          "lectures": [],
+          "lectures": [
+            {
+              "id": "lmwkdfa2x",
+              "title": "B",
+              "date": "2026-11-17",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "test_files.zip",
+                  "url": "files/cs/stage1/g/mwkdf8j4-test-files.zip"
+                }
+              ]
+            }
+          ],
           "hasLabs": true,
           "labs": []
         }
