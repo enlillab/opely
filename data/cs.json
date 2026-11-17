@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-17T17:41:34.385Z",
+  "updated": "2026-11-17T17:46:05.266Z",
   "stages": [
     {
       "id": "stage1",
@@ -286,7 +286,47 @@
             }
           ],
           "hasLabs": true,
-          "labs": []
+          "labs": [
+            {
+              "id": "bmwkzh7dn0",
+              "title": "lab 1",
+              "date": "2026-09-25",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "Lab(NO.1)-Software Engineering-2026 - 2027.pdf",
+                  "url": "files/cs/stage3/03/mwkzh7dn0-lab-no.1-software-engineering-2026-2027.pdf"
+                }
+              ]
+            },
+            {
+              "id": "bmwkzh7dn1",
+              "title": "lab 2",
+              "date": "2026-09-25",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "Lab(NO.2)-Software Engineering-2026 - 2027.pdf",
+                  "url": "files/cs/stage3/03/mwkzh7dn1-lab-no.2-software-engineering-2026-2027.pdf"
+                }
+              ]
+            },
+            {
+              "id": "bmwkzh7dn2",
+              "title": "lab 3",
+              "date": "2026-10-14",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "Lab(NO.3)-Software Engineering-2026 - 2027.pdf",
+                  "url": "files/cs/stage3/03/mwkzh7dn2-lab-no.3-software-engineering-2026-2027.pdf"
+                }
+              ]
+            }
+          ]
         }
       ]
     },
