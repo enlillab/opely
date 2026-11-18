@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-18T11:40:38.157Z",
+  "updated": "2026-11-18T11:47:15.135Z",
   "stages": [
     {
       "id": "stage1",
@@ -382,7 +382,86 @@
           "title": "OOP",
           "instructor": "Dr. Zaidoon Tariq",
           "sources": [],
-          "lectures": [],
+          "lectures": [
+            {
+              "id": "lmwm21t5s0",
+              "title": "Lecture 1 ( Introduction )",
+              "date": "2026-10-01",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "Lecture 1.pdf",
+                  "url": "files/ai/stage2/ai15/mwm21t5s0-lecture-1.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwm21t5s1",
+              "title": "Lecture 2 ( Attributes & Methods )",
+              "date": "2026-10-08",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "Lecture 2.pdf",
+                  "url": "files/ai/stage2/ai15/mwm21t5s1-lecture-2.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwm21t5s2",
+              "title": "Lecture 3 ( Constructors )",
+              "date": "2026-10-16",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "Lecture 3.pdf",
+                  "url": "files/ai/stage2/ai15/mwm21t5s2-lecture-3.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwm21t5s3",
+              "title": "Lecture 4 ( Encapsulation )",
+              "date": "2026-10-22",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "Lecture 4.pdf",
+                  "url": "files/ai/stage2/ai15/mwm21t5s3-lecture-4.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwm21t5s4",
+              "title": "Lecture 5 ( Encapsulation 2 )",
+              "date": "2026-10-29",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "Lecture 5.pdf",
+                  "url": "files/ai/stage2/ai15/mwm21t5s4-lecture-5.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwm21t5s5",
+              "title": "Lecture 6 ( Inheritance )",
+              "date": "2026-11-05",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "Lecture 6.pdf",
+                  "url": "files/ai/stage2/ai15/mwm21t5s5-lecture-6.pdf"
+                }
+              ]
+            }
+          ],
           "hasLabs": true,
           "labs": []
         }
