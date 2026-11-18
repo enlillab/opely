@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-18T17:11:06.984Z",
+  "updated": "2026-11-18T17:11:13.697Z",
   "stages": [
     {
       "id": "stage1",
@@ -77,27 +77,7 @@
           "labs": [],
           "archive": {
             "versions": [],
-            "removed": [
-              {
-                "id": "rmwmdo8vc",
-                "kind": "lab",
-                "removedAt": "2026-11-18",
-                "item": {
-                  "id": "bmwm9hw4r0",
-                  "title": "@r07qxo  - R⤓Download",
-                  "date": "2026-11-18",
-                  "summary": "",
-                  "video": "",
-                  "files": [
-                    {
-                      "label": "@r07qxo  - R⤓Download.mp4",
-                      "url": "files/cs/stage2/fg11/mwm9hw4r0-r07qxo-r-download.mp4",
-                      "commit": "67894d9130a3bde74e5c9a19ec4c8b47869fd825"
-                    }
-                  ]
-                }
-              }
-            ]
+            "removed": []
           }
         }
       ]
