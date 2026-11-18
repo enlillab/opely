@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-18T21:02:14.301Z",
+  "updated": "2026-11-18T21:08:16.665Z",
   "stages": [
     {
       "id": "stage1",
@@ -957,7 +957,73 @@
           "title": "Machine Learning",
           "instructor": "Dr. Nezar khalaf",
           "sources": [],
-          "lectures": [],
+          "lectures": [
+            {
+              "id": "lmwmm4ugn0",
+              "title": "ML_Lecture0_Linear_Algebra",
+              "date": "2026-10-07",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "ML_Lecture0_Linear_Algebra.pdf",
+                  "url": "files/ai/stage2/ai017/mwmm4ugn0-ml-lecture0-linear-algebra.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwmm4ugn1",
+              "title": "ML_Lecture1_Introduction",
+              "date": "2026-10-21",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "ML_Lecture1_Introduction.pdf",
+                  "url": "files/ai/stage2/ai017/mwmm4ugn1-ml-lecture1-introduction.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwmm4ugn2",
+              "title": "ML_Lecture2_Loading_and_Scaling_Data",
+              "date": "2026-10-28",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "ML_Lecture2_Loading_and_Scaling_Data.pdf",
+                  "url": "files/ai/stage2/ai017/mwmm4ugn2-ml-lecture2-loading-and-scaling-data.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwmm4ugn3",
+              "title": "ML_Lecture3_Evaluating_Algorithms",
+              "date": "2026-11-04",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "ML_Lecture3_Evaluating_Algorithms.pdf",
+                  "url": "files/ai/stage2/ai017/mwmm4ugn3-ml-lecture3-evaluating-algorithms.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwmm4ugn4",
+              "title": "ML_Lecture4_Linear_Regression",
+              "date": "2026-11-18",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "ML_Lecture4_Linear_Regression.pdf",
+                  "url": "files/ai/stage2/ai017/mwmm4ugn4-ml-lecture4-linear-regression.pdf"
+                }
+              ]
+            }
+          ],
           "hasLabs": true,
           "labs": []
         }
