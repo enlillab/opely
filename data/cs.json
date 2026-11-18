@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-18T16:31:55.271Z",
+  "updated": "2026-11-18T16:33:42.269Z",
   "stages": [
     {
       "id": "stage1",
@@ -30,6 +30,19 @@
                 {
                   "label": "lecture 1 .pdf",
                   "url": "files/cs/stage2/fg11/mwmc9rmz-lecture-1.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwmcc4u2",
+              "title": "LUC 2",
+              "date": "2026-11-18",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "lecture 2.pdf",
+                  "url": "files/cs/stage2/fg11/mwmcc235-lecture-2.pdf"
                 }
               ]
             }
