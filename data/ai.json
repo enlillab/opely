@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-17T07:30:18.128Z",
+  "updated": "2026-11-18T11:40:38.157Z",
   "stages": [
     {
       "id": "stage1",
@@ -374,6 +374,17 @@
             }
           ],
           "labsOrdered": true
+        },
+        {
+          "id": "ai15",
+          "code": "AI 15",
+          "semester": 1,
+          "title": "OOP",
+          "instructor": "Dr. Zaidoon Tariq",
+          "sources": [],
+          "lectures": [],
+          "hasLabs": true,
+          "labs": []
         }
       ]
     },
