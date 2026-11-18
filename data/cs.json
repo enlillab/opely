@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-18T15:11:25.394Z",
+  "updated": "2026-11-18T15:14:25.572Z",
   "stages": [
     {
       "id": "stage1",
@@ -19,9 +19,37 @@
           "title": "برمجة كيانيه",
           "instructor": "اسراء",
           "sources": [],
-          "lectures": [],
+          "lectures": [
+            {
+              "id": "lmwm9hw4r1",
+              "title": "IMG_0616",
+              "date": "2026-11-18",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "IMG_0616.png",
+                  "url": "files/cs/stage2/fg11/mwm9hw4r1-img-0616.png"
+                }
+              ]
+            }
+          ],
           "hasLabs": true,
-          "labs": []
+          "labs": [
+            {
+              "id": "bmwm9hw4r0",
+              "title": "@r07qxo  - R⤓Download",
+              "date": "2026-11-18",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "@r07qxo  - R⤓Download.mp4",
+                  "url": "files/cs/stage2/fg11/mwm9hw4r0-r07qxo-r-download.mp4"
+                }
+              ]
+            }
+          ]
         }
       ]
     },
