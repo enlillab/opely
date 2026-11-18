@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-18T20:33:52.503Z",
+  "updated": "2026-11-18T20:37:26.209Z",
   "stages": [
     {
       "id": "stage1",
@@ -884,6 +884,17 @@
               ]
             }
           ]
+        },
+        {
+          "id": "ai016",
+          "code": "AI 016",
+          "semester": 1,
+          "title": "Microprocessors",
+          "instructor": "Dr. Tahseen Ali",
+          "sources": [],
+          "lectures": [],
+          "hasLabs": true,
+          "labs": []
         }
       ]
     },
