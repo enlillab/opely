@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-18T20:42:35.265Z",
+  "updated": "2026-11-18T20:51:56.052Z",
   "stages": [
     {
       "id": "stage1",
@@ -921,7 +921,34 @@
             }
           ],
           "hasLabs": true,
-          "labs": []
+          "labs": [
+            {
+              "id": "bmwmlj1im0",
+              "title": "Lab 1",
+              "date": "2026-10-01",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "LAB WORK.pdf",
+                  "url": "files/ai/stage2/ai016/mwmlj1im1-lab-work.pdf"
+                }
+              ]
+            },
+            {
+              "id": "bmwmlj1im1",
+              "title": "Lab 2",
+              "date": "2026-10-08",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "LAB WORK 2.pdf",
+                  "url": "files/ai/stage2/ai016/mwmlj1im0-lab-work-2.pdf"
+                }
+              ]
+            }
+          ]
         }
       ]
     },
