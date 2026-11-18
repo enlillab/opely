@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-18T20:37:26.209Z",
+  "updated": "2026-11-18T20:42:35.265Z",
   "stages": [
     {
       "id": "stage1",
@@ -892,7 +892,34 @@
           "title": "Microprocessors",
           "instructor": "Dr. Tahseen Ali",
           "sources": [],
-          "lectures": [],
+          "lectures": [
+            {
+              "id": "lmwml7y2q0",
+              "title": "Lec 1",
+              "date": "2026-10-01",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "Lec 1.pdf",
+                  "url": "files/ai/stage2/ai016/mwml7y2q0-lec-1.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwml7y2q1",
+              "title": "Lec 2",
+              "date": "2026-10-08",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "Lec 2.pdf",
+                  "url": "files/ai/stage2/ai016/mwml7y2q1-lec-2.pdf"
+                }
+              ]
+            }
+          ],
           "hasLabs": true,
           "labs": []
         }
