@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-18T15:19:05.960Z",
+  "updated": "2026-11-18T15:51:41.581Z",
   "stages": [
     {
       "id": "stage1",
@@ -16,7 +16,7 @@
           "id": "fg11",
           "code": "Fg11",
           "semester": 1,
-          "title": "برمجة كيانيه",
+          "title": "البرمجة الكيانية",
           "instructor": "اسراء",
           "sources": [],
           "lectures": [],
