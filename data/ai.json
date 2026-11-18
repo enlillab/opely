@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-18T11:47:15.135Z",
+  "updated": "2026-11-18T20:33:52.503Z",
   "stages": [
     {
       "id": "stage1",
@@ -463,7 +463,427 @@
             }
           ],
           "hasLabs": true,
-          "labs": []
+          "labs": [
+            {
+              "id": "bmwmktx0p0",
+              "title": "01 Introduction",
+              "date": "2026-10-01",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "01_Introduction.pdf",
+                  "url": "files/ai/stage2/ai15/mwmktx0p0-01-introduction.pdf"
+                },
+                {
+                  "label": "01_create_one_object.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p3-01-create-one-object.py"
+                },
+                {
+                  "label": "02_create_two_objects.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p4-02-create-two-objects.py"
+                },
+                {
+                  "label": "03_print_object_and_class.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p5-03-print-object-and-class.py"
+                },
+                {
+                  "label": "04_three_objects_different_addresses.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p6-04-three-objects-different-addresses.py"
+                },
+                {
+                  "label": "05_one_class_attribute.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p7-05-one-class-attribute.py"
+                },
+                {
+                  "label": "06_two_class_attributes.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p8-06-two-class-attributes.py"
+                },
+                {
+                  "label": "07_three_class_attributes.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p9-07-three-class-attributes.py"
+                },
+                {
+                  "label": "08_attribute_data_types.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0pa-08-attribute-data-types.py"
+                },
+                {
+                  "label": "09_shared_attribute_three_objects.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0pb-09-shared-attribute-three-objects.py"
+                },
+                {
+                  "label": "10_two_objects_two_attributes.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0pc-10-two-objects-two-attributes.py"
+                },
+                {
+                  "label": "11_change_attribute_in_one_object.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0pd-11-change-attribute-in-one-object.py"
+                },
+                {
+                  "label": "12_different_color_per_object.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0pe-12-different-color-per-object.py"
+                },
+                {
+                  "label": "13_default_value_vs_object_value.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0pf-13-default-value-vs-object-value.py"
+                }
+              ]
+            },
+            {
+              "id": "bmwmktx0p1",
+              "title": "02 Methods and Attributes",
+              "date": "2026-10-08",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "02_Methods_and_Attributes.pdf",
+                  "url": "files/ai/stage2/ai15/mwmktx0p1-02-methods-and-attributes.pdf"
+                },
+                {
+                  "label": "01_one_method.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0pg-01-one-method.py"
+                },
+                {
+                  "label": "02_two_methods.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0ph-02-two-methods.py"
+                },
+                {
+                  "label": "03_robot_move_stop.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0pi-03-robot-move-stop.py"
+                },
+                {
+                  "label": "04_drone_takeoff_land.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0pj-04-drone-takeoff-land.py"
+                },
+                {
+                  "label": "05_car_three_methods.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0pk-05-car-three-methods.py"
+                },
+                {
+                  "label": "06_vacuum_robot.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0pl-06-vacuum-robot.py"
+                },
+                {
+                  "label": "07_medical_robot.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0pm-07-medical-robot.py"
+                },
+                {
+                  "label": "08_attribute_and_method.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0pn-08-attribute-and-method.py"
+                },
+                {
+                  "label": "09_smartphone_attribute_and_methods.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0po-09-smartphone-attribute-and-methods.py"
+                },
+                {
+                  "label": "10_drone_attributes_and_methods.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0pp-10-drone-attributes-and-methods.py"
+                },
+                {
+                  "label": "11_student_attributes_and_methods.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0pq-11-student-attributes-and-methods.py"
+                },
+                {
+                  "label": "12_self_read_attribute.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0pr-12-self-read-attribute.py"
+                },
+                {
+                  "label": "13_drone_show_status.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0ps-13-drone-show-status.py"
+                },
+                {
+                  "label": "14_self_two_objects.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0pt-14-self-two-objects.py"
+                },
+                {
+                  "label": "15_method_sets_attribute.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0pu-15-method-sets-attribute.py"
+                },
+                {
+                  "label": "16_method_increments_attribute.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0pv-16-method-increments-attribute.py"
+                },
+                {
+                  "label": "17_FIX_THE_BUGS_accelerate.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0pw-17-fix-the-bugs-accelerate.py"
+                },
+                {
+                  "label": "18_accelerate_and_show.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0px-18-accelerate-and-show.py"
+                },
+                {
+                  "label": "19_drone_rise.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0py-19-drone-rise.py"
+                },
+                {
+                  "label": "20_smartphone_battery.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0pz-20-smartphone-battery.py"
+                },
+                {
+                  "label": "21_accelerate_and_brake.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p10-21-accelerate-and-brake.py"
+                },
+                {
+                  "label": "22_three_cars_independent_state.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p11-22-three-cars-independent-state.py"
+                },
+                {
+                  "label": "23_bank_account.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p12-23-bank-account.py"
+                },
+                {
+                  "label": "24_robot_two_attributes.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p13-24-robot-two-attributes.py"
+                },
+                {
+                  "label": "25_robot_move_stop_charge.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p14-25-robot-move-stop-charge.py"
+                },
+                {
+                  "label": "26_two_robots.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p15-26-two-robots.py"
+                },
+                {
+                  "label": "27_drone_takeoff_rise_land.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p16-27-drone-takeoff-rise-land.py"
+                },
+                {
+                  "label": "28_drone_three_attributes.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p17-28-drone-three-attributes.py"
+                },
+                {
+                  "label": "29_face_attendance.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p18-29-face-attendance.py"
+                },
+                {
+                  "label": "30_speech_recognizer.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p19-30-speech-recognizer.py"
+                },
+                {
+                  "label": "31_autonomous_car.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p1a-31-autonomous-car.py"
+                },
+                {
+                  "label": "32_sorting_robot.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p1b-32-sorting-robot.py"
+                },
+                {
+                  "label": "33_calculator_x_y.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p1c-33-calculator-x-y.py"
+                },
+                {
+                  "label": "34_double_parameter.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p1d-34-double-parameter.py"
+                },
+                {
+                  "label": "35_power_calculator_return.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p1e-35-power-calculator-return.py"
+                },
+                {
+                  "label": "36_electric_car_cost.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p1f-36-electric-car-cost.py"
+                },
+                {
+                  "label": "37_robot_move_and_time.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p1g-37-robot-move-and-time.py"
+                },
+                {
+                  "label": "38_safe_divide.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p1h-38-safe-divide.py"
+                },
+                {
+                  "label": "39_pass_or_fail.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p1i-39-pass-or-fail.py"
+                },
+                {
+                  "label": "40_grade_classifier.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p1j-40-grade-classifier.py"
+                },
+                {
+                  "label": "41_robot_move_validation.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p1k-41-robot-move-validation.py"
+                },
+                {
+                  "label": "42_traffic_light_match.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p1l-42-traffic-light-match.py"
+                },
+                {
+                  "label": "43_sum_odd.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p1m-43-sum-odd.py"
+                },
+                {
+                  "label": "44_factorial.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p1n-44-factorial.py"
+                },
+                {
+                  "label": "45_count_even_odd.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p1o-45-count-even-odd.py"
+                },
+                {
+                  "label": "46_sum_even_odd_two_calculators.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p1p-46-sum-even-odd-two-calculators.py"
+                },
+                {
+                  "label": "47_student_total_and_result.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p1q-47-student-total-and-result.py"
+                },
+                {
+                  "label": "48_calculator_dispatch.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p1r-48-calculator-dispatch.py"
+                },
+                {
+                  "label": "49_student_check_result.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p1s-49-student-check-result.py"
+                },
+                {
+                  "label": "50_car_drive_check.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p1t-50-car-drive-check.py"
+                },
+                {
+                  "label": "51_robot_battery_operate.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p1u-51-robot-battery-operate.py"
+                },
+                {
+                  "label": "52_calculator_process_list.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p1v-52-calculator-process-list.py"
+                },
+                {
+                  "label": "53_robot_route.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p1w-53-robot-route.py"
+                },
+                {
+                  "label": "54_number_triangle.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p1x-54-number-triangle.py"
+                },
+                {
+                  "label": "55_repeated_number_triangle.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p1y-55-repeated-number-triangle.py"
+                },
+                {
+                  "label": "56_binary_triangle.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p1z-56-binary-triangle.py"
+                },
+                {
+                  "label": "57_star_diamond_half.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p20-57-star-diamond-half.py"
+                },
+                {
+                  "label": "58_twelve_patterns_menu.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p21-58-twelve-patterns-menu.py"
+                },
+                {
+                  "label": "59_calculator_setup_range.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p22-59-calculator-setup-range.py"
+                },
+                {
+                  "label": "60_calculator_setup_process.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p23-60-calculator-setup-process.py"
+                },
+                {
+                  "label": "61_star_pattern_setup.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p24-61-star-pattern-setup.py"
+                }
+              ]
+            },
+            {
+              "id": "bmwmktx0p2",
+              "title": "03 Constructors",
+              "date": "2026-10-16",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "03_Constructors.pdf",
+                  "url": "files/ai/stage2/ai15/mwmktx0p2-03-constructors.pdf"
+                },
+                {
+                  "label": "01_without_constructor.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p25-01-without-constructor.py"
+                },
+                {
+                  "label": "02_first_init.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p26-02-first-init.py"
+                },
+                {
+                  "label": "03_robot_init.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p27-03-robot-init.py"
+                },
+                {
+                  "label": "04_change_after_init.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p28-04-change-after-init.py"
+                },
+                {
+                  "label": "05_list_of_objects.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p29-05-list-of-objects.py"
+                },
+                {
+                  "label": "06_tuple_of_objects.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p2a-06-tuple-of-objects.py"
+                },
+                {
+                  "label": "07_dict_of_objects.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p2b-07-dict-of-objects.py"
+                },
+                {
+                  "label": "08_find_best_student.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p2c-08-find-best-student.py"
+                },
+                {
+                  "label": "09_list_attribute_stack.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p2d-09-list-attribute-stack.py"
+                },
+                {
+                  "label": "10_dict_attribute_marks.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p2e-10-dict-attribute-marks.py"
+                },
+                {
+                  "label": "11_two_students_marks.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p2f-11-two-students-marks.py"
+                },
+                {
+                  "label": "12_set_attribute.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p2g-12-set-attribute.py"
+                },
+                {
+                  "label": "13_average_from_list.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p2h-13-average-from-list.py"
+                },
+                {
+                  "label": "14_average_from_dict.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p2i-14-average-from-dict.py"
+                },
+                {
+                  "label": "15_neuron_two_inputs.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p2j-15-neuron-two-inputs.py"
+                },
+                {
+                  "label": "16_neuron_loop.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p2k-16-neuron-loop.py"
+                },
+                {
+                  "label": "17_list_of_neurons.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p2l-17-list-of-neurons.py"
+                },
+                {
+                  "label": "18_stack_push_pop.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p2m-18-stack-push-pop.py"
+                },
+                {
+                  "label": "19_drone_methods_with_init.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p2n-19-drone-methods-with-init.py"
+                },
+                {
+                  "label": "20_destructor_camera.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p2o-20-destructor-camera.py"
+                },
+                {
+                  "label": "21_destructor_stacks.py",
+                  "url": "files/ai/stage2/ai15/mwmktx0p2p-21-destructor-stacks.py"
+                }
+              ]
+            }
+          ]
         }
       ]
     },
