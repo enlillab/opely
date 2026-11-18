@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-18T15:51:41.581Z",
+  "updated": "2026-11-18T16:31:55.271Z",
   "stages": [
     {
       "id": "stage1",
@@ -19,7 +19,21 @@
           "title": "البرمجة الكيانية",
           "instructor": "اسراء",
           "sources": [],
-          "lectures": [],
+          "lectures": [
+            {
+              "id": "lmwmc9u9z",
+              "title": "LUC 1",
+              "date": "2026-11-18",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "lecture 1 .pdf",
+                  "url": "files/cs/stage2/fg11/mwmc9rmz-lecture-1.pdf"
+                }
+              ]
+            }
+          ],
           "hasLabs": true,
           "labs": [
             {
