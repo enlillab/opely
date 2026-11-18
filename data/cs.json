@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-17T18:02:28.938Z",
+  "updated": "2026-11-18T15:09:21.285Z",
   "stages": [
     {
       "id": "stage1",
@@ -11,7 +11,19 @@
       "id": "stage2",
       "name": "Stage 2",
       "color": "orange",
-      "courses": []
+      "courses": [
+        {
+          "id": "fg11",
+          "code": "Fg11",
+          "semester": 1,
+          "title": "اسراء",
+          "instructor": "برمجة كيانيه",
+          "sources": [],
+          "lectures": [],
+          "hasLabs": true,
+          "labs": []
+        }
+      ]
     },
     {
       "id": "stage3",
