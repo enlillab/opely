@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-18T20:51:56.052Z",
+  "updated": "2026-11-18T21:02:14.301Z",
   "stages": [
     {
       "id": "stage1",
@@ -949,6 +949,17 @@
               ]
             }
           ]
+        },
+        {
+          "id": "ai017",
+          "code": "AI 017",
+          "semester": 1,
+          "title": "Machine Learning",
+          "instructor": "Dr. Nezar khalaf",
+          "sources": [],
+          "lectures": [],
+          "hasLabs": true,
+          "labs": []
         }
       ]
     },
