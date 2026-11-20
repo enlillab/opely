@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-20T11:13:18.350Z",
+  "updated": "2026-11-20T11:16:36.904Z",
   "stages": [
     {
       "id": "stage1",
@@ -181,7 +181,21 @@
             }
           ],
           "hasLabs": true,
-          "labs": []
+          "labs": [
+            {
+              "id": "lmwovw23s",
+              "title": "Lab 1",
+              "date": "2026-11-20",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "lec1_Array.pdf",
+                  "url": "files/cs/stage2/fg22-labs/mwovvzyc-lec1-array.pdf"
+                }
+              ]
+            }
+          ]
         }
       ]
     },
