@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-20T11:17:49.065Z",
+  "updated": "2026-11-20T11:19:13.171Z",
   "stages": [
     {
       "id": "stage1",
@@ -205,6 +205,19 @@
                 {
                   "label": "Lab.Lec.Stack.pdf",
                   "url": "files/cs/stage2/fg22-labs/mwovxj9h-lab.lec.stack.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwovzeoi",
+              "title": "Lab 3",
+              "date": "2026-11-20",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "QueueProgram..pdf",
+                  "url": "files/cs/stage2/fg22-labs/mwovzbo4-queueprogram..pdf"
                 }
               ]
             }
