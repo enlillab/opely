@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-20T11:06:28.154Z",
+  "updated": "2026-11-20T11:08:01.200Z",
   "stages": [
     {
       "id": "stage1",
@@ -98,6 +98,19 @@
                 {
                   "label": "lec1-DataStructure.pdf",
                   "url": "files/cs/stage2/fg22/mwoviy0c-lec1-datastructure.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwovl06j",
+              "title": "LEC 2",
+              "date": "2026-11-20",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "lec2-Complexity analysis.pdf",
+                  "url": "files/cs/stage2/fg22/mwovkwo2-lec2-complexity-analysis.pdf"
                 }
               ]
             }
