@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-20T11:20:27.174Z",
+  "updated": "2026-11-20T11:22:13.333Z",
   "stages": [
     {
       "id": "stage1",
@@ -255,6 +255,17 @@
               ]
             }
           ]
+        },
+        {
+          "id": "fg33",
+          "code": "Fg 33",
+          "semester": 1,
+          "title": "قواعد بيانات",
+          "instructor": "م.م مصطفى لطيف فاضل",
+          "sources": [],
+          "lectures": [],
+          "hasLabs": true,
+          "labs": []
         }
       ]
     },
