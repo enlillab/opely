@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-20T11:19:13.171Z",
+  "updated": "2026-11-20T11:20:27.174Z",
   "stages": [
     {
       "id": "stage1",
@@ -218,6 +218,39 @@
                 {
                   "label": "QueueProgram..pdf",
                   "url": "files/cs/stage2/fg22-labs/mwovzbo4-queueprogram..pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwow0zs6",
+              "title": "Lab 4",
+              "date": "2026-11-20",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "6- DelNodeAtMidOfLinkedList.pdf",
+                  "url": "files/cs/stage2/fg22-labs/mwow0iah-6-delnodeatmidoflinkedlist.pdf"
+                },
+                {
+                  "label": "3- AddNodeAtMidOfLinkedList.pdf",
+                  "url": "files/cs/stage2/fg22-labs/mwow0kk1-3-addnodeatmidoflinkedlist.pdf"
+                },
+                {
+                  "label": "4- DelFirstNodeOfLinkedList.pdf",
+                  "url": "files/cs/stage2/fg22-labs/mwow0n2f-4-delfirstnodeoflinkedlist.pdf"
+                },
+                {
+                  "label": "5- DelLastNodeOfLinkedList1.pdf",
+                  "url": "files/cs/stage2/fg22-labs/mwow0q8g-5-dellastnodeoflinkedlist1.pdf"
+                },
+                {
+                  "label": "1- AddNodeAtStartOfLinkedList.pdf",
+                  "url": "files/cs/stage2/fg22-labs/mwow0t5o-1-addnodeatstartoflinkedlist.pdf"
+                },
+                {
+                  "label": "2- AddNodeAtLastOfLinkedList.pdf",
+                  "url": "files/cs/stage2/fg22-labs/mwow0w9y-2-addnodeatlastoflinkedlist.pdf"
                 }
               ]
             }
