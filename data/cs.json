@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-20T12:14:29.111Z",
+  "updated": "2026-11-20T16:22:42.359Z",
   "stages": [
     {
       "id": "stage1",
@@ -254,7 +254,8 @@
                 }
               ]
             }
-          ]
+          ],
+          "lecturesOrdered": true
         },
         {
           "id": "fg33",
