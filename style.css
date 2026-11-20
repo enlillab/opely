@@ -566,6 +566,20 @@ input[type="file"]:disabled::file-selector-button { opacity: 0.5; cursor: defaul
 .page { background: #FFFFFF; overflow: hidden; border-radius: 0; direction: ltr; box-shadow: var(--shadow); } /* a PDF page is drawn left to right, whatever the language of the site */
 @media (min-width: 40rem) { .page { border-radius: var(--r-control); } }
 .page canvas { display: block; width: 100%; height: auto; }
+.page { position: relative; }
+/* The page's text, invisible over the picture of it, so it can be selected (from PDF.js) */
+.textLayer { position: absolute; inset: 0; overflow: hidden; line-height: 1; text-align: initial;
+  -webkit-text-size-adjust: none; text-size-adjust: none; forced-color-adjust: none; transform-origin: 0 0; z-index: 2;
+  user-select: text; -webkit-user-select: text; -webkit-touch-callout: default; -webkit-text-stroke: 0 !important; }
+.textLayer :is(span, br) { color: transparent; position: absolute; white-space: pre; cursor: text; transform-origin: 0% 0%; }
+.textLayer span.markedContent { top: 0; height: 0; }
+.textLayer ::selection { background: rgba(0, 122, 255, 0.28); }
+.textLayer br::selection { background: transparent; }
+.textLayer .endOfContent { display: block; position: absolute; inset: 100% 0 0; z-index: -1; cursor: default; user-select: none; }
+.textLayer .endOfContent.active { top: 0; }
+/* Settings → Reading → PDF pages: Actual size. Wide pages scroll sideways. */
+.pages.actual { overflow-x: auto; justify-items: start; -webkit-overflow-scrolling: touch; }
+.pages.actual .page { max-width: none; flex: none; }
 
 /* ---------- Main cards, progress rings and bars ----------
    Each page has one main card that leads the eye, like the timer in Mo Focus. */
@@ -955,6 +969,8 @@ button.delete:active { transform: scale(0.92); }
 }
 .lc { flex: 1; white-space: pre; padding-right: 18px; unicode-bidi: plaintext; }
 .reader.text .ln { display: none; }
+.reader.no-numbers .ln { display: none; }
+.reader.code.no-numbers .lc { padding-left: 18px; }
 .reader.text .lc { padding: 0 18px; }
 .reader.wrapped .reader-lines { min-width: 0; }
 .reader.wrapped .lc { white-space: pre-wrap; overflow-wrap: anywhere; }
@@ -1100,6 +1116,55 @@ ol.steps li { margin: 6px 0; font-size: 15px; }
 .key-list .row { gap: 12px; }
 .key-list code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 13px; direction: ltr; }
 .key-list .grow { text-align: end; }
+
+/* Settings → Reading */
+.reading-preview { display: grid; gap: 8px; margin: 0 0 10px; pointer-events: none; }
+.reading-preview .reader { margin: 0; }
+.reading-preview .reader-scroll { max-height: none; }
+.stepper-row { gap: 12px; }
+.stepper { display: inline-flex; align-items: center; gap: 4px; padding: 3px; border-radius: var(--r-pill); background: var(--field); }
+.stepper .step { width: 34px; height: 30px; min-height: 30px; padding: 0; border: 0; border-radius: var(--r-pill);
+  background: var(--surface); color: var(--label); font: inherit; font-size: 19px; line-height: 1; cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12); }
+.stepper .step:disabled { opacity: 0.35; cursor: default; }
+.stepper .step-value { min-width: 58px; text-align: center; font-size: 14px; font-weight: 600; color: var(--label); font-variant-numeric: tabular-nums; }
+.setting-pair .segment:disabled { opacity: 0.4; }
+/* Edit lecture: the up and down arrows of a file, one above the other */
+.order-pair { display: flex; flex-direction: column; gap: 3px; flex: none; }
+.order-pair .order-button { width: 30px; height: 24px; min-height: 24px; border-radius: 8px; }
+.order-pair .order-button .ic { width: 14px; height: 14px; }
+
+/* Dragging to reorder: the handle, the row being moved, and the rows making room */
+.drag-handle { flex: none; display: grid; place-items: center; width: 44px; height: 44px; margin: -6px -8px -6px 0;
+  border-radius: 12px; color: var(--tertiary); cursor: grab; touch-action: none; -webkit-user-select: none; user-select: none; }
+[dir="rtl"] .drag-handle { margin: -6px 0 -6px -8px; }
+.drag-handle .ic { width: 20px; height: 20px; }
+.drag-handle:hover, .drag-handle:focus-visible { color: var(--label); background: var(--field); }
+.drag-active, .drag-active * { cursor: grabbing !important; -webkit-user-select: none; user-select: none; }
+.drag-active > li { transition: transform 0.18s ease; }
+.drag-active > li.dragging { transition: none; position: relative; z-index: 5; background: var(--surface); border-radius: 14px;
+  box-shadow: 0 10px 30px -8px rgba(0, 0, 0, 0.25), 0 0 0 1px var(--separator); }
+.drag-active > li.dragging .drag-handle { color: var(--tint); }
+.drag-hint { margin-top: 0; }
+#viewFiles.saving, #lectureList.saving { opacity: 0.55; pointer-events: none; }
+.order-line { margin-top: 10px; }
+.link-button { border: 0; background: none; padding: 0; font: inherit; color: var(--tint); cursor: pointer; }
+.toast .undo-button { margin-inline-start: 10px; border: 0; border-radius: var(--r-pill); padding: 5px 12px; font: inherit; font-weight: 600;
+  color: var(--tint); background: var(--field); cursor: pointer; }
+
+/* Download all, under a lecture's files */
+/* Previous / Next file, at the end of a file */
+.file-count { margin: 28px 4px 0; font-size: 13px; color: var(--secondary); text-align: center; }
+.file-pager { margin-top: 10px; }
+.file-pager a { min-width: 0; padding: 7px 16px; }
+.pager-text { display: flex; flex-direction: column; min-width: 0; line-height: 1.25; }
+.pager-text small { font-size: 12px; font-weight: 400; opacity: .78; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+.lecture-saves { display: flex; gap: 10px; margin-top: 12px; }
+.lecture-saves .button { flex: 1; min-width: 0; white-space: nowrap; }
+.lecture-saves .button.is-saved { color: var(--green); }
+
+/* Settings → Bold text: every letter a little heavier, keeping the difference between titles and text */
+html.bold-text body { -webkit-text-stroke: 0.35px currentColor; }
 
 /* ---------- No glows ----------
    Buttons, badges, rings and icons keep their colour and the thin light line on top,

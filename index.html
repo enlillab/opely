@@ -14,10 +14,10 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Opely">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<link rel="stylesheet" href="style.css?v=33">
-<script src="lang.js?v=33"></script>
-<script src="icons.js?v=33"></script>
-<script src="viewer.js?v=33"></script>
+<link rel="stylesheet" href="style.css?v=45">
+<script src="lang.js?v=45"></script>
+<script src="icons.js?v=45"></script>
+<script src="viewer.js?v=45"></script>
 </head>
 <body>
 <!-- The navigation bar: a back button, and the page's name once its big title scrolls away -->
@@ -962,11 +962,115 @@ function showLecture(dept, stage, course, number) {
     ${lecture.summary ? `<h2 class="label">${t("Summary")}</h2><p class="text-block">${esc(lecture.summary)}</p>` : ""}
     <h2 class="label">${t("Files")}</h2>
     ${files ? `<ul class="group icons">${files}</ul>` : `<p class="text-block secondary">${t("No files yet.")}</p>`}
+    ${zipFiles(lecture).length ? `<div class="lecture-saves">
+        ${zipFiles(lecture).length > 1 ? `<button id="downloadAll" class="button secondary" type="button">${icon("download")}<span>${t("Download all")}</span></button>` : ""}
+        ${window.caches ? `<button id="keepOffline" class="button secondary" type="button"><span id="keepIcon">${icon("tray")}</span><span id="keepLabel">${t("Save offline")}</span></button>` : ""}
+      </div>
+      <p id="downloadAllState" class="hint-below" role="status">${zipFiles(lecture).length > 1 ? t("Download all: one zip on your device. Save offline: kept in this browser, to open without internet.") : t("Save offline keeps the file in this browser, to open without internet.")}</p>` : ""}
     ${(lecture.earlier || []).length ? `<h2 class="label">${t("Earlier files")}</h2><ul class="group icons earlier">${lecture.earlier.map((file, i) => archivedFileRow(file, here + "-earlier-" + (i + 1))).join("")}</ul>` : ""}
     <nav class="pager" aria-label="${t("Lectures")}">${previous}${next}</nav>`;
   markSaved();
   wireShare(lecture.title);
+  wireDownloadAll(lecture, course);
+  wireKeepOffline(lecture);
   markKnown(dept, [keyOfLecture(dept, stage, course, lecture, number)]);
+}
+
+// ----- Save offline: every file of a lecture kept in this browser (like a course's "Save for offline") -----
+async function wireKeepOffline(lecture) {
+  const button = document.getElementById("keepOffline");
+  if (!button) return;
+  const files = zipFiles(lecture);
+  const address = file => file.from || file.url;
+  const state = document.getElementById("downloadAllState");
+  const label = document.getElementById("keepLabel");
+  const view = viewNumber;
+  const count = async () => {
+    try { const cache = await caches.open(FILE_CACHE); let n = 0; for (const file of files) if (await cache.match(address(file))) n += 1; return n; } catch (error) { return 0; }
+  };
+  const show = saved => {
+    const all = saved === files.length;
+    button.dataset.all = all ? "yes" : "";
+    button.classList.toggle("is-saved", all);
+    document.getElementById("keepIcon").innerHTML = icon(all ? "check" : "tray");
+    label.textContent = t(all ? "Saved offline" : "Save offline");
+  };
+  show(await count());
+  button.addEventListener("click", async () => {
+    if (button.dataset.busy) return;
+    if (button.dataset.all) { // already saved: a second tap removes the copies
+      if (!button.dataset.armed) { button.dataset.armed = "yes"; label.textContent = t("Tap again to remove"); setTimeout(() => { if (button.isConnected && button.dataset.armed) { delete button.dataset.armed; show(files.length); } }, 4000); return; }
+      delete button.dataset.armed;
+      const cache = await caches.open(FILE_CACHE);
+      for (const file of files) await cache.delete(address(file));
+      show(0); markSaved();
+      state.textContent = t("Removed from this browser.");
+      return;
+    }
+    button.dataset.busy = "yes";
+    let saved = 0, failed = 0;
+    for (const file of files) {
+      label.textContent = t("Saving {i} of {n}…", { i: saved + failed + 1, n: files.length });
+      try { await getFile(address(file)); saved += 1; } catch (error) { failed += 1; }
+    }
+    delete button.dataset.busy;
+    if (view !== viewNumber) return;
+    show(await count());
+    state.textContent = failed ? t("{n} couldn’t be saved. Check your connection.", { n: failed }) : t("Saved in this browser. It opens even without internet.");
+    markSaved();
+  });
+}
+
+// ----- Download all: every file of a lecture in one zip -----
+// Files kept on the site go in; web links (Drive and so on) can't, so they are left out.
+const zipFiles = lecture => (lecture.files || []).filter(file => file.url && !/^https?:/.test(file.url));
+let zipLibrary = null;
+function loadZipLibrary() {
+  if (!zipLibrary) zipLibrary = new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = "lib/jszip.min.js";
+    script.onload = () => resolve(window.JSZip);
+    script.onerror = () => { zipLibrary = null; reject(new Error("zip")); };
+    document.head.append(script);
+  });
+  return zipLibrary;
+}
+function wireDownloadAll(lecture, course) {
+  const button = document.getElementById("downloadAll");
+  if (!button) return;
+  const state = document.getElementById("downloadAllState");
+  const view = viewNumber;
+  button.addEventListener("click", async () => {
+    const files = zipFiles(lecture);
+    button.disabled = true;
+    try {
+      const JSZip = await loadZipLibrary();
+      const zip = new JSZip();
+      const used = new Set();
+      for (let i = 0; i < files.length; i += 1) {
+        state.textContent = t("Getting file {i} of {n}…", { i: i + 1, n: files.length });
+        const got = await getFile(files[i].from || files[i].url);
+        let name = downloadName(files[i]).replace(/[\\/:*?"<>|]/g, "-");
+        if (used.has(name.toLowerCase())) { const dot = name.lastIndexOf("."); name = (dot > 0 ? name.slice(0, dot) : name) + " (" + (i + 1) + ")" + (dot > 0 ? name.slice(dot) : ""); }
+        used.add(name.toLowerCase());
+        zip.file(name, got.blob);
+      }
+      state.textContent = t("Making the zip…");
+      const blob = await zip.generateAsync({ type: "blob" }); // stored as they are: PDFs and slides are already packed
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = (course.code + " – " + lecture.title).replace(/[\\/:*?"<>|]/g, "-") + ".zip";
+      document.body.append(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(link.href), 60000);
+      if (view === viewNumber) { state.textContent = t("Downloaded."); markSaved(); }
+    } catch (error) {
+      if (view === viewNumber) state.textContent = t("Couldn’t download everything. Check your connection, then try again.");
+    } finally {
+      button.disabled = false;
+    }
+  });
 }
 
 // ----- A PDF, shown inside the page -----
@@ -1012,7 +1116,7 @@ function downloadName(file) {
   return ending && !file.label.toLowerCase().endsWith("." + ending) ? file.label + "." + ending : file.label;
 }
 
-async function showFile(file, backAddress, backLabel) {
+async function showFile(file, backAddress, backLabel, pager) {
   const view = viewNumber;
   document.title = file.label + " | Opely";
   app.innerHTML = `
@@ -1020,9 +1124,11 @@ async function showFile(file, backAddress, backLabel) {
     <h1>${esc(file.label)}</h1>
     <p id="fileStatus" class="secondary" role="status">${t("Downloading…")}</p>
     <p class="file-actions"><a id="fileDownload" class="button" hidden>${icon("download")}${t("Download")}</a>
-      <button id="fileCopy" class="button secondary" type="button" hidden>${t("Copy")}</button></p>
+      <button id="fileCopy" class="button secondary" type="button" hidden>${t("Copy")}</button>
+      <a id="fileOpen" class="button secondary" href="${esc(file.from || file.url)}" target="_blank" rel="noopener" hidden>${t("Open in your device’s viewer")}</a></p>
     <div id="pages" class="pages"></div>
-    <div id="shown" class="shown"></div>`;
+    <div id="shown" class="shown"></div>
+    ${pager || ""}`;
   const status = document.getElementById("fileStatus");
   const type = fileType(file.url) || { kind: "pdf", name: "PDF" };
 
@@ -1058,6 +1164,7 @@ async function showFile(file, backAddress, backLabel) {
     const pdf = await library.getDocument({ data: await got.blob.arrayBuffer() }).promise;
     if (view !== viewNumber) return;
     status.textContent = plural(pdf.numPages, "page") + (got.saved ? SEP + t("saved in this browser") : "");
+    document.getElementById("fileOpen").hidden = false;
     await showPages(pdf, view);
   } catch (error) {
     if (view !== viewNumber) return;
@@ -1069,10 +1176,15 @@ async function showFile(file, backAddress, backLabel) {
 
 // Makes an empty box for every page, and draws a page only when the student
 // scrolls near it. A long file would be slow and heavy if drawn all at once.
+// Settings → Reading → PDF pages: "fit" makes each page as wide as the screen, "actual" shows it at its
+// real size (a page of A4 is about 794 pixels wide), scrolling sideways when it is wider than the screen.
+const ACTUAL = 96 / 72; // PDF sizes are in points; the screen counts in pixels
 async function showPages(pdf, view) {
   const holder = document.getElementById("pages");
   const size = (await pdf.getPage(1)).getViewport({ scale: 1 });
   if (view !== viewNumber) return;
+  const actual = readerSettings().pdf === "actual";
+  holder.classList.toggle("actual", actual);
 
   pageWatcher = new IntersectionObserver(entries => entries.forEach(entry => {
     if (!entry.isIntersecting) return;
@@ -1085,6 +1197,7 @@ async function showPages(pdf, view) {
     box.className = "page";
     box.dataset.page = number;
     box.style.aspectRatio = size.width + " / " + size.height;
+    if (actual) box.style.width = Math.round(size.width * ACTUAL) + "px";
     holder.append(box);
     pageWatcher.observe(box);
   }
@@ -1096,7 +1209,9 @@ async function drawPage(pdf, box, view) {
   // Draw at the width of the box, a little sharper on high-resolution screens
   const sharpness = Math.min(window.devicePixelRatio || 1, 2);
   const natural = page.getViewport({ scale: 1 });
-  const viewport = page.getViewport({ scale: box.clientWidth / natural.width * sharpness });
+  if (box.parentElement.classList.contains("actual")) box.style.width = Math.round(natural.width * ACTUAL) + "px";
+  const scale = box.clientWidth / natural.width; // the page's size on the screen
+  const viewport = page.getViewport({ scale: scale * sharpness });
   const canvas = document.createElement("canvas");
   canvas.dir = "ltr"; // a PDF page is drawn left to right, even on a right-to-left site
   canvas.width = viewport.width;
@@ -1105,7 +1220,20 @@ async function drawPage(pdf, box, view) {
   canvas.setAttribute("aria-label", t("Page {n}", { n: box.dataset.page }));
   box.style.aspectRatio = natural.width + " / " + natural.height;
   box.append(canvas);
-  await page.render({ canvasContext: canvas.getContext("2d"), viewport: viewport }).promise;
+  const drawing = page.render({ canvasContext: canvas.getContext("2d"), viewport: viewport }).promise;
+
+  // The page's text, laid invisibly over the picture of it, so it can be selected, copied, looked up
+  // or translated with the phone's own menu. A scanned page (only a picture) has no text to lay.
+  try {
+    const layer = document.createElement("div");
+    layer.className = "textLayer";
+    layer.style.setProperty("--scale-factor", scale);
+    box.append(layer);
+    const text = await page.getTextContent();
+    if (view !== viewNumber) return;
+    await pdfjsLib.renderTextLayer({ textContentSource: text, container: layer, viewport: page.getViewport({ scale: scale }), textDivs: [] }).promise;
+  } catch (error) { /* the page is still shown, only without selectable text */ }
+  await drawing;
 }
 
 // ----- Shown while the content is loading, or if it can’t be loaded -----
@@ -1311,6 +1439,11 @@ async function showNotifications() {
   }));
 }
 
+// ----- Settings → Start: Opely can open on Home, or straight on the student's stage -----
+const START_KEY = "opely-start";
+const openingPage = () => { try { return localStorage.getItem(START_KEY) === "mystage" ? "mystage" : "home"; } catch (error) { return "home"; } };
+const setOpeningPage = value => { try { localStorage.setItem(START_KEY, value); } catch (error) { /* storage blocked */ } };
+
 // ----- Settings: appearance, language, saved files, and the way to the admin page -----
 
 async function showSettings() {
@@ -1323,6 +1456,60 @@ async function showSettings() {
         aria-checked="${savedChoice(key) === value}" ${savedChoice(key) === value ? 'aria-current="true"' : ""}>${words}</button>`).join("")}
     </div>`;
 
+  // ---- The pieces every row is made of, so all rows look and behave the same ----
+  const reading = readerSettings();
+  const mine = myStage();
+  const start = openingPage();
+  const notify = savedNotify();
+  const stepLabel = n => n === 0 ? t("Normal") : (n > 0 ? "+" : "−") + Math.abs(n).toLocaleString(locale);
+  const sub = text => text ? `<br><span class="secondary small">${text}</span>` : "";
+  // A row with a switch on the end
+  const toggleRow = (id, label, on, shape, color, note) => `
+    <li><label class="row switch-row" for="${id}">${tile(shape, color)}
+      <span class="grow">${t(label)}${sub(note)}</span>
+      <input id="${id}" type="checkbox" role="switch" ${on ? "checked" : ""}><span class="switch" aria-hidden="true"></span>
+    </label></li>`;
+  // A row with − and + on the end
+  const stepRow = (key, label, shape, color) => `
+    <li><div class="row stepper-row">${tile(shape, color)}<span class="grow">${t(label)}</span>
+      <span class="stepper" dir="ltr">
+        <button type="button" class="step" data-step="${key}" data-by="-1" aria-label="${t("Smaller")}" ${reading[key] <= -4 ? "disabled" : ""}>−</button>
+        <span class="step-value">${stepLabel(reading[key])}</span>
+        <button type="button" class="step" data-step="${key}" data-by="1" aria-label="${t("Bigger")}" ${reading[key] >= 8 ? "disabled" : ""}>+</button>
+      </span></div></li>`;
+  // A row with a choice of two or three under its name
+  const choiceRow = (label, shape, color, control) => `
+    <li><div class="row choice">${tile(shape, color)}<span class="grow">${t(label)}</span>${control}</div></li>`;
+  const pairSwitch = (name, value, choices, disabled) => `
+    <div class="segments setting-pair" role="radiogroup" data-pair="${name}">
+      ${choices.map(([v, words]) => `<button class="segment" type="button" role="radio" data-value="${v}" aria-checked="${value === v}"
+        ${value === v ? 'aria-current="true"' : ""} ${disabled && v !== value ? "disabled" : ""}>${words}</button>`).join("")}
+    </div>`;
+  // A row that opens another page
+  const linkRow = (href, label, shape, color, note, end) => `
+    <li><a class="row" href="${href}">${tile(shape, color)}<span class="grow">${t(label)}${sub(note)}</span>${end ? `<span class="end">${end}</span>` : ""}</a></li>`;
+  const section = (title, rows, hint, id) => `
+    <h2 class="label">${t(title)}</h2>
+    <ul class="group icons">${rows}</ul>
+    ${hint !== undefined ? `<p class="hint-below"${id ? ` id="${id}" role="status"` : ""}>${hint ? t(hint) : ""}</p>` : ""}`;
+
+  // The student's stage, by name
+  const stageText = (deptId, stageId) => {
+    const dept = departments.find(d => d.id === deptId);
+    const stages = dept && stagesOf(dept);
+    const stage = stages && stages.find(s => s.id === stageId);
+    return (stage ? stageName(stage) : t(stageId.replace("stage", "Stage "))) + (dept ? SEP + localName(dept) : "");
+  };
+  const mineDept = mine && departments.find(d => d.id === mine.dept);
+
+  const preview = `
+    <div class="reading-preview" aria-hidden="true">
+      ${readerCard("", { kind: "code", bar: false, lines: [
+        "<span class=\"hljs-keyword\">def</span> <span class=\"hljs-title function_\">greet</span>(name):",
+        "    <span class=\"hljs-keyword\">return</span> <span class=\"hljs-string\">\"Hello, \"</span> + name + <span class=\"hljs-string\">\"! Every lecture of your stage is here, in one place.\"</span>"] })}
+      ${readerCard("", { kind: "text", lines: [esc(t("A line of a text file looks like this."))], bar: false })}
+    </div>`;
+
   app.innerHTML = `
     <a class="back" href="${lastPlace}">${t("Back")}</a>
     <h1>${t("Settings")}</h1>
@@ -1332,48 +1519,103 @@ async function showSettings() {
       <span class="grow"><span class="app-name">Opely</span><br><span class="secondary small">${t("Version {v}", { v: VERSION })}${SEP}${t("About")}</span></span>
     </a></li></ul>
 
-    <h2 class="label">${t("General")}</h2>
-    <ul class="group icons">
-      <li><div class="row choice">${tile("appearance", "indigo")}<span class="grow">${t("Appearance")}</span>
-        ${choiceSwitch(APPEARANCE_KEY, [["auto", t("Automatic")], ["light", t("Light")], ["dark", t("Dark")]])}</div></li>
-      <li><div class="row choice">${tile("globe", "blue")}<span class="grow">${t("Language")}</span>
-        ${choiceSwitch(LANGUAGE_KEY, [["auto", t("Automatic")], ["en", "English"], ["ar", "العربية"]])}</div></li>
-    </ul>
-    <p class="hint-below">${t("Automatic follows your device.")}</p>
-    ${(() => { const mine = myStage(); const dept = mine && departments.find(d => d.id === mine.dept); if (!dept) return "";
-      const stages = stagesOf(dept); const stage = stages && stages.find(s => s.id === mine.stage);
-      return `<h2 class="label">${t("My stage")}</h2><ul class="group icons"><li><span class="row">${tile(dept.icon || "school", dept.color)}
-        <span class="grow">${esc(stage ? stageName(stage) : mine.stage)}<br><span class="secondary small">${esc(localName(dept))}</span></span>
-        <button id="forgetStage" class="plain" type="button">${t("Remove")}</button></span></li></ul>`; })()}
+    ${section("My stage",
+      (mine
+        ? `<li><span class="row">${tile(mineDept ? mineDept.icon || "school" : "school", mineDept ? mineDept.color : "gray")}
+            <span class="grow">${t("My stage")}${sub(esc(stageText(mine.dept, mine.stage)))}</span>
+            <button id="forgetStage" class="plain" type="button">${t("Remove")}</button></span></li>`
+        : `<li><span class="row">${tile("school", "gray")}<span class="grow">${t("My stage")}${sub(t("Not chosen yet"))}</span></span></li>`) +
+      choiceRow("Opely opens on", "play", "teal", pairSwitch("start", mine ? start : "home", [["home", t("Home")], ["mystage", t("My stage")]], !mine)),
+      mine ? undefined : "Open your stage and tap “Make this my stage” to open Opely there.")}
 
-    <h2 class="label">${t("Notifications")}</h2>
-    <ul class="group icons">
-      <li><a class="row" href="#notifications">${tile("bell", "red")}<span class="grow">${t("Notifications")}<br>
-        <span class="secondary small">${t(savedNotify() ? "On" : "Off")}</span></span></a></li>
-    </ul>
+    ${section("Notifications",
+      toggleRow("notifySwitch", "Notifications", !!notify, "bell", "red",
+        t(notify ? "On" : "New lectures, labs and announcements, even when Opely is closed.")) +
+      (notify ? linkRow("#notifications", "Stages you follow", "people", "orange",
+        esc(notify.topics.map(topic => { const [d, ...s] = topic.split("-"); return stageText(d, s.join("-")); }).join(" · "))) : ""),
+      "", "notifySay")}
 
-    <h2 class="label">${t("Saved files")}</h2>
-    <ul class="group icons">
-      <li><span class="row">${tile("tray", "green")}<span class="grow">${t("In this browser")}</span><span id="savedSize" class="end">${t("Loading…")}</span></span></li>
-      <li id="clearRow" hidden><button id="clearFiles" class="row danger" type="button">${t("Remove saved files")}</button></li>
-    </ul>
-    <p class="hint-below">${t("PDFs you open are kept in this browser, so they open faster next time.")}</p>
+    ${section("Appearance",
+      choiceRow("Theme", "appearance", "indigo", choiceSwitch(APPEARANCE_KEY, [["auto", t("Automatic")], ["light", t("Light")], ["dark", t("Dark")]])) +
+      choiceRow("Language", "globe", "blue", choiceSwitch(LANGUAGE_KEY, [["auto", t("Automatic")], ["en", "English"], ["ar", "العربية"]])) +
+      toggleRow("boldText", "Bold text", document.documentElement.classList.contains("bold-text"), "bold", "gray"),
+      "Automatic follows your device.")}
 
-    <h2 class="label">${t("Progress")}</h2>
+    <h2 class="label">${t("Reading")}</h2>
+    ${preview}
     <ul class="group icons">
-      <li><span class="row">${tile("check", "blue")}<span class="grow">${t("Lectures opened")}</span><span class="end">${Object.keys(opened).length}</span></span></li>
-      ${Object.keys(opened).length ? `<li><button id="clearProgress" class="row danger" type="button">${t("Reset progress")}</button></li>` : ""}
+      ${stepRow("textSize", "Text size", "textsize", "blue")}
+      ${stepRow("size", "Code size", "code", "indigo")}
+      ${toggleRow("readWrap", "Wrap long lines", reading.wrap, "wrap", "green")}
+      ${toggleRow("readNumbers", "Line numbers", reading.numbers, "numbers", "gray")}
+      ${choiceRow("PDF pages", "doc", "red", pairSwitch("pdf", reading.pdf, [["fit", t("Fit width")], ["actual", t("Actual size")]]))}
     </ul>
-    <p class="hint-below">${t("Opely remembers which lectures you opened, in this browser only.")}</p>
+    <p class="hint-below">${t("The buttons above every text and code file change these too.")}</p>
 
-    <h2 class="label">${t("More")}</h2>
-    <ul class="group icons">
-      <li><button id="checkUpdates" class="row" type="button">${tile("download", "blue")}<span class="grow">${t("Check for updates")}<br>
-        <span id="updateState" class="secondary small">${haveUpdate() ? t("Update {n}", { n: haveUpdate() }) : ""}</span></span></button></li>
-      <li><a class="row" href="admin.html">${tile("key", "gray")}<span class="grow">${t("Admin page")}<br>
-        <span class="secondary small">${t("For people who manage a stage.")}</span></span></a></li>
-      <li><a class="row" href="#about">${tile("info", "gray")}<span class="grow">${t("About")}</span></a></li>
-    </ul>`;
+    ${section("Storage",
+      `<li><span class="row">${tile("tray", "green")}<span class="grow">${t("Saved files")}</span><span id="savedSize" class="end">${t("Loading…")}</span></span></li>
+       <li id="clearRow" hidden><button id="clearFiles" class="row danger" type="button">${t("Remove saved files")}</button></li>
+       <li><span class="row">${tile("check", "blue")}<span class="grow">${t("Lectures opened")}</span><span class="end">${Object.keys(opened).length}</span></span></li>
+       ${Object.keys(opened).length ? `<li><button id="clearProgress" class="row danger" type="button">${t("Reset progress")}</button></li>` : ""}`,
+      "Kept in this browser only: files you opened open faster, and offline.")}
+
+    ${section("More",
+      `<li><button id="checkUpdates" class="row" type="button">${tile("refresh", "blue")}<span class="grow">${t("Check for updates")}${sub(`<span id="updateState">${haveUpdate() ? t("Update {n}", { n: haveUpdate() }) : ""}</span>`)}</span></button></li>` +
+      linkRow("admin.html", "Admin page", "key", "gray", t("For people who manage a stage.")))}`;
+
+  // The reading preview shows the settings as they are
+  const showPreview = () => {
+    const now = readerSettings();
+    app.querySelectorAll(".reading-preview .reader").forEach(each => {
+      const code = each.classList.contains("code");
+      each.style.setProperty("--reader-size", ((code ? 13.5 : 16) + (code ? now.size : now.textSize)) + "px");
+      each.classList.toggle("wrapped", !code || now.wrap);
+      each.classList.toggle("no-numbers", !now.numbers);
+    });
+  };
+  showPreview();
+  const changeReading = change => { const now = readerSettings(); change(now); saveReaderSettings(now); };
+  app.querySelectorAll("[data-step]").forEach(button => button.addEventListener("click", () => {
+    changeReading(now => { now[button.dataset.step] = Math.max(-4, Math.min(8, now[button.dataset.step] + Number(button.dataset.by))); });
+    showSettings();
+  }));
+  document.getElementById("readWrap").addEventListener("change", event => { changeReading(now => { now.wrap = event.target.checked; }); showPreview(); });
+  document.getElementById("readNumbers").addEventListener("change", event => { changeReading(now => { now.numbers = event.target.checked; }); showPreview(); });
+  // Notifications: one switch. Turning it on follows My stage (or the stages chosen before).
+  document.getElementById("notifySwitch").addEventListener("change", async event => {
+    const toggle = event.target;
+    const sayIt = (text, bad) => { const line = document.getElementById("notifySay"); if (line) { line.textContent = t(text); line.classList.toggle("error-text", !!bad); } };
+    toggle.disabled = true;
+    try {
+      const setup = await notifySetup();
+      if (!toggle.checked) { await unsubscribe(setup); return showSettings(); }
+      if (!setup) throw new Error("Notifications aren’t set up yet. The site’s owner turns them on from the admin page.");
+      const support = pushSupport();
+      if (support === "home-screen") throw new Error("On iPhone and iPad, notifications work once Opely is on your Home Screen. Tap the Share button, then “Add to Home Screen”, and open Opely from there.");
+      if (support === "no") throw new Error("This browser can’t show notifications.");
+      const before = savedNotify();
+      const mine = myStage();
+      const topics = before ? before.topics : mine ? [mine.dept + "-" + mine.stage] : [];
+      if (!topics.length) { location.hash = "#notifications"; return; } // no stage yet: choose them there
+      sayIt("Saving…");
+      await subscribe(setup, topics);
+      showSettings();
+    } catch (error) {
+      toggle.checked = !!savedNotify();
+      toggle.disabled = false;
+      sayIt(error.message || String(error), true);
+    }
+  });
+  document.getElementById("boldText").addEventListener("change", event => {
+    try { localStorage.setItem(BOLD_KEY, event.target.checked ? "on" : "off"); } catch (error) { /* storage blocked */ }
+    applyBold();
+  });
+  app.querySelectorAll("[data-pair] button").forEach(button => button.addEventListener("click", () => {
+    const name = button.parentElement.dataset.pair;
+    if (name === "pdf") changeReading(now => { now.pdf = button.dataset.value; });
+    if (name === "start") setOpeningPage(button.dataset.value);
+    showSettings();
+  }));
 
   document.getElementById("checkUpdates").addEventListener("click", async () => {
     const state = document.getElementById("updateState");
@@ -1598,9 +1840,45 @@ function openLecture(dept, stage, course, lectureKey, fileNumber) {
     // Opened straight from the course: it counts as opening the lecture, and Back returns to the course
     markOpened(keyOfLecture(dept, stage, course, lecture, index + 1));
     rememberLecture(base + "-" + lectureKey + "-1", lecture, course, index + 1, base.slice(1));
-    return showFile(file, base, course.title);
+    return showFile(file, base, course.title, filePager(dept, stage, course, index, Number(fileNumber) - 1));
   }
-  showFile(file, base + "-" + lectureKey, lecture.title);
+  showFile(file, base + "-" + lectureKey, lecture.title, filePager(dept, stage, course, index, Number(fileNumber) - 1));
+}
+
+// Previous and Next between the files of one lecture, like between lectures.
+// Before the first file, Previous goes back to the previous lecture; after the last, Next goes on to
+// the next lecture. A lecture with just one file opens it straight away, so there the buttons go
+// from lecture to lecture.
+function filePager(dept, stage, course, index, place) {
+  const lecture = course.lectures[index];
+  const files = (lecture.files || []).filter(file => file.url);
+  const base = "#" + dept.id + "-" + stage.id + "-" + course.id;
+  const here = base + "-" + (lecture.id || index + 1);
+  const position = (lecture.files || []).indexOf(lecture.files[place]);
+  const link = (i, cls, words, arrow) => {
+    const file = lecture.files[i];
+    const where = isPdf(file.url) ? `href="${here}-${i + 1}"` : `href="${esc(file.from || file.url)}" ${linkAttrs(file.url)}`;
+    return `<a class="${cls}" ${where} title="${esc(file.label)}">${arrow === "before" ? icon("back", "flip") : ""}<span class="pager-text">${t(words)}<small>${esc(file.label)}</small></span>${arrow === "after" ? icon("chevron", "flip") : ""}</a>`;
+  };
+  let before = "<span></span>", after = "<span></span>";
+  for (let i = position - 1; i >= 0; i -= 1) if (lecture.files[i].url) { before = link(i, "", "Previous file", "before"); break; }
+  for (let i = position + 1; i < lecture.files.length; i += 1) if (lecture.files[i].url) { after = link(i, "next", "Next file", "after"); break; }
+  // Where another lecture opens: its only file straight away (like from the course), or its page
+  const lectureAddress = (other, n) => {
+    const only = directFile(other);
+    return base + "-" + (other.id || n) + (only && isPdf(only.url) ? "-1" : "");
+  };
+  const nextLecture = course.lectures[index + 1];
+  if (after === "<span></span>" && nextLecture) {
+    after = `<a class="next" href="${lectureAddress(nextLecture, index + 2)}"><span class="pager-text">${t(course.isLabs ? "Next lab" : "Next lecture")}<small>${esc(nextLecture.title)}</small></span>${icon("chevron", "flip")}</a>`;
+  }
+  const previousLecture = course.lectures[index - 1];
+  if (before === "<span></span>" && previousLecture) {
+    before = `<a href="${lectureAddress(previousLecture, index)}">${icon("back", "flip")}<span class="pager-text">${t(course.isLabs ? "Previous lab" : "Previous lecture")}<small>${esc(previousLecture.title)}</small></span></a>`;
+  }
+  if (before === "<span></span>" && after === "<span></span>") return "";
+  return `${files.length > 1 ? `<p class="file-count">${t("File {i} of {n}", { i: files.indexOf(lecture.files[place]) + 1, n: files.length })}</p>` : ""}
+    <nav class="pager file-pager" aria-label="${t(files.length > 1 ? "Files" : "Lectures")}">${before}${after}</nav>`;
 }
 
 // After a page is drawn: move its back link into the navigation bar,
@@ -1770,6 +2048,10 @@ try {
   const text = savedCopy("catalog.json");
   if (text) useCatalog(text);
 } catch (error) { /* a broken saved copy is ignored */ }
+// Opening Opely without an address (from the home screen, or the site's link): My stage, when chosen
+if (!location.hash && openingPage() === "mystage" && myStage()) {
+  history.replaceState(null, "", "#" + myStage().dept + "-" + myStage().stage);
+}
 openSavedDepartment();
 route();
 refresh();

@@ -16,7 +16,7 @@ const FILES = "opely-files";
 const FIRST = [
   "./", "index.html", "style.css", "lang.js", "icons.js", "viewer.js", "catalog.json",
   "icon.svg", "icon-180.png", "icon-192.png", "manifest.webmanifest",
-  "lib/pdf.min.js", "lib/pdf.worker.min.js", "lib/highlight.min.js"
+  "lib/pdf.min.js", "lib/pdf.worker.min.js", "lib/highlight.min.js", "lib/jszip.min.js"
 ];
 
 self.addEventListener("install", event => {

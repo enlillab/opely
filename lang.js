@@ -422,6 +422,62 @@ const TRANSLATIONS = {
     "Admin page": "صفحة الإدارة",
     "About": "حول الموقع",
     "Opely is open source, under the MIT License.": "موقع Opely مفتوح المصدر، برخصة MIT.",
+    "Previous lecture": "المحاضرة السابقة",
+    "Previous lab": "المختبر السابق",
+    "Previous file": "الملف السابق",
+    "Next file": "الملف التالي",
+    "Next lecture": "المحاضرة التالية",
+    "Next lab": "المختبر التالي",
+    "File {i} of {n}": "الملف {i} من {n}",
+    "Download all": "تنزيل الكل",
+    "Save offline": "حفظ دون اتصال",
+    "Saved offline": "محفوظة",
+    "Download all: one zip on your device. Save offline: kept in this browser, to open without internet.": "تنزيل الكل: ملف مضغوط واحد على جهازك. حفظ دون اتصال: تُحفظ في هذا المتصفح لتفتحها دون إنترنت.",
+    "Save offline keeps the file in this browser, to open without internet.": "«حفظ دون اتصال» يحفظ الملف في هذا المتصفح لتفتحه دون إنترنت.",
+    "Removed from this browser.": "حُذفت من هذا المتصفح.",
+    "Saved in this browser. It opens even without internet.": "حُفظت في هذا المتصفح. تفتح حتى دون إنترنت.",
+    "Order set by hand": "رُتّبت يدويًا",
+    "Sort by date": "رتّب حسب التاريخ",
+    "In date order. Drag the three lines to move a lecture.": "مرتّبة حسب التاريخ. اسحب الخطوط الثلاثة لنقل محاضرة.",
+    "In date order. Drag the three lines to move a lab.": "مرتّبة حسب التاريخ. اسحب الخطوط الثلاثة لنقل مختبر.",
+    "Lecture moved.": "نُقلت المحاضرة.",
+    "Lab moved.": "نُقل المختبر.",
+    "Sorted by date.": "رُتّبت حسب التاريخ.",
+    "Delete lecture": "حذف المحاضرة",
+    "Delete lab": "حذف المختبر",
+    "Deleted lectures and labs go to the course’s archive, where you can restore them.": "تذهب المحاضرات والمختبرات المحذوفة إلى أرشيف المادة، ويمكنك استعادتها من هناك.",
+    "Drag the three lines to change the order. It is saved at once.": "اسحب الخطوط الثلاثة لتغيير الترتيب. يُحفظ فورًا.",
+    "Order saved.": "حُفظ الترتيب.",
+    "Drag to move": "اسحب للنقل",
+    "Drag the three lines next to a lecture to move it.": "اسحب الخطوط الثلاثة بجانب المحاضرة لنقلها.",
+    "Not chosen yet": "لم تُختر بعد",
+    "New lectures, labs and announcements, even when Opely is closed.": "المحاضرات والمختبرات والإعلانات الجديدة، حتى عندما يكون Opely مغلقًا.",
+    "A line of a text file looks like this.": "هكذا يبدو سطر من ملف نصي.",
+    "Actual size": "الحجم الفعلي",
+    "Bigger": "أكبر",
+    "Smaller": "أصغر",
+    "Bold text": "نص عريض",
+    "Code size": "حجم الشيفرة",
+    "Couldn’t download everything. Check your connection, then try again.": "تعذّر تنزيل كل الملفات. تحقّق من اتصالك ثم حاول مجددًا.",
+    "Download all ({n} files)": "تنزيل الكل ({n} ملفات)",
+    "Downloaded.": "نُزّلت.",
+    "Fit width": "ملء العرض",
+    "Getting file {i} of {n}…": "جارٍ جلب الملف {i} من {n}…",
+    "Kept in this browser only: files you opened open faster, and offline.": "تُحفظ في هذا المتصفح فقط: الملفات التي فتحتها تفتح أسرع، وبدون إنترنت.",
+    "Line numbers": "أرقام الأسطر",
+    "Long lines of code continue on the next line.": "تكمل أسطر الشيفرة الطويلة في السطر التالي.",
+    "Making the zip…": "جارٍ إنشاء الملف المضغوط…",
+    "Normal": "عادي",
+    "Opely opens on": "يفتح Opely على",
+    "Open in your device’s viewer": "افتح في عارض جهازك",
+    "Open your stage and tap “Make this my stage” to open Opely there.": "افتح مرحلتك واضغط «اجعلها مرحلتي» ليفتح Opely عليها.",
+    "PDF pages": "صفحات PDF",
+    "Reading": "القراءة",
+    "Start": "البداية",
+    "Storage": "التخزين",
+    "Text size": "حجم النص",
+    "The buttons above every text and code file change these too.": "أزرار أعلى كل ملف نصي أو شيفرة تغيّر هذه أيضًا.",
+    "Theme": "الوضع",
     "1. Make the keys": "١. اصنع المفاتيح",
     "2. Make the helper on Cloudflare": "٢. أنشئ المساعد على Cloudflare",
     "3. Give GitHub the keys": "٣. أعطِ GitHub المفاتيح",
@@ -547,6 +603,15 @@ function applyAppearance() {
   });
 }
 applyAppearance();
+
+// Settings → Bold text: every letter a little heavier (see "bold-text" in style.css)
+const BOLD_KEY = "opely-bold";
+function applyBold() {
+  let on = false;
+  try { on = localStorage.getItem(BOLD_KEY) === "on"; } catch (error) { /* storage blocked */ }
+  document.documentElement.classList.toggle("bold-text", on);
+}
+applyBold();
 
 // ---------- Choosing the language ----------
 // A language chosen in Settings wins. Otherwise the device lists its

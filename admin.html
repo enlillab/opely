@@ -10,10 +10,10 @@
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="style.css?v=33">
-<script src="lang.js?v=33"></script>
-<script src="icons.js?v=33"></script>
-<script src="viewer.js?v=33"></script>
+<link rel="stylesheet" href="style.css?v=45">
+<script src="lang.js?v=45"></script>
+<script src="icons.js?v=45"></script>
+<script src="viewer.js?v=45"></script>
 </head>
 <body>
 <!-- The navigation bar, the same as on the student site -->
@@ -1077,17 +1077,20 @@ function showCourse(stage, course, tab) {
         <span class="grow">${esc(lecture.title)}<br>
           <span class="secondary small">${niceDate(lecture.date)}${SEP}${plural((lecture.files || []).length, "file")}</span></span></a>
         <a class="edit-button" href="${listBase}-${lecture.id || i + 1}-edit" aria-label="${t("Edit")}" title="${t("Edit")}">${icon("pencil")}</a>
-        <button class="delete" type="button" aria-label="${t("Delete")}" data-key="${i}">${icon("trash")}${t("Delete")}</button>
+        ${shown.lectures.length > 1 ? dragHandle(lecture.title) : ""}
       </span></li>`).join("");
+    const byHand = shown[shown.isLabs ? "labsOrdered" : "lecturesOrdered"];
     body = `
       <div class="button-pair">
         <a class="button" href="${listBase}-add">${icon("plus")}${W(shown, "Add lecture", "Add lab")}</a>
         <a class="button secondary" href="${base}${shown.isLabs ? "-labs" : ""}-import">${icon("layers")}${t("Import")}</a>
       </div>
       ${shown.lectures.length
-        ? `<div class="count-row"><p class="count">${plural(shown.lectures.length, shown.isLabs ? "lab" : "lecture")}</p>
-            ${shown.lectures.length > 1 ? `<button id="reorderButton" class="move-button" type="button">${t("Reorder")}</button>` : ""}</div>
-           <ol class="group icons" id="lectureList">${rows}</ol>`
+        ? `<p class="count">${plural(shown.lectures.length, shown.isLabs ? "lab" : "lecture")}</p>
+           <ol class="group icons" id="lectureList">${rows}</ol>
+           ${shown.lectures.length > 1 ? `<p class="hint-below order-line">${byHand
+             ? `${t("Order set by hand")}${SEP}<button id="sortByDate" class="link-button" type="button">${t("Sort by date")}</button>`
+             : t(shown.isLabs ? "In date order. Drag the three lines to move a lab." : "In date order. Drag the three lines to move a lecture.")}</p>` : ""}`
         : emptyState(shown.isLabs ? "flask" : "doc", shown.isLabs ? "No labs yet." : "No lectures yet.")}
       ${archiveRow(course, base)}`;
   }
@@ -1112,21 +1115,29 @@ function showCourse(stage, course, tab) {
 
   if (tab === "lectures" || tab === "labs") {
     const shown = tab === "labs" ? labView(course) : course;
-    const reorder = $("reorderButton");
-    if (reorder) reorder.addEventListener("click", () => startReorder(stage, shown));
-    onDelete(async key => {
-      const lecture = shown.lectures[Number(key)];
-      const commit = await headCommit();
-      const saved = await save((shown.isLabs ? "Archive lab: " : "Archive lecture: ") + lecture.title, fresh => {
+    // Dropping a lecture in its new place saves the order at once, with Undo for a few seconds
+    const list = $("lectureList");
+    if (list) dragToReorder(list, (from, to) => {
+      const before = shown.lectures.slice();
+      const after = before.slice();
+      moveItem(after, from, to);
+      const rows = Array.from(list.children); // shown in the new order while it saves
+      moveItem(rows, from, to);
+      list.replaceChildren(...rows);
+      list.classList.add("saving");
+      saveLectureOrder(stage, shown, after, true).then(saved => {
+        if (!saved) return;
+        offerUndo(shown.isLabs ? "Lab moved." : "Lecture moved.", () => saveLectureOrder(stage, shown, before, !!shown[shown.isLabs ? "labsOrdered" : "lecturesOrdered"]));
+      });
+    });
+    const sortButton = $("sortByDate");
+    if (sortButton) sortButton.addEventListener("click", async () => {
+      const saved = await save((shown.isLabs ? "Sort labs by date: " : "Sort lectures by date: ") + course.code, fresh => {
         const target = findCourse(fresh, stage.id, shown.id);
-        const list = target.lectures;
-        const i = list.findIndex(other => lecture.id ? other.id === lecture.id : other.title === lecture.title && other.date === lecture.date);
-        if (i === -1) throw new Error(t(shown.isLabs ? "That lab is already gone. Reload the page." : "That lecture is already gone. Reload the page."));
-        const gone = list.splice(i, 1)[0];
-        archiveOf(target).removed.unshift({ id: "r" + Date.now().toString(36), kind: shown.isLabs ? "lab" : "lecture",
-          removedAt: today(), item: archivedItem(gone, commit) });
-        return repoFiles(gone.files || []); // they leave the site, and stay in its history
-      }, "Moved to the archive.");
+        const real = findCourse(fresh, stage.id, course.id);
+        delete real[shown.isLabs ? "labsOrdered" : "lecturesOrdered"];
+        keepOrder(target);
+      }, "Sorted by date.");
       if (saved) route(true);
     });
   }
@@ -1479,43 +1490,121 @@ async function restoreFromHistory(files, edit, message) {
   await commitTree(tree, edit, message);
 }
 
-// ---------- Reorder: up and down buttons, then one save ----------
-function startReorder(stage, course) {
-  const order = course.lectures.slice(); // moved here first, saved together
-  const list = $("lectureList");
-  const word = course.isLabs ? "Lab {n}" : "Lecture {n}";
-  const draw = () => {
-    list.innerHTML = order.map((lecture, i) => `
-      <li><span class="row">
-        <span class="num">${i + 1}</span>
-        <span class="grow">${esc(lecture.title)}<br><span class="secondary small">${niceDate(lecture.date)}</span></span>
-        <button type="button" class="order-button" data-up="${i}" ${i === 0 ? "disabled" : ""} aria-label="${t("Move up")}">${icon("chevron", "up")}</button>
-        <button type="button" class="order-button" data-down="${i}" ${i === order.length - 1 ? "disabled" : ""} aria-label="${t("Move down")}">${icon("chevron", "down")}</button>
-      </span></li>`).join("");
-    list.querySelectorAll("[data-up],[data-down]").forEach(button => button.addEventListener("click", () => {
-      const i = Number(button.dataset.up !== undefined ? button.dataset.up : button.dataset.down);
-      const j = button.dataset.up !== undefined ? i - 1 : i + 1;
-      [order[i], order[j]] = [order[j], order[i]];
-      draw();
-    }));
-  };
-  draw();
-  list.classList.add("reordering");
-  $("reorderButton").outerHTML = `<span class="reorder-actions"><button id="reorderCancel" class="move-button" type="button">${t("Cancel")}</button>
-    <button id="reorderSave" class="move-button save" type="button">${t("Save order")}</button></span>`;
-  $("reorderCancel").addEventListener("click", () => route(true));
-  $("reorderSave").addEventListener("click", async () => {
-    const ids = order.map(lecture => lecture.id || lecture.title);
-    const saved = await save((course.isLabs ? "Reorder labs: " : "Reorder lectures: ") + course.code, fresh => {
-      const target = findCourse(fresh, stage.id, course.id);
-      const key = lecture => lecture.id || lecture.title;
-      const known = target.lectures.filter(lecture => ids.includes(key(lecture))).sort((a, b) => ids.indexOf(key(a)) - ids.indexOf(key(b)));
-      const others = target.lectures.filter(lecture => !ids.includes(key(lecture))); // added by someone else meanwhile
-      target.lectures.splice(0, target.lectures.length, ...known, ...others);
-      target[course.isLabs ? "labsOrdered" : "lecturesOrdered"] = true; // from now on, new ones are added at the end
-    }, "Saved.");
-    if (saved) route(true);
+// ---------- Dragging to reorder (lectures, labs, and the files of a lecture) ----------
+// Each row has a handle (the three lines). Press it and drag the row up or down; the other rows
+// make room. Works with a finger and a mouse. On a keyboard: focus the handle, then use ↑ and ↓.
+// `moved(from, to)` is called once the row is let go somewhere else.
+function dragToReorder(list, moved) {
+  list.querySelectorAll(".drag-handle").forEach(handle => {
+    handle.addEventListener("keydown", event => {
+      const rows = Array.from(list.children);
+      const from = rows.indexOf(handle.closest("li"));
+      const to = event.key === "ArrowUp" ? from - 1 : event.key === "ArrowDown" ? from + 1 : -1;
+      if (to < 0 || to >= rows.length) return;
+      event.preventDefault();
+      moved(from, to);
+      const again = list.children[to] && list.children[to].querySelector(".drag-handle");
+      if (again) again.focus();
+    });
+    handle.addEventListener("pointerdown", event => {
+      if (event.button !== 0) return;
+      event.preventDefault();
+      const rows = Array.from(list.children);
+      const row = handle.closest("li");
+      const from = rows.indexOf(row);
+      const boxes = rows.map(each => { const box = each.getBoundingClientRect(); return { top: box.top + window.scrollY, height: box.height }; });
+      const step = from < rows.length - 1 ? boxes[from + 1].top - boxes[from].top : boxes[from].height;
+      const startY = event.clientY + window.scrollY;
+      let lastY = event.clientY;
+      let to = from;
+      row.classList.add("dragging");
+      list.classList.add("drag-active");
+      handle.setPointerCapture(event.pointerId);
+
+      const place = () => {
+        const shift = lastY + window.scrollY - startY;
+        row.style.transform = `translateY(${shift}px)`;
+        const middle = boxes[from].top + boxes[from].height / 2 + shift;
+        to = from;
+        boxes.forEach((box, i) => {
+          if (i < from && middle < box.top + box.height / 2) to = Math.min(to, i);
+          if (i > from && middle > box.top + box.height / 2) to = Math.max(to, i);
+        });
+        rows.forEach((each, i) => {
+          if (each === row) return;
+          const dy = from < to && i > from && i <= to ? -step : to < from && i >= to && i < from ? step : 0;
+          each.style.transform = dy ? `translateY(${dy}px)` : "";
+        });
+      };
+      // Near the top or bottom of the screen, the page scrolls by itself
+      const scroller = setInterval(() => {
+        const edge = 80;
+        const speed = lastY < edge ? -(edge - lastY) / 4 : lastY > window.innerHeight - edge ? (lastY - (window.innerHeight - edge)) / 4 : 0;
+        if (speed) { window.scrollBy(0, speed); place(); }
+      }, 16);
+      const move = moveEvent => { lastY = moveEvent.clientY; place(); };
+      const end = () => {
+        clearInterval(scroller);
+        handle.removeEventListener("pointermove", move);
+        handle.removeEventListener("pointerup", end);
+        handle.removeEventListener("pointercancel", end);
+        rows.forEach(each => { each.style.transform = ""; });
+        row.classList.remove("dragging");
+        list.classList.remove("drag-active");
+        if (to !== from) moved(from, to);
+      };
+      handle.addEventListener("pointermove", move);
+      handle.addEventListener("pointerup", end);
+      handle.addEventListener("pointercancel", end);
+    });
   });
+}
+const dragHandle = label => `<span class="drag-handle" role="button" tabindex="0" aria-label="${esc(label)}" title="${t("Drag to move")}">${icon("grip")}</span>`;
+// Moves one item of a list to another place
+const moveItem = (list, from, to) => { const [item] = list.splice(from, 1); list.splice(to, 0, item); };
+
+// Saves lectures (or labs) in the given order. `byHand` keeps that order for good (new ones go at the end).
+async function saveLectureOrder(stage, shown, order, byHand) {
+  const ids = order.map(lecture => lecture.id || lecture.title);
+  const saved = await save((shown.isLabs ? "Reorder labs: " : "Reorder lectures: ") + shown.code, fresh => {
+    const target = findCourse(fresh, stage.id, shown.id);
+    const real = findCourse(fresh, stage.id, shown.id.replace(/-labs$/, ""));
+    const key = lecture => lecture.id || lecture.title;
+    const known = target.lectures.filter(lecture => ids.includes(key(lecture))).sort((a, b) => ids.indexOf(key(a)) - ids.indexOf(key(b)));
+    const others = target.lectures.filter(lecture => !ids.includes(key(lecture))); // added by someone else meanwhile
+    target.lectures.splice(0, target.lectures.length, ...known, ...others);
+    const flag = shown.isLabs ? "labsOrdered" : "lecturesOrdered";
+    if (byHand) real[flag] = true; else delete real[flag];
+  }, "Order saved.");
+  route(true); // drawn again from what was saved (or as it was, if saving failed)
+  return saved;
+}
+
+// The message at the bottom, with an Undo button for a few seconds
+function offerUndo(text, undo) {
+  const toast = $("toast");
+  clearTimeout(toastTimer);
+  toast.innerHTML = icon("check") + esc(t(text)) + ` <button type="button" class="undo-button">${t("Undo")}</button>`;
+  toast.className = "toast done";
+  toast.hidden = false;
+  toast.querySelector(".undo-button").addEventListener("click", event => { event.stopPropagation(); toast.hidden = true; undo(); });
+  toastTimer = setTimeout(() => { toast.hidden = true; }, 7000);
+}
+
+// Moves a lecture (or lab) to the course's archive, and its files off the site
+async function archiveLecture(stage, shown, lecture) {
+  const commit = await headCommit();
+  return save((shown.isLabs ? "Archive lab: " : "Archive lecture: ") + lecture.title, fresh => {
+    const target = findCourse(fresh, stage.id, shown.id);
+    const real = findCourse(fresh, stage.id, shown.id.replace(/-labs$/, ""));
+    const list = target.lectures;
+    const i = list.findIndex(other => lecture.id ? other.id === lecture.id : other.title === lecture.title && other.date === lecture.date);
+    if (i === -1) throw new Error(t(shown.isLabs ? "That lab is already gone. Reload the page." : "That lecture is already gone. Reload the page."));
+    const gone = list.splice(i, 1)[0];
+    archiveOf(real).removed.unshift({ id: "r" + Date.now().toString(36), kind: shown.isLabs ? "lab" : "lecture",
+      removedAt: today(), item: archivedItem(gone, commit) });
+    return repoFiles(gone.files || []); // they leave the site, and stay in its history
+  }, "Moved to the archive.");
 }
 
 // ---------- Edit a lecture (or a lab): its title, date, recording, summary and files ----------
@@ -1525,11 +1614,14 @@ function showEditLecture(stage, course, index) {
   const here = base + "-" + (lecture.id || index + 1);
   document.title = W(course, "Edit lecture", "Edit lab") + " | " + t("Admin");
   const removing = new Set(); // files marked to be removed
-  const fileRows = () => (lecture.files || []).map((file, i) => {
+  const order = (lecture.files || []).map((file, i) => i); // the files' order, changed by dragging
+  const fileRows = () => order.map((i, place) => {
+    const file = lecture.files[i];
     const [shape, color] = fileKind(file.url);
     const gone = removing.has(i);
     return `<li class="${gone ? "removing" : ""}"><span class="row">${tile(shape, gone ? "gray" : color)}
       <span class="grow">${esc(file.label)}${gone ? `<br><span class="secondary small">${t("Will be removed")}</span>` : ""}</span>
+      ${order.length > 1 ? dragHandle(file.label) : ""}
       <button type="button" class="move-button" data-remove="${i}">${t(gone ? "Undo" : "Remove")}</button></span></li>`;
   }).join("");
 
@@ -1546,15 +1638,23 @@ function showEditLecture(stage, course, index) {
       <div class="field"><label for="lectureFiles">${t("Add files")}</label><input id="lectureFiles" type="file" multiple>
         <p class="hint">${t("Up to 25 MB each. Word and PowerPoint files become PDFs by themselves a few minutes after uploading.")}</p></div>
       <button class="primary" type="submit">${icon("check")}${t("Save changes")}</button>
-    </form>`;
-
-  // Remove marks a file; Undo brings it back. Nothing changes until Save.
-  const wireRemove = () => app.querySelectorAll("[data-remove]").forEach(button => button.addEventListener("click", () => {
-    const i = Number(button.dataset.remove);
-    removing.has(i) ? removing.delete(i) : removing.add(i);
-    $("editFiles").innerHTML = fileRows();
-    wireRemove();
+    </form>
+    <button class="danger" type="button" id="archiveLecture">${icon("trash")}${W(course, "Delete lecture", "Delete lab")}</button>
+    <p class="hint-below">${t("Deleted lectures and labs go to the course’s archive, where you can restore them.")}</p>`;
+  $("archiveLecture").addEventListener("click", () => confirmThen($("archiveLecture"), async () => {
+    if (await archiveLecture(stage, course, lecture)) go(base);
   }));
+
+  // Remove marks a file; Undo brings it back. Dragging changes the order. Nothing changes until Save.
+  const redraw = () => { $("editFiles").innerHTML = fileRows(); wireRemove(); };
+  const wireRemove = () => {
+    app.querySelectorAll("[data-remove]").forEach(button => button.addEventListener("click", () => {
+      const i = Number(button.dataset.remove);
+      removing.has(i) ? removing.delete(i) : removing.add(i);
+      redraw();
+    }));
+    if ($("editFiles")) dragToReorder($("editFiles"), (from, to) => { moveItem(order, from, to); redraw(); });
+  };
   wireRemove();
 
   onSubmit(async () => {
@@ -1587,7 +1687,13 @@ function showEditLecture(stage, course, index) {
       item.date = date;
       item.video = video;
       item.summary = summary;
-      item.files = (item.files || []).filter(file => !removed.some(gone => gone.url === file.url && gone.label === file.label)).concat(uploaded);
+      // The files, in the order the admin chose (files saved by someone else meanwhile go after them)
+      const same = (a, b) => a.url === b.url && a.label === b.label;
+      const wanted = order.map(i => lecture.files[i]);
+      const kept = (item.files || []).filter(file => !removed.some(gone => same(gone, file)));
+      kept.sort((a, b) => { const x = wanted.findIndex(w => same(w, a)), y = wanted.findIndex(w => same(w, b));
+        return (x === -1 ? 1e9 : x) - (y === -1 ? 1e9 : y); });
+      item.files = kept.concat(uploaded);
       if (removed.length) item.earlier = removed.map(file => Object.assign(archived(file, commit), { removedAt: today() })).concat(item.earlier || []);
       keepOrder(target); // the order follows the dates, unless the admin chose an order
       return repoFiles(removed); // the removed files are deleted from the repository too
@@ -1666,9 +1772,11 @@ function showLectureView(stage, course, index) {
   const base = "#" + stage.id + "-" + course.id;
   const here = base + "-" + (lecture.id || number);
   document.title = lecture.title + " | " + t("Admin");
+  const many = (lecture.files || []).length > 1; // then the files can be dragged into another order, right here
   const files = (lecture.files || []).map((file, i) => {
     const [shape, color] = fileKind(file.url);
-    return `<li><a class="row" ${viewAttrs(file, here + "-" + (i + 1))}>${tile(shape, file.url ? color : "gray")}<span class="grow">${esc(file.label)}</span></a></li>`;
+    const link = `<a class="${many ? "row-link" : "row"}" ${viewAttrs(file, here + "-" + (i + 1))}>${tile(shape, file.url ? color : "gray")}<span class="grow">${esc(file.label)}</span></a>`;
+    return many ? `<li><span class="row has-link">${link}${dragHandle(file.label)}</span></li>` : `<li>${link}</li>`;
   }).join("");
   const before = course.lectures[index - 1];
   const after = course.lectures[index + 1];
@@ -1686,13 +1794,36 @@ function showLectureView(stage, course, index) {
       : `<span class="row secondary">${tile("play", "gray")}<span class="grow">${t("No recording yet")}</span></span>`}</li></ul>
     ${lecture.summary ? `<h2 class="label">${t("Summary")}</h2><p class="text-block">${esc(lecture.summary)}</p>` : ""}
     <h2 class="label">${t("Files")}</h2>
-    ${files ? `<ul class="group icons">${files}</ul>` : `<p class="text-block secondary">${t("No files yet.")}</p>`}
+    ${files ? `<ul class="group icons" id="viewFiles">${files}</ul>` : `<p class="text-block secondary">${t("No files yet.")}</p>`}
+    ${many ? `<p class="hint-below" id="viewFilesHint" role="status">${t("Drag the three lines to change the order. It is saved at once.")}</p>` : ""}
     <a class="button secondary edit-wide" href="${here}-edit">${icon("pencil")}${W(course, "Edit lecture", "Edit lab")}</a>
     <ul class="group icons" style="margin-top:12px"><li><a class="row" href="index.html#${dept_.id}-${stage.id}-${course.id}-${lecture.id || number}" target="_blank" rel="noopener">${tile("eye", "teal")}<span class="grow">${t("Open on the student site")}</span></a></li></ul>
     <nav class="pager" aria-label="${t("Lectures")}">
       ${before ? `<a href="${base}-${before.id || number - 1}">${icon("back", "flip")}${t("Previous")}</a>` : "<span></span>"}
       ${after ? `<a class="next" href="${base}-${after.id || number + 1}">${t("Next")}${icon("chevron", "flip")}</a>` : "<span></span>"}
     </nav>`;
+
+  // Dropping a file in its new place saves the new order straight away
+  if (!many) return;
+  const order = lecture.files.slice();
+  dragToReorder($("viewFiles"), async (from, to) => {
+    moveItem(order, from, to);
+    const list = $("viewFiles");
+    const rows = Array.from(list.children); // shown in the new order while it saves
+    moveItem(rows, from, to);
+    list.replaceChildren(...rows);
+    list.classList.add("saving");
+    const same = (a, b) => a.url === b.url && a.label === b.label;
+    const saved = await save((course.isLabs ? "Reorder lab files: " : "Reorder lecture files: ") + lecture.title, fresh => {
+      const target = findCourse(fresh, stage.id, course.id);
+      const item = target.lectures.find(other => lecture.id ? other.id === lecture.id : other.title === lecture.title && other.date === lecture.date);
+      if (!item) throw new Error(t(course.isLabs ? "That lab is already gone. Reload the page." : "That lecture is already gone. Reload the page."));
+      const position = file => { const i = order.findIndex(wanted => same(wanted, file)); return i === -1 ? 1e9 : i; };
+      item.files = (item.files || []).slice().sort((a, b) => position(a) - position(b));
+    }, "Order saved.");
+    route(true); // drawn again from what was saved (or as it was, if saving failed)
+    if (saved && $("viewFilesHint")) $("viewFilesHint").textContent = t("Order saved.");
+  });
 }
 
 // Gets a file: from this browser if it was saved before, otherwise from the site or GitHub

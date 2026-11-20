@@ -90,10 +90,20 @@ function splitLines(html) {
   return lines;
 }
 
-// The reader's settings, remembered in this browser: line wrap and text size
+// The reader's settings, remembered in this browser (also changed in Settings → Reading):
+//   size      code text size, in steps from the normal size (-4 to +8)
+//   textSize  the same, for text files and Markdown
+//   wrap      long lines of code wrap onto the next line
+//   numbers   line numbers are shown
+//   pdf       PDF pages: "fit" (as wide as the screen) or "actual" (their real size, scrolling sideways)
 const READER_KEY = "opely-reader";
+const READER_DEFAULTS = { wrap: false, size: 0, numbers: true, pdf: "fit" };
 function readerSettings() {
-  try { return Object.assign({ wrap: false, size: 0 }, JSON.parse(localStorage.getItem(READER_KEY))); } catch (error) { return { wrap: false, size: 0 }; }
+  let saved = null;
+  try { saved = JSON.parse(localStorage.getItem(READER_KEY)); } catch (error) { saved = null; }
+  const settings = Object.assign({}, READER_DEFAULTS, saved || {});
+  if (typeof settings.textSize !== "number") settings.textSize = settings.size; // before, one size was used for both
+  return settings;
 }
 function saveReaderSettings(settings) {
   try { localStorage.setItem(READER_KEY, JSON.stringify(settings)); } catch (error) { /* storage blocked */ }
@@ -168,10 +178,12 @@ function wireReader(holder) {
   const kind = reader.classList.contains("code") ? "code" : "text";
   const settings = readerSettings();
   const base = kind === "code" ? 13.5 : 16;
+  const sizeKey = kind === "code" ? "size" : "textSize";
   const apply = () => {
     holder.querySelectorAll(".reader").forEach(each => {
-      each.style.setProperty("--reader-size", (base + settings.size) + "px");
+      each.style.setProperty("--reader-size", (base + settings[sizeKey]) + "px");
       each.classList.toggle("wrapped", kind === "text" || settings.wrap);
+      each.classList.toggle("no-numbers", !settings.numbers);
     });
     const wrap = reader.querySelector('[data-reader="wrap"]');
     if (wrap) wrap.setAttribute("aria-pressed", String(settings.wrap));
@@ -185,8 +197,8 @@ function wireReader(holder) {
   reader.querySelectorAll("[data-reader]").forEach(button => button.addEventListener("click", () => {
     const action = button.dataset.reader;
     if (action === "wrap") settings.wrap = !settings.wrap;
-    if (action === "smaller") settings.size = Math.max(-4, settings.size - 1);
-    if (action === "bigger") settings.size = Math.min(8, settings.size + 1);
+    if (action === "smaller") settings[sizeKey] = Math.max(-4, settings[sizeKey] - 1);
+    if (action === "bigger") settings[sizeKey] = Math.min(8, settings[sizeKey] + 1);
     if (action === "full") {
       reader.classList.add("full");
       document.documentElement.classList.add("reading-full");
