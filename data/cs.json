@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-20T11:09:03.349Z",
+  "updated": "2026-11-20T11:10:27.163Z",
   "stages": [
     {
       "id": "stage1",
@@ -124,6 +124,19 @@
                 {
                   "label": "Lec3-Array-Pointer.pptx.pdf",
                   "url": "files/cs/stage2/fg22/mwovltpv-lec3-array-pointer.pptx.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwovo4t7",
+              "title": "LEC 4",
+              "date": "2026-11-20",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "lec4-Stack&Expression.pdf",
+                  "url": "files/cs/stage2/fg22/mwovnhtt-lec4-stack-expression.pdf"
                 }
               ]
             }
