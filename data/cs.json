@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-20T11:11:14.155Z",
+  "updated": "2026-11-20T11:11:55.727Z",
   "stages": [
     {
       "id": "stage1",
@@ -150,6 +150,19 @@
                 {
                   "label": "lec5-Queue..pptx (1).pdf",
                   "url": "files/cs/stage2/fg22/mwovp0zk-lec5-queue..pptx-1.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwovq15b",
+              "title": "LEC 6",
+              "date": "2026-11-20",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "lec6-Circular queue.pptx.pdf",
+                  "url": "files/cs/stage2/fg22/mwovpygg-lec6-circular-queue.pptx.pdf"
                 }
               ]
             }
