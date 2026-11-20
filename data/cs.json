@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-20T11:22:13.333Z",
+  "updated": "2026-11-20T11:33:56.001Z",
   "stages": [
     {
       "id": "stage1",
@@ -263,7 +263,21 @@
           "title": "قواعد بيانات",
           "instructor": "م.م مصطفى لطيف فاضل",
           "sources": [],
-          "lectures": [],
+          "lectures": [
+            {
+              "id": "lmwowibvl",
+              "title": "Lec 1",
+              "date": "2026-11-20",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "lec 1.pdf",
+                  "url": "files/cs/stage2/fg33/mwowi8qu-lec-1.pdf"
+                }
+              ]
+            }
+          ],
           "hasLabs": true,
           "labs": []
         }
