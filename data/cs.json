@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-20T11:16:36.904Z",
+  "updated": "2026-11-20T11:17:49.065Z",
   "stages": [
     {
       "id": "stage1",
@@ -192,6 +192,19 @@
                 {
                   "label": "lec1_Array.pdf",
                   "url": "files/cs/stage2/fg22-labs/mwovvzyc-lec1-array.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwovxls9",
+              "title": "Lab 2",
+              "date": "2026-11-20",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "Lab.Lec.Stack.pdf",
+                  "url": "files/cs/stage2/fg22-labs/mwovxj9h-lab.lec.stack.pdf"
                 }
               ]
             }
