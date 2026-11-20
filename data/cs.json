@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-20T11:10:27.163Z",
+  "updated": "2026-11-20T11:11:14.155Z",
   "stages": [
     {
       "id": "stage1",
@@ -137,6 +137,19 @@
                 {
                   "label": "lec4-Stack&Expression.pdf",
                   "url": "files/cs/stage2/fg22/mwovnhtt-lec4-stack-expression.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwovp52j",
+              "title": "LEC 5",
+              "date": "2026-11-20",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "lec5-Queue..pptx (1).pdf",
+                  "url": "files/cs/stage2/fg22/mwovp0zk-lec5-queue..pptx-1.pdf"
                 }
               ]
             }
