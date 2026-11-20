@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-18T17:11:49.367Z",
+  "updated": "2026-11-20T11:04:27.819Z",
   "stages": [
     {
       "id": "stage1",
@@ -79,6 +79,17 @@
             "versions": [],
             "removed": []
           }
+        },
+        {
+          "id": "fg22",
+          "code": "Fg 22",
+          "semester": 1,
+          "title": "هياكل بيانات",
+          "instructor": "م.محمد باسم عمر",
+          "sources": [],
+          "lectures": [],
+          "hasLabs": true,
+          "labs": []
         }
       ]
     },
