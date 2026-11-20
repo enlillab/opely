@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-20T11:04:27.819Z",
+  "updated": "2026-11-20T11:06:28.154Z",
   "stages": [
     {
       "id": "stage1",
@@ -87,7 +87,21 @@
           "title": "هياكل بيانات",
           "instructor": "م.محمد باسم عمر",
           "sources": [],
-          "lectures": [],
+          "lectures": [
+            {
+              "id": "lmwovj0e2",
+              "title": "LUC 1",
+              "date": "2026-11-20",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "lec1-DataStructure.pdf",
+                  "url": "files/cs/stage2/fg22/mwoviy0c-lec1-datastructure.pdf"
+                }
+              ]
+            }
+          ],
           "hasLabs": true,
           "labs": []
         }
