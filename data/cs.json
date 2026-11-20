@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-20T11:08:01.200Z",
+  "updated": "2026-11-20T11:09:03.349Z",
   "stages": [
     {
       "id": "stage1",
@@ -111,6 +111,19 @@
                 {
                   "label": "lec2-Complexity analysis.pdf",
                   "url": "files/cs/stage2/fg22/mwovkwo2-lec2-complexity-analysis.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwovmc51",
+              "title": "LEC 3",
+              "date": "2026-11-20",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "Lec3-Array-Pointer.pptx.pdf",
+                  "url": "files/cs/stage2/fg22/mwovltpv-lec3-array-pointer.pptx.pdf"
                 }
               ]
             }
