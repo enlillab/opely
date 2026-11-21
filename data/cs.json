@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-21T06:23:22.364Z",
+  "updated": "2026-11-21T06:24:27.988Z",
   "stages": [
     {
       "id": "stage1",
@@ -422,7 +422,21 @@
           "title": "معمارية الحاسوب",
           "instructor": "أ.م.د فراس ليث",
           "sources": [],
-          "lectures": []
+          "lectures": [
+            {
+              "id": "lmwq0w7dg",
+              "title": "lec 1",
+              "date": "2026-11-21",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "lecture 1.pdf",
+                  "url": "files/cs/stage2/fg44/mwq0vx7j-lecture-1.pdf"
+                }
+              ]
+            }
+          ]
         }
       ]
     },
