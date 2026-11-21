@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-21T06:00:56.684Z",
+  "updated": "2026-11-21T06:01:21.048Z",
   "stages": [
     {
       "id": "stage1",
@@ -266,19 +266,6 @@
           "sources": [],
           "lectures": [
             {
-              "id": "lmwowibvl",
-              "title": "Lec 1",
-              "date": "2026-11-20",
-              "summary": "",
-              "video": "",
-              "files": [
-                {
-                  "label": "lec 1.pdf",
-                  "url": "files/cs/stage2/fg33/mwowi8qu-lec-1.pdf"
-                }
-              ]
-            },
-            {
               "id": "lmwq01yeg",
               "title": "Introduction lecture",
               "date": "2026-11-21",
@@ -290,10 +277,24 @@
                   "url": "files/cs/stage2/fg33/mwq01q5f-new-microsoft-powerpoint-presentation.pdf"
                 }
               ]
+            },
+            {
+              "id": "lmwowibvl",
+              "title": "Lec 1",
+              "date": "2026-11-20",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "lec 1.pdf",
+                  "url": "files/cs/stage2/fg33/mwowi8qu-lec-1.pdf"
+                }
+              ]
             }
           ],
           "hasLabs": true,
-          "labs": []
+          "labs": [],
+          "lecturesOrdered": true
         }
       ]
     },
