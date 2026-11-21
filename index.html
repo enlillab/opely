@@ -14,20 +14,28 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Opely">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<link rel="stylesheet" href="style.css?v=45">
-<script src="lang.js?v=45"></script>
-<script src="icons.js?v=45"></script>
-<script src="viewer.js?v=45"></script>
+<link rel="stylesheet" href="style.css?v=50">
+<script src="lang.js?v=50"></script>
+<script src="icons.js?v=50"></script>
+<script src="viewer.js?v=50"></script>
+<!-- local test: toy content, only on your own computer (localhost). It does nothing on the real site. -->
+<script>if (/^(localhost|127\.0\.0\.1|0\.0\.0\.0|\[::1\])$/.test(location.hostname)) document.write('<script src="test-owner.js?v=6"><\/script>');</script>
 </head>
 <body>
-<!-- The navigation bar: a back button, and the page's name once its big title scrolls away -->
+<!-- The navigation bar: Back and Home, the page's name, and the tools (search, light/dark, settings) -->
 <header class="nav">
   <div class="nav-inner">
-    <a id="navBack" class="nav-back" href="#home" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></a>
+    <span id="navMoves" class="nav-tools nav-moves" hidden>
+      <a id="navBack" class="nav-icon nav-back-icon" href="#home" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></a>
+      <a id="navHome" class="nav-icon" href="#home" aria-label="Home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 11L12 4l8.5 7"/><path d="M6 9.5V20h4.5v-5.5h3V20H18V9.5"/></svg></a>
+    </span>
     <a id="navBrand" class="nav-brand" href="#home" hidden><img src="icon.svg" alt="">Opely</a>
     <span id="navTitle" class="nav-title" aria-hidden="true"></span>
-    <a id="navSearch" class="nav-back nav-end" href="#search" aria-label="Search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg></a>
-    <a id="navSettings" class="nav-back nav-end" href="#settings" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1.1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.6V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.6 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></a>
+    <span class="nav-tools">
+      <a id="navSearch" class="nav-icon" href="#search" aria-label="Search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg></a>
+      <button class="nav-icon theme-toggle" type="button" data-theme-toggle aria-label="Light or dark"><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4L6 18M18 6l1.4-1.4"/></svg></button>
+      <a id="navSettings" class="nav-icon" href="#settings" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1.1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.6V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.6 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></a>
+    </span>
   </div>
 </header>
 <div class="wrap">
@@ -35,6 +43,9 @@
   <!-- Every page is drawn inside this element by the script below -->
   <main id="app"></main>
 </div>
+
+<!-- The floating bar at the bottom: the student's next step (Continue, My stage), near the thumb -->
+<nav id="dock" class="dock" hidden></nav>
 
 
 <script>
@@ -65,6 +76,8 @@ const VERSION = "1.0";
 translatePage(); // the few words written in the HTML above
 document.getElementById("navSettings").setAttribute("aria-label", t("Settings"));
 document.getElementById("navSearch").setAttribute("aria-label", t("Search"));
+document.getElementById("navHome").setAttribute("aria-label", t("Home"));
+document.querySelectorAll("[data-theme-toggle]").forEach(button => button.setAttribute("aria-label", t("Light or dark")));
 
 // Makes text safe to place inside HTML
 function esc(text) {
@@ -197,6 +210,190 @@ function continueWidget() {
   </a>`;
 }
 
+// The home page's small card under the departments, near the thumb: where the student stopped, and their stage.
+// A new student sees a welcome row that picks their stage.
+function quickCard() {
+  let last = null;
+  try { last = JSON.parse(localStorage.getItem(LAST_KEY)); } catch (error) { last = null; }
+  const mine = myStage();
+  const mineDept = mine && departments.find(d => d.id === mine.dept);
+  const rows = [];
+  if (last && last.address) {
+    rows.push(`<li><a class="row quick-row" href="${esc(last.address)}">${tile("play", "indigo")}
+      <span class="grow"><span class="quick-kicker">${t("Continue")}</span>${esc(last.title)}<br>
+        <span class="secondary small">${esc(last.course)}${last.number ? SEP + t(last.lab ? "Lab {n}" : "Lecture {n}", { n: last.number }) : ""}</span></span></a></li>`);
+  }
+  if (mineDept) {
+    const stages = stagesOf(mineDept);
+    const stage = stages && stages.find(s => s.id === mine.stage);
+    const name = stage ? stageName(stage) : t("Stage {n}", { n: mine.stage.replace("stage", "") });
+    const next = content[mineDept.id] && upcomingEvents(mineDept, mine.stage)[0];
+    rows.push(`<li><a class="row quick-row" href="#${mineDept.id}-${mine.stage}">${tile(mineDept.icon || "school", mineDept.color)}
+      <span class="grow"><span class="quick-kicker">${t("My stage")}</span>${esc(name)}${SEP}${esc(localName(mineDept))}<br>
+        <span class="secondary small">${next ? `${esc(next.title)}${SEP}${timeUntil(next.event).words}` : stage ? plural(stage.courses.length, "course") : ""}</span></span></a></li>`);
+  }
+  if (!rows.length) { // a new student: a welcome that picks their stage, then becomes the My stage row
+    rows.push(`<li><a class="row quick-row" href="#" id="pickStage" role="button">${tile("school", "teal")}
+      <span class="grow"><span class="quick-kicker">${t("Welcome to Opely")}</span>${t("Pick your stage")}<br>
+        <span class="secondary small">${t("It stays here, one tap away.")}</span></span></a></li>`);
+  }
+  return `<ul class="group icons quick-card">${rows.join("")}</ul>`;
+}
+
+// ----- The floating bar at the bottom: the page's next step, near the thumb -----
+// Each page puts one or two buttons in it with setDock(); the main one is blue.
+// An item: { href | attrs | id, main, round, icon, tile, kicker, name, label, end, pressed }
+function dockItem(item) {
+  // Icons only. What a button does is in its label: read by screen readers, and shown in a small
+  // bubble when the button is pressed and held (see the dock's listeners below).
+  const words = item.label || [item.kicker, item.name].filter(Boolean).join(": ");
+  const shape = item.end === "chevron" || item.end === "skip" ? icon(item.end, "flip") : (item.icon ? icon(item.icon, item.flip ? "flip" : "") : "");
+  const cls = "dock-button dock-round" + (item.main ? " dock-main" : "") + (item.here ? " is-here" : "");
+  const inside = shape + (item.badge ? `<span class="dock-badge">${item.badge}</span>` : "");
+  const label = ` aria-label="${esc(words)}" data-tip="${esc(words)}"`;
+  const hidden = item.hidden ? " hidden" : "";
+  if (item.id && !item.attrs) return `<button class="${cls}" type="button" id="${item.id}"${label}${hidden}${item.pressed !== undefined ? ` aria-pressed="${item.pressed}"` : ""}>${inside}</button>`;
+  return `<a class="${cls}"${item.id ? ` id="${item.id}"` : ""} ${item.attrs || `href="${esc(item.href)}"`}${label}${hidden}>${inside}</a>`;
+}
+// A bubble that stays over a bar button while something happens (saving, downloading), then fades
+function statusTip(button) {
+  let bubble = null, timer = null;
+  return (text, done) => {
+    if (!button.isConnected) return;
+    if (!bubble || !bubble.isConnected) bubble = showTip(button, text, true); else bubble.textContent = text;
+    clearTimeout(timer);
+    if (done) timer = setTimeout(() => { if (bubble) bubble.remove(); bubble = null; }, 2200);
+  };
+}
+// A small bubble above a bar button. Gone by itself after a moment, unless `kept` (then the caller removes it).
+function showTip(button, text, kept) {
+  const bubble = document.createElement("div");
+  bubble.className = "dock-tip"; bubble.textContent = text;
+  document.body.append(bubble);
+  const box = button.getBoundingClientRect(), width = bubble.offsetWidth;
+  bubble.style.left = Math.min(innerWidth - width - 12, Math.max(12, box.left + box.width / 2 - width / 2)) + "px";
+  bubble.style.top = (box.top - bubble.offsetHeight - 10) + "px";
+  if (!kept) setTimeout(() => bubble.remove(), 1600);
+  return bubble;
+}
+// Press and hold a bar button: a bubble above it says what it does (the tap that ends the hold does nothing)
+(() => {
+  const dock = document.getElementById("dock");
+  let timer = null, held = false, bubble = null;
+  const hide = () => { if (bubble) { bubble.remove(); bubble = null; } };
+  dock.addEventListener("pointerdown", event => {
+    const button = event.target.closest(".dock-button");
+    if (!button) return;
+    held = false; clearTimeout(timer);
+    timer = setTimeout(() => {
+      held = true; hide();
+      bubble = showTip(button, button.dataset.tip || "", true);
+      if (navigator.vibrate) navigator.vibrate(8);
+    }, 420);
+  });
+  const end = () => { clearTimeout(timer); setTimeout(hide, held ? 1400 : 0); };
+  dock.addEventListener("pointerup", end);
+  dock.addEventListener("pointercancel", end);
+  dock.addEventListener("pointerleave", end);
+  dock.addEventListener("contextmenu", event => event.preventDefault()); // no copy-link menu on a long press
+  dock.addEventListener("click", event => { if (held) { event.preventDefault(); event.stopImmediatePropagation(); held = false; } }, true);
+})();
+let dockSet = false;    // whether the page being drawn filled the bar
+let dockBack = "#home"; // where Back goes (the top bar's button, and the swipe from the edge)
+function setDock(items) {
+  const dock = document.getElementById("dock");
+  items = (items || []).filter(Boolean);
+  dockSet = true;
+  // It only rises in when it appears; moving between pages that both have it, it just stays
+  dock.classList.toggle("dock-still", !dock.hidden && items.length > 0);
+  dock.innerHTML = items.map(dockItem).join("");
+  dock.hidden = !items.length;
+  document.body.classList.toggle("has-dock", !dock.hidden);
+}
+
+// Continue: the lecture where the student stopped
+function continueItem(main) {
+  let last = null;
+  try { last = JSON.parse(localStorage.getItem(LAST_KEY)); } catch (error) { last = null; }
+  if (!last || !last.address) return null;
+  return { href: last.address, main: main, icon: "play", name: last.title, label: t("Continue") + ": " + last.title }; // the play icon says "continue"
+}
+// My stage: short when it shares the bar, with the department's name when alone
+function myStageItem(alone, round) {
+  const mine = myStage();
+  const mineDept = mine && departments.find(d => d.id === mine.dept);
+  if (!mineDept) return null;
+  const stages = stagesOf(mineDept);
+  const stage = stages && stages.find(s => s.id === mine.stage);
+  const name = stage ? stageName(stage) : t("Stage {n}", { n: mine.stage.replace("stage", "") });
+  return { href: "#" + mineDept.id + "-" + mine.stage, main: alone, round: round && !alone, icon: "school", // a plain icon, like Continue and Announcements
+    kicker: alone ? t("My stage") : "", name: alone ? name + SEP + localName(mineDept) : name,
+    label: t("My stage") + ": " + name + SEP + localName(mineDept) };
+}
+// Announcements in the bar: a megaphone, with how many are new
+function newsItem(dept, notes, stageId) {
+  if (!notes.length) return null;
+  const unread = notes.filter(item => newIn(dept).has(newsKey(item))).length;
+  return { href: "#" + dept.id + "-news" + (stageId ? "-" + stageId : ""), round: true, icon: "megaphone", badge: unread,
+    label: t("Announcements") + (unread ? SEP + t("{n} new", { n: unread }) : "") };
+}
+
+// The home page and a department: Continue and My stage, or the welcome that picks a stage
+function nextStepDock(here, extra) {
+  const go = continueItem(true);
+  const mine = myStageItem(!go, false);
+  if (mine && here) mine.here = true; // on My stage itself: its icon turns green
+  if (!go && !mine) {
+    setDock([{ id: "pickStage", main: true, icon: "school", kicker: t("Welcome to Opely"), name: t("Pick your stage") }, extra]);
+    document.getElementById("pickStage").addEventListener("click", () => pickMyStage());
+    return;
+  }
+  setDock([go, mine, extra]);
+}
+// Next (a lecture, or a file): the blue button. Back, in the top bar, goes up to the page above.
+function pagerDock(before, after, extra) {
+  setDock([after ? Object.assign({ main: true, end: "chevron" }, after) : null].concat(extra || [])); // after.end may say "skip" (»)
+}
+
+// The welcome row: the student picks their department, then their stage, from two short lists
+async function pickMyStage() {
+  const dept = departments.length === 1 ? departments[0]
+    : await chooseFrom(t("Your department"), departments.map(d => ({ label: localName(d), value: d })));
+  if (!dept) return;
+  let stages = stagesOf(dept);
+  if (!stages) {
+    try { await refreshFile(dept.data, null, text => useDepartment(dept.id, text)); stages = content[dept.id].stages; } catch (error) { stages = null; }
+  }
+  if (!stages || !stages.length) { location.hash = "#" + dept.id; return; } // offline: open the department instead
+  const stage = stages.length === 1 ? stages[0]
+    : await chooseFrom(t("Your stage"), stages.map(s => ({ label: stageName(s), value: s })));
+  if (!stage) return;
+  setMyStage({ dept: dept.id, stage: stage.id });
+  route(true);
+}
+
+// A list of choices that rises from the bottom of the screen, like an iPhone action sheet.
+// Resolves with the chosen value, or null.
+function chooseFrom(title, choices) {
+  return new Promise(resolve => {
+    const backdrop = document.createElement("div");
+    backdrop.className = "sheet-backdrop";
+    backdrop.innerHTML = `<div class="sheet" role="dialog" aria-label="${esc(title)}">
+      <p class="sheet-title">${esc(title)}</p>
+      <div class="group">${choices.map((choice, i) => `<button type="button" class="row sheet-option" data-i="${i}">
+        <span class="grow">${esc(choice.label)}</span></button>`).join("")}</div>
+      <button type="button" class="sheet-cancel">${t("Cancel")}</button>
+    </div>`;
+    const close = value => { backdrop.classList.add("closing"); setTimeout(() => backdrop.remove(), 250); resolve(value); };
+    backdrop.addEventListener("click", event => { if (event.target === backdrop) close(null); });
+    backdrop.querySelector(".sheet-cancel").addEventListener("click", () => close(null));
+    backdrop.querySelectorAll(".sheet-option").forEach(button =>
+      button.addEventListener("click", () => close(choices[Number(button.dataset.i)].value)));
+    document.body.append(backdrop);
+    backdrop.querySelector(".sheet-option, .sheet-cancel").focus();
+  });
+}
+
 // The number of lectures in a department, from the copy saved in this browser (null if not saved yet)
 function savedProgress(dept) {
   if (content[dept.id]) return deptProgress(dept, content[dept.id].stages);
@@ -288,6 +485,8 @@ function newCount(dept, stage, course, fresh) {
 }
 
 // ----- Share a course or a lecture: the phone's share sheet, or the link is copied -----
+// Share, as a bar button (the phone's share sheet, or the link is copied)
+const shareItem = () => ({ id: "shareButton", icon: "upload", label: t("Share") });
 function shareButton() {
   return `<button id="shareButton" class="mine-pill share-pill" type="button">${icon("upload")}${t("Share")}</button>`;
 }
@@ -301,6 +500,7 @@ function wireShare(title) {
       return;
     }
     const copied = typeof copyText === "function" && await copyText(link);
+    if (button.closest(".dock")) return showTip(button, t(copied ? "Link copied" : "Can’t copy here")); // an icon: say it in a bubble
     button.lastChild.textContent = t(copied ? "Link copied" : "Can’t copy here");
     setTimeout(() => { if (button.isConnected) button.lastChild.textContent = t("Share"); }, 2000);
   });
@@ -330,16 +530,14 @@ function showArchivedCourses(dept, stage) {
   const base = "#" + dept.id + "-" + stage.id;
   document.title = t("Archived courses") + " | " + stageName(stage);
   const list = (stage.archivedCourses || []).slice().sort((a, b) => a.code.localeCompare(b.code, "en", { numeric: true }));
-  const widgets = list.map(course => `<a class="widget course" href="${base}-${course.id}">
-      <span class="head"><span class="kicker" dir="ltr">${esc(course.code)}</span>${chevron()}</span>
+  const widgets = list.map(course => `<a class="widget course card-size tinted gray" href="${base}-${course.id}">
+      <span class="head"><span class="kicker" dir="ltr">${esc(course.code)}</span></span>
       <span class="title">${esc(course.title)}</span>
-      ${course.instructor ? `<span class="sub">${esc(course.instructor)}</span>` : ""}
-      <span class="foot meta-row"><span>${plural(course.lectures.length, "lecture")}</span><span>${t("Archived {date}", { date: niceDate(course.archivedAt) })}</span></span>
+      <span class="foot">${niceDate(course.archivedAt)}</span>
     </a>`).join("");
   app.innerHTML = `
     <a class="back" href="${base}">${esc(stageName(stage))}</a>
     <h1>${t("Archived courses")}</h1>
-    <p class="lead secondary">${t("Courses that are no longer taught. They stay here to read.")}</p>
     ${widgets ? `<div class="courses">${widgets}</div>` : emptyState("clock", "No archived courses.")}`;
 }
 const hasArchive = course => !!course.archive && ((course.archive.versions || []).length + (course.archive.removed || []).length) > 0;
@@ -355,8 +553,8 @@ function archiveRowFor(dept, stage, course) {
   if (!hasArchive(course)) return "";
   const a = course.archive;
   const parts = [(a.versions || []).length ? plural(a.versions.length, "earlier version") : "", (a.removed || []).length ? plural(a.removed.length, "removed item") : ""].filter(Boolean).join(SEP);
-  return `<ul class="group icons archive-row"><li><a class="row" href="#${dept.id}-${stage.id}-${course.id}-archive">${tile("clock", "gray")}
-    <span class="grow">${t("Archive")}<br><span class="secondary small">${parts}</span></span></a></li></ul>`;
+  // A quiet grey line at the end of the list: the archive is extra, not another lecture
+  return `<a class="archive-link" href="#${dept.id}-${stage.id}-${course.id}-archive">${icon("clock")}<span>${t("Archive")} · ${parts}</span>${icon("chevron", "flip")}</a>`;
 }
 // The archive page of a course
 function showArchive(dept, stage, course) {
@@ -418,8 +616,7 @@ function showArchivedItem(dept, stage, course, item, back, here, word) {
     </div>
     ${item.video ? `<h2 class="label">${t("Recording")}</h2><ul class="group icons"><li><a class="row" href="${esc(item.video)}" target="_blank" rel="noopener">${tile("play", "pink")}<span class="grow">${t("Watch recording")}</span></a></li></ul>` : ""}
     ${item.summary ? `<h2 class="label">${t("Summary")}</h2><p class="text-block">${esc(item.summary)}</p>` : ""}
-    <h2 class="label">${t("Files")}</h2>
-    ${files ? `<ul class="group icons">${files}</ul>` : `<p class="text-block secondary">${t("No files yet.")}</p>`}
+    ${files ? `<ul class="group icons lecture-list">${files}</ul>` : `<p class="text-block secondary">${t("No files yet.")}</p>`}
     ${(item.earlier || []).length ? `<h2 class="label">${t("Earlier files")}</h2><ul class="group icons earlier">${item.earlier.map((file, i) => archivedFileRow(file, here + "-earlier-" + (i + 1))).join("")}</ul>` : ""}`;
 }
 // Opens an archived file inside Opely, read from the history
@@ -459,6 +656,7 @@ function openArchive(dept, stage, course, parts) {
 
 // ----- Search: every course, lecture, lab, file and announcement, in every department -----
 let searchFrom = "#home";  // where the student was before opening Search
+let newsFrom = "";         // where the student was before opening the announcements
 let lastQuery = "";        // kept, so going back to Search shows the same results
 // Lower case, without Arabic marks, with the letters that are often typed differently made the same
 function plain(text) {
@@ -572,18 +770,25 @@ async function wireOffline(course) {
   const button = document.getElementById("offlineButton");
   if (!button) return;
   const files = courseFiles(course);
-  const state = document.getElementById("offlineState");
+  const say = statusTip(button);
+  let note = "";
+  const state = { get textContent() { return note; }, set textContent(text) { note = text; if (button.dataset.busy || button.dataset.armed || started) say(text, !button.dataset.busy); } };
+  let started = false;
   const show = saved => {
     const all = saved === files.length;
-    state.textContent = all ? t("All {n} files are saved in this browser.", { n: files.length }) : t("{saved} of {n} files saved", { saved: saved, n: files.length });
-    document.getElementById("offlineTile").innerHTML = tile(all ? "check" : "download", all ? "green" : "blue");
+    note = all ? t("All {n} files are saved in this browser.", { n: files.length }) : t("{saved} of {n} files saved", { saved: saved, n: files.length });
+    button.innerHTML = icon(all ? "check" : "tray");
+    button.classList.toggle("is-saved", all);
+    const words = t("Save the course in this browser") + SEP + note;
+    button.setAttribute("aria-label", words); button.dataset.tip = words;
     button.dataset.all = all ? "yes" : "";
   };
   show(await offlineCount(files));
   button.addEventListener("click", async () => {
     if (button.dataset.busy) return;
+    started = true;
     if (button.dataset.all) { // already saved: a second tap removes the copies
-      if (!button.dataset.armed) { button.dataset.armed = "yes"; state.textContent = t("Tap again to remove this course’s saved files."); return; }
+      if (!button.dataset.armed) { button.dataset.armed = "yes"; state.textContent = t("Tap again to remove this course’s saved files."); setTimeout(() => { delete button.dataset.armed; }, 4000); return; }
       delete button.dataset.armed;
       const cache = await caches.open(FILE_CACHE);
       for (const file of files) await cache.delete(file.url);
@@ -598,7 +803,7 @@ async function wireOffline(course) {
     }
     delete button.dataset.busy;
     show(await offlineCount(files));
-    if (failed) state.textContent += SEP + t("{n} couldn’t be saved. Check your connection.", { n: failed });
+    say(note + (failed ? SEP + t("{n} couldn’t be saved. Check your connection.", { n: failed }) : ""), true);
     markSaved();
   });
 }
@@ -611,28 +816,25 @@ function showDepartments() {
   if (departments.length === 0) return showEmpty("school", "No departments yet.");
 
   const manyUniversities = new Set(faculties.map(faculty => faculty.university.id)).size > 1;
+  const manyFaculties = faculties.length > 1;
   const sections = faculties.map(faculty => {
     const heading = manyUniversities ? localName(faculty.university) + SEP + faculty.name : faculty.name;
+    // A department card: its icon and its name (the numbers are in the Statistics card)
     const widgets = faculty.departments.map((dept, i, all) => {
-      const progress = savedProgress(dept);
-      const wide = all.length % 2 === 1 && i === all.length - 1;
-      return `<a class="widget dept ${esc(dept.color)}${wide ? " wide" : ""}" href="#${dept.id}">
-        <span class="head">${tile(dept.icon || "school", dept.color, "big")}${chevron()}</span>
+      return `<a class="widget dept slim card-size tinted ${esc(dept.color)}" href="#${dept.id}">
+        <span class="head">${tile(dept.icon || "school", dept.color)}${chevron()}</span>
         <span class="title">${esc(localName(dept))}</span>
-        <span class="sub">${progress && progress[1] ? t("{done} of {total} opened", { done: progress[0], total: progress[1] }) : `<bdi>${esc(dept.short || "")}</bdi>`}</span>
-        ${progressBar(progress ? progress[0] : 0, progress ? progress[1] : 0)}
       </a>`;
     }).join("");
-    return `<h2 class="label">${esc(heading)}</h2><div class="widgets depts">${widgets}</div>`;
+    return `${manyFaculties || manyUniversities ? `<h2 class="label">${esc(heading)}</h2>` : ""}<div class="widgets depts">${widgets}</div>`;
   }).join("");
 
   app.innerHTML = `
-    <h1>${t("Departments")}</h1>
-    <p class="lead secondary">${t("Choose your department.")}</p>
-    ${continueWidget()}
-    ${myStageWidget()}
-    ${sections}
-    <p class="page-foot">Opely${SEP}${t("Version {v}", { v: VERSION })}</p>`;
+    <h1 class="home-title">${t("Departments")}</h1>
+    ${homeStatsCard()}
+    ${sections}`;
+  nextStepDock();
+  fetchDepartmentsForHome();
 }
 
 // Today, as "2026-11-15"
@@ -658,7 +860,7 @@ function upcomingEvents(dept, stageId) {
   const now = new Date();
   return announcementsFor(dept, stageId)
     .filter(item => item.event && (item.event.length <= 10 ? item.event >= todayText() : new Date(item.event) > now))
-    .sort((a, b) => a.event.localeCompare(b.event));
+    .sort((a, b) => new Date(a.event.length <= 10 ? a.event + "T00:00" : a.event) - new Date(b.event.length <= 10 ? b.event + "T00:00" : b.event)); // the nearest first
 }
 // How long until an event: { number, unit } for the big text, and a short sentence
 function timeUntil(event) {
@@ -679,6 +881,49 @@ function timeUntil(event) {
   return { number: days, unit: t("days"), words: t("In {n} days", { n: days }) };
 }
 // The countdown card: the next event, big, with the others below it
+// A stage's next exams and deadlines, as a card like Statistics: the next two, each with the days left
+// (orange when it is a week away or less). Information only: the 📣 button in the bar opens the announcements.
+function comingUpCard(dept, stageId) {
+  const events = upcomingEvents(dept, stageId).slice(0, 2);
+  if (!events.length) return "";
+  const today = new Date(todayText() + "T00:00");
+  const rows = events.map(item => {
+    const days = Math.round((new Date(item.event.split("T")[0] + "T00:00") - today) / 86400000);
+    const left = timeUntil(item.event);
+    return `<li class="up-row">
+      <span class="up-days${days <= 7 ? " soon" : ""}"><b>${left.number}</b><small>${esc(left.unit)}</small></span>
+      <span class="up-text"><span class="up-title">${esc(item.title)}</span><span class="up-when">${whenText(item.event)}</span></span>
+    </li>`;
+  }).join("");
+  return `<section class="stats-card up-card tinted orange" aria-label="${t("Coming up")}">
+    <span class="kicker">${t("Coming up")}</span>
+    <ul class="up-list">${rows}</ul>
+  </section>`;
+}
+
+// The newest announcement the student hasn't seen yet, as one slim line (gone once it is read)
+function newsLine(dept, stageId) {
+  const fresh = newIn(dept);
+  const item = announcementsFor(dept, stageId).find(news => fresh.has(newsKey(news)) && !news.event); // dated ones are the countdown
+  if (!item) return "";
+  return `<a class="countdown-line news-line" href="#${dept.id}-news-${stageId}">${tile("megaphone", "blue")}
+    <span class="grow"><span class="countdown-title">${esc(item.title)}</span><span class="secondary small">${niceDate(item.date)}</span></span>
+    ${newBadge(true)}</a>`;
+}
+
+// The next exam or deadline of a stage, as one slim line. Only when it is a week away or less;
+// later ones wait in the announcements.
+function countdownLine(dept, stageId) {
+  const next = upcomingEvents(dept, stageId)[0];
+  if (!next) return "";
+  const days = Math.round((new Date(next.event.split("T")[0] + "T00:00") - new Date(todayText() + "T00:00")) / 86400000);
+  if (days > 7) return "";
+  const left = timeUntil(next.event);
+  return `<a class="countdown-line" href="#${dept.id}-news${stageId ? "-" + stageId : ""}">${tile("clock", "orange")}
+    <span class="grow"><span class="countdown-title">${esc(next.title)}</span><span class="secondary small">${whenText(next.event)}</span></span>
+    <span class="countdown-chip">${left.number ? `<b>${left.number}</b> ` : ""}${esc(left.unit)}</span></a>`;
+}
+
 function countdownWidget(dept, stageId) {
   const events = upcomingEvents(dept, stageId);
   if (!events.length) return "";
@@ -707,6 +952,12 @@ function announcementsFor(dept, stageId) {
 function newsWidget(dept, list, extraClass) {
   if (list.length === 0) return "";
   const more = list.length > 1 ? `<span>${t("{n} more", { n: list.length - 1 })}</span>` : "";
+  const fresh = list.some(item => newIn(dept).has(newsKey(item)));
+  if (extraClass === "half") return `<a class="widget stage news-half" href="#${dept.id}-news">
+    <span class="head"><span class="kicker">${t(list.length > 1 ? "Announcements" : "Announcement")}</span>${chevron()}</span>
+    <span class="title">${esc(list[0].title)}</span>
+    <span class="meta-row"><span>${niceDate(list[0].date)}</span>${newBadge(fresh)}</span>
+  </a>`;
   return `<a class="widget wide ${extraClass || ""}" href="#${dept.id}-news">
     <span class="head"><span class="kicker">${t(list.length > 1 ? "Announcements" : "Announcement")}</span><span class="head-end">${newBadge(list.some(item => newIn(dept).has(newsKey(item))))}${chevron()}</span></span>
     <span class="title">${esc(list[0].title)}</span>
@@ -715,9 +966,14 @@ function newsWidget(dept, list, extraClass) {
 }
 
 // The page that lists every announcement of a department
-function showNews(dept, stages) {
-  document.title = t("Announcements") + " | " + localName(dept);
-  const cards = announcementsFor(dept).map(news => {
+function showNews(dept, stages, stageId) {
+  const stage = stageId && stages.find(s => s.id === stageId);
+  if (stageId && !stage) return showNotFound();
+  document.title = t("Announcements") + " | " + (stage ? stageName(stage) : localName(dept));
+  const list = announcementsFor(dept, stage ? stage.id : undefined);
+  // Back returns to the page the student came from (the stage, its semester, the department...)
+  const back = newsFrom.startsWith("#" + dept.id) ? newsFrom : "#" + (stage ? dept.id + "-" + stage.id : dept.id);
+  const cards = list.map(news => {
     const ids = news.stage === "all" ? null : news.stages || [news.stage];
     const audience = ids ? ids.map(id => { const found = stages.find(s => s.id === id); return found ? stageName(found) : ""; }).filter(Boolean).join(SEP) : "";
     return `<div class="text-block">
@@ -731,10 +987,92 @@ function showNews(dept, stages) {
   }).join("");
 
   app.innerHTML = `
-    <a class="back" href="#${dept.id}">${esc(localName(dept))}</a>
+    <a class="back" href="${back}">${esc(stage ? stageName(stage) : localName(dept))}</a>
     <h1>${t("Announcements")}</h1>
+    ${stage ? `<p class="lead secondary">${esc(stageName(stage))}${SEP}${esc(localName(dept))}</p>` : ""}
     ${cards ? `<div class="news">${cards}</div>` : emptyState("megaphone", "No announcements yet.")}`;
-  markKnown(dept, announcementsFor(dept).map(newsKey));
+  markKnown(dept, list.map(newsKey));
+}
+
+// ----- Colour, after Apple's system colours: each department, stage and course keeps its own -----
+// Content colours only: orange, red and green are kept for what they mean (soon, new or danger, done)
+const PALETTE = ["blue", "indigo", "purple", "teal", "pink", "cyan", "mint", "brown"];
+const stageColor = (stage, i) => stage.color || PALETTE[i % PALETTE.length];
+// A course's colour: from its place in its stage (by code), the same on every page
+function courseColor(stage, course) {
+  if (course.color) return course.color;
+  const sorted = stage.courses.slice().sort((a, b) => a.code.localeCompare(b.code, "en", { numeric: true }));
+  const place = Math.max(0, sorted.findIndex(c => c.id === course.id.replace(/-labs$/, "")));
+  return PALETTE[place % PALETTE.length];
+}
+
+// Numbers as a card (information, not a button): a big total, a line of other counts,
+// and a small bar chart. bars: [{ name, words, n }]
+function numbersCard(total, more, chartLabel, bars, tint) {
+  const most = Math.max(1, ...bars.map(bar => bar.n));
+  const columns = bars.map(bar => `<span class="stat-bar ${esc(bar.color || "")}" title="${esc(bar.words)}" aria-label="${esc(bar.words)}" role="img">
+      <span class="stat-value">${bar.n}</span>
+      <span class="stat-fill" style="height:${bar.n ? Math.max(6, Math.round(bar.n / most * 100)) : 0}%"></span>
+      <span class="stat-name">${esc(bar.name)}</span></span>`).join("");
+  return `<section class="stats-card${tint ? " tinted " + esc(tint) : ""}" aria-label="${t("Statistics")}">
+    <div class="stats-head">
+      <span class="kicker">${t("Statistics")}</span>
+      <span class="stats-total"><b>${total}</b> ${t(total === 1 ? "lecture" : "lectures")}</span>
+      <span class="stats-more">${more}</span>
+    </div>
+    <div class="stats-chart">
+      <span class="stats-chart-label">${t(chartLabel)}</span>
+      <div class="stat-bars">${columns}</div>
+    </div>
+  </section>`;
+}
+// A department in numbers, with its lectures by stage
+function statsCard(dept, stages) {
+  const courses = stages.reduce((n, stage) => n + stage.courses.length, 0);
+  const labs = stages.reduce((n, stage) => n + stage.courses.reduce((m, course) => m + (course.labs || []).length, 0), 0);
+  const bars = stages.map((stage, i) => {
+    const n = allLectures([stage]).length;
+    return { name: String(i + 1), words: stageName(stage) + ": " + plural(n, "lecture"), n: n, color: stageColor(stage, i) };
+  });
+  return numbersCard(bars.reduce((a, b) => a + b.n, 0),
+    plural(courses, "course") + SEP + plural(stages.length, "stage") + (labs ? SEP + plural(labs, "lab") : ""),
+    "Lectures by stage", bars, dept.color);
+}
+// Every department in numbers, with its lectures by department (from the copies saved in this browser)
+function homeStatsCard() {
+  let courses = 0, labs = 0;
+  const bars = departments.map(dept => {
+    const stages = stagesOf(dept) || [];
+    courses += stages.reduce((n, stage) => n + stage.courses.length, 0);
+    labs += stages.reduce((n, stage) => n + stage.courses.reduce((m, course) => m + (course.labs || []).length, 0), 0);
+    const n = allLectures(stages).length;
+    return { name: dept.short || localName(dept), words: localName(dept) + ": " + plural(n, "lecture"), n: n, color: dept.color };
+  });
+  return numbersCard(bars.reduce((a, b) => a + b.n, 0),
+    plural(departments.length, "department") + SEP + plural(courses, "course") + (labs ? SEP + plural(labs, "lab") : ""),
+    "Lectures by department", bars);
+}
+// The home page's numbers need every department's file: the ones not saved in this browser yet are
+// fetched once, quietly, and the page is drawn again
+const fetchedForHome = new Set();
+function fetchDepartmentsForHome() {
+  const missing = departments.filter(dept => !stagesOf(dept) && !fetchedForHome.has(dept.id));
+  if (!missing.length) return;
+  missing.forEach(dept => fetchedForHome.add(dept.id));
+  Promise.allSettled(missing.map(dept => refreshFile(dept.data, null, text => useDepartment(dept.id, text))))
+    .then(() => { if (!shownName || shownName === "home") route(true); });
+}
+
+// A department's progress, as a card the size of a stage: information, not a button
+function progressWidget(dept, stages, wide) {
+  const [done, total] = deptProgress(dept, stages);
+  const courses = stages.reduce((n, stage) => n + stage.courses.length, 0);
+  return `<div class="widget stage info${wide ? " wide" : ""}">
+    <span class="head"><span class="kicker">${t("Progress")}</span></span>
+    <span class="big">${total ? Math.round(done / total * 100) : 0}%</span>
+    <span class="sub">${t("{done} of {total} opened", { done: done, total: total })}<br>${plural(courses, "course")}</span>
+    ${total ? ring(done, total, 40, false) : ""}
+  </div>`;
 }
 
 // The main card of a department page: its icon, its size, and how much of it has been opened
@@ -759,24 +1097,39 @@ function showDepartment(dept, stages) {
     const lectures = allLectures([stage]).length;
     const [done] = stageProgress(dept, stage);
     const added = stage.courses.reduce((n, course) => n + newCount(dept, stage, course, fresh), 0);
-    return `<a class="widget stage" href="#${dept.id}-${stage.id}">
-      <span class="head"><span class="kicker">${t("Stage")}</span><span class="head-end">${newBadge(added)}${chevron()}</span></span>
-      <span class="big">${i + 1}</span>
-      <span class="sub">${plural(stage.courses.length, "course")}<br>${plural(lectures, "lecture")}</span>
-      ${lectures ? ring(done, lectures, 40, false) : ""}
+    return `<a class="widget stage slim card-size tinted ${esc(stageColor(stage, i))}" href="#${dept.id}-${stage.id}">
+      <span class="head">${tile("layers", stageColor(stage, i))}<span class="head-end">${newBadge(added)}${chevron()}</span></span>
+      <span class="stage-name">${esc(stageName(stage))}</span>
     </a>`;
   }).join("");
-  const top = newsWidget(dept, announcementsFor(dept)) + latestWidget(dept, stages);
+  // Above the stages: the department in numbers (information only). Announcements are in the bar.
 
   app.innerHTML = `
     <a class="back" href="#home">${t("Departments")}</a>
-    <h1>${esc(localName(dept))}</h1>
+    <h1 data-short="${esc(dept.short || "")}">${esc(localName(dept))}</h1>
     ${stages.length
-      ? `<p class="lead secondary">${t("Choose your stage.")}</p>
-         ${deptHero(dept, stages)}
-         ${top ? `<div class="widgets">${top}</div>` : ""}
+      ? `${statsCard(dept, stages)}
          <div class="widgets stages">${stageWidgets}</div>`
       : emptyState("layers", "No stages yet.")}`;
+  nextStepDock(); // announcements are read from each stage
+}
+
+// The semester a stage opens on: the one with the newest lecture or lab, so it moves to
+// Semester 2 by itself when teachers start adding to it
+const SEMESTER_KEY = "opely-semester"; // "auto", "1" or "2" (Settings → My stage)
+const savedSemester = () => { try { return localStorage.getItem(SEMESTER_KEY) || "auto"; } catch (error) { return "auto"; } };
+function currentSemester(stage) {
+  if (savedSemester() === "1" || savedSemester() === "2") return Number(savedSemester());
+  let newest = "", semester = 1;
+  stage.courses.forEach(course => (course.lectures || []).concat(course.labs || []).forEach(lecture => {
+    if ((lecture.date || "") > newest) { newest = lecture.date; semester = course.semester === 2 ? 2 : 1; }
+  }));
+  return semester;
+}
+
+// A course's opened lectures as a bar, with the count at its end
+function progressLine(done, total) {
+  return `<span class="progress-line">${progressBar(done, total)}<span class="progress-count">${done}/${total}</span></span>`;
 }
 
 // ----- A stage’s channel: pick a semester, then see its courses -----
@@ -800,42 +1153,52 @@ function showStage(dept, stage, semester) {
     const status = dates.length
       ? t("Updated {date}", { date: niceDate(dates[dates.length - 1]) })
       : t("No lectures yet");
-    return `<a class="widget course" href="${base}-${course.id}">
+    // The same size as a stage or a department card: code, name, and how much is opened
+    return `<a class="widget course card-size tinted ${esc(courseColor(stage, course))}" href="${base}-${course.id}" ${course.instructor ? `title="${esc(course.instructor)}"` : ""}>
       <span class="head"><span class="kicker" dir="ltr">${esc(course.code)}</span><span class="head-end">${newBadge(newCount(dept, stage, course, fresh))}${chevron()}</span></span>
       <span class="title">${esc(course.title)}</span>
-      ${course.instructor ? `<span class="sub">${esc(course.instructor)}</span>` : ""}
-      ${hasLabs(course) ? `<span class="sub">${plural((course.labs || []).length, "lab")}</span>` : ""}
-      <span class="foot meta-row"><span>${course.lectures.length ? t("{done} of {total} opened", { done: courseProgress(dept, stage, course)[0], total: course.lectures.length }) : t("No lectures yet")}</span>${dates.length ? `<span>${status}</span>` : ""}</span>
-      ${course.lectures.length ? progressBar(...courseProgress(dept, stage, course)) : ""}
+      ${course.lectures.length ? progressLine(...courseProgress(dept, stage, course)) : `<span class="foot">${t("No lectures yet")}</span>`}
     </a>`;
   }).join("");
 
   app.innerHTML = `
     <a class="back" href="#${dept.id}">${esc(localName(dept))}</a>
     <h1>${esc(stageName(stage))}</h1>
-    ${(() => { const mine = myStage(); const is = mine && mine.dept === dept.id && mine.stage === stage.id;
-      return `<button id="myStageButton" class="mine-pill" type="button" aria-pressed="${!!is}">${icon(is ? "check" : "plus")}${t(is ? "My stage" : "Make this my stage")}</button>`; })()}
-    ${countdownWidget(dept, stage.id)}
-    ${newsWidget(dept, announcementsFor(dept, stage.id), "notice")}
+    ${comingUpCard(dept, stage.id)}
     <nav class="segments" aria-label="${t("Semester")}">${segments}</nav>
     ${courses.length
-      ? `<p class="count">${plural(courses.length, "course")}${SEP}${plural(lectures, "lecture")}</p>
-         <div class="courses">${courseWidgets}</div>`
+      ? `<div class="courses">${courseWidgets}</div>`
       : emptyState("book", "No courses yet.")}
-    ${(stage.archivedCourses || []).length ? `<ul class="group icons archive-row"><li><a class="row" href="${base}-archived">${tile("clock", "gray")}
-      <span class="grow">${t("Archived courses")}<br><span class="secondary small">${plural(stage.archivedCourses.length, "course")}</span></span></a></li></ul>` : ""}`;
+    ${(stage.archivedCourses || []).length ? `<a class="archive-link" href="${base}-archived">${icon("clock")}<span>${t("Archived courses")} · ${stage.archivedCourses.length}</span>${icon("chevron", "flip")}</a>` : ""}`;
+  // The bar: Continue, and the switch that makes this stage My stage
+  const mine = myStage();
+  const isMine = !!(mine && mine.dept === dept.id && mine.stage === stage.id);
+  const go = continueItem(true);
+  // The same bar as the home page (Continue, My stage), and the stage's announcements, with how many are new
+  const news = newsItem(dept, announcementsFor(dept, stage.id), stage.id);
+  if (mine) return nextStepDock(isMine, news);
+  setDock([go, { id: "myStageButton", main: !go, icon: "plus", name: t("Make this my stage") }, news]);
   document.getElementById("myStageButton").addEventListener("click", () => {
-    const mine = myStage();
-    setMyStage(mine && mine.dept === dept.id && mine.stage === stage.id ? null : { dept: dept.id, stage: stage.id });
-    showStage(dept, stage, semester);
+    setMyStage({ dept: dept.id, stage: stage.id });
+    route(true);
   });
 }
 
-// The big button of a course: the first lecture not opened yet
-function nextButton(dept, stage, course, base) {
+// The bar's button on a course: the first lecture not opened yet
+function nextItem(dept, stage, course) {
+  const index = course.lectures.findIndex((lecture, i) => !opened[keyOfLecture(dept, stage, course, lecture, i + 1)]);
+  if (index === -1) return null;
+  const lecture = course.lectures[index];
+  const words = course.isLabs ? (index === 0 ? "Start with Lab {n}" : "Continue with Lab {n}") : (index === 0 ? "Start with Lecture {n}" : "Continue with Lecture {n}");
+  return { attrs: lectureLink(dept, stage, course, lecture, index + 1), main: true, icon: "play", kicker: t(words, { n: index + 1 }), name: lecture.title };
+}
+
+// The note on a course's main card when everything is opened (the next lecture is in the bar)
+function nextButton(dept, stage, course, base, noteOnly) {
   const index = course.lectures.findIndex((lecture, i) => !opened[keyOfLecture(dept, stage, course, lecture, i + 1)]);
   if (course.lectures.length === 0) return "";
   if (index === -1) return `<span class="sub done-note">${icon("check")}${t(course.isLabs ? "All labs opened" : "All lectures opened")}</span>`;
+  if (noteOnly) return "";
   const lecture = course.lectures[index];
   const words = course.isLabs ? (index === 0 ? "Start with Lab {n}" : "Continue with Lab {n}") : (index === 0 ? "Start with Lecture {n}" : "Continue with Lecture {n}");
   return `<a class="glow-button" ${lectureLink(dept, stage, course, lecture, index + 1)}>${t(words, { n: index + 1 })}</a>`;
@@ -877,7 +1240,7 @@ function showCourse(dept, stage, course, section) {
   if (section === "sources") {
     const rows = sources.map((source, i) => fileRow(source, base + "-sources-" + (i + 1))).join("");
     list = sources.length
-      ? `<p class="count">${plural(sources.length, "source")}</p><ul class="group icons">${rows}</ul>`
+      ? `<ul class="group icons course-list">${rows}</ul>`
       : emptyState("book", "No sources yet.");
   } else {
     const shown = section === "labs" ? asLabs(course) : course; // lectures, or labs shaped like lectures
@@ -893,7 +1256,7 @@ function showCourse(dept, stage, course, section) {
         ${newBadge(fresh.has(keyOfLecture(dept, stage, shown, lecture, i + 1)))}
       </a></li>`).join("");
     list = shown.lectures.length
-      ? `<p class="count">${plural(shown.lectures.length, section === "labs" ? "lab" : "lecture")}</p><ol class="group icons">${rows}</ol>`
+      ? `<ol class="group icons course-list course-tint ${esc(courseColor(stage, course))}">${rows}</ol>`
       : emptyState(section === "labs" ? "flask" : "doc", section === "labs" ? "No labs yet." : "No lectures yet.");
   }
   // The ring and the big button follow the part that is open: lectures, or labs
@@ -904,17 +1267,17 @@ function showCourse(dept, stage, course, section) {
     ${course.isArchived
       ? `<a class="back" href="#${dept.id}-${stage.id}-archived">${t("Archived courses")}</a>`
       : `<a class="back" href="#${dept.id}-${stage.id}-sem${course.semester}">${esc(stageName(stage))}${SEP}${t("Semester {n}", { n: course.semester })}</a>`}
-    <div class="hero static course-hero">
-      <span class="hero-text">
+    <h1 data-short="${esc(course.code)}">${esc(course.title)}</h1>
+    <section class="stats-card course-card tinted ${esc(courseColor(stage, course))}" aria-label="${esc(course.title)}">
+      <span class="course-info">
         <span class="kicker" dir="ltr">${esc(course.code)}</span>
-        <h1>${esc(course.title)}</h1>
-        ${course.instructor ? `<span class="sub">${esc(course.instructor)}</span>` : ""}
-        ${shareButton()}
+        <span class="course-name">${esc(course.title)}</span>
+        ${course.instructor ? `<span class="course-by">${esc(course.instructor)}</span>` : ""}
+        ${nextButton(dept, stage, leading, leadingBase, true)}
       </span>
-      ${leading.lectures.length ? ring(...courseProgress(dept, stage, leading), 80, true) : ""}
-      ${nextButton(dept, stage, leading, leadingBase)}
-    </div>
-    ${course.isArchived ? `<p class="archived-note">${icon("clock")}<span>${t("Archived course{sep}archived {date}. It stays here to read.", { sep: SEP, date: niceDate(course.archivedAt) })}</span></p>` : offlineRow(course)}
+      ${leading.lectures.length ? ring(...courseProgress(dept, stage, leading), 64, true) : ""}
+    </section>
+    ${course.isArchived ? `<p class="archived-note">${icon("clock")}<span>${t("Archived course{sep}archived {date}. It stays here to read.", { sep: SEP, date: niceDate(course.archivedAt) })}</span></p>` : ""}
     <nav class="segments${hasLabs(course) ? " three" : ""}" aria-label="${t("Course content")}">
       <a class="segment" href="${base}" ${section === "lectures" ? 'aria-current="page"' : ""}>${t("Lectures")}</a>
       ${hasLabs(course) ? `<a class="segment" href="${base}-labs" ${section === "labs" ? 'aria-current="page"' : ""}>${t("Labs")}</a>` : ""}
@@ -922,10 +1285,27 @@ function showCourse(dept, stage, course, section) {
     </nav>
     ${list}
     ${archiveRowFor(dept, stage, course)}`;
+  // The bar, the same on Lectures, Labs and Sources: the next lecture, the whole course to your files (a zip)
+  // or kept in this browser, and share
+  const whole = courseFiles(course).length ? [
+    { id: "downloadCourse", icon: "download", label: t("Download the course to your files") },
+    window.caches ? { id: "offlineButton", icon: "tray", label: t("Save the course in this browser") } : null] : [];
+  setDock([nextItem(dept, stage, course)].concat(whole, [shareItem()]));
   markSaved();
   wireOffline(course);
+  wireDownloadCourse(course);
+  wireRowSaves(course, section === "labs" ? asLabs(course) : course, section);
   wireShare(course.title);
   if (typeof seenNow !== "undefined") markKnown(dept, seenNow); // shown once as new, then known
+}
+
+// A lecture's recording, as a row of its list: a pink play tile, and the site it is on
+function videoRow(url) {
+  let host = "";
+  try { host = new URL(url).hostname.replace(/^www\.|^m\./, ""); } catch (error) { host = ""; }
+  const site = /youtu/.test(host) ? "YouTube" : /drive\.google/.test(host) ? "Google Drive" : /vimeo/.test(host) ? "Vimeo" : host;
+  return `<li><a class="row" href="${esc(url)}" target="_blank" rel="noopener">${tile("play", "pink")}
+    <span class="grow">${t("Recording")}</span><span class="end video-site">${esc(site)}${icon("external")}</span></a></li>`;
 }
 
 // ----- A single lecture -----
@@ -936,39 +1316,38 @@ function showLecture(dept, stage, course, number) {
   markOpened(keyOfLecture(dept, stage, course, lecture, number));
   rememberLecture(base + "-" + (lecture.id || number), lecture, course, number, base.slice(1));
 
-  const recording = lecture.video
-    ? `<a class="row" href="${esc(lecture.video)}" target="_blank" rel="noopener">${tile("play", "pink")}<span class="grow">${t("Watch recording")}</span></a>`
-    : `<span class="row secondary">${tile("play", "gray")}<span class="grow">${t("No recording yet")}</span></span>`;
 
   const here = base + "-" + (lecture.id || number);
-  const files = (lecture.files || []).map((file, i) => fileRow(file, here + "-" + (i + 1))).join("");
+  // The recording is the first thing in the list, like a file that opens on its own site
+  const files = (lecture.video ? videoRow(lecture.video) : "") + (lecture.files || []).map((file, i) => fileRow(file, here + "-" + (i + 1))).join("");
 
   // Links use the lecture's id, so they keep working when lectures are added
   const before = course.lectures[number - 2];
   const after = course.lectures[number];
-  const previous = before ? `<a href="${base}-${before.id || number - 1}">${icon("back", "flip")}${t("Previous")}</a>` : `<span></span>`;
-  const next = after ? `<a class="next" href="${base}-${after.id || number + 1}">${t("Next")}${icon("chevron", "flip")}</a>` : `<span></span>`;
 
   app.innerHTML = `
     <a class="back" href="${base}">${esc(course.title)}</a>
-    <div class="course-head">
-      <span class="pill">${t(course.isLabs ? "Lab {n}" : "Lecture {n}", { n: number })}${SEP}<bdi>${esc(course.code)}</bdi></span>
-      <h1>${esc(lecture.title)}</h1>
-      <p class="meta-row"><span>${niceDate(lecture.date)}</span></p>
-      ${shareButton()}
-    </div>
-    <h2 class="label">${t("Recording")}</h2>
-    <ul class="group icons"><li>${recording}</li></ul>
-    ${lecture.summary ? `<h2 class="label">${t("Summary")}</h2><p class="text-block">${esc(lecture.summary)}</p>` : ""}
-    <h2 class="label">${t("Files")}</h2>
-    ${files ? `<ul class="group icons">${files}</ul>` : `<p class="text-block secondary">${t("No files yet.")}</p>`}
-    ${zipFiles(lecture).length ? `<div class="lecture-saves">
-        ${zipFiles(lecture).length > 1 ? `<button id="downloadAll" class="button secondary" type="button">${icon("download")}<span>${t("Download all")}</span></button>` : ""}
-        ${window.caches ? `<button id="keepOffline" class="button secondary" type="button"><span id="keepIcon">${icon("tray")}</span><span id="keepLabel">${t("Save offline")}</span></button>` : ""}
-      </div>
-      <p id="downloadAllState" class="hint-below" role="status">${zipFiles(lecture).length > 1 ? t("Download all: one zip on your device. Save offline: kept in this browser, to open without internet.") : t("Save offline keeps the file in this browser, to open without internet.")}</p>` : ""}
+    <h1 data-short="${esc(t(course.isLabs ? "Lab {n}" : "Lecture {n}", { n: number }))}">${esc(lecture.title)}</h1>
+    <section class="stats-card course-card lecture-card tinted ${esc(courseColor(stage, course))}" aria-label="${esc(lecture.title)}">
+      <span class="course-info">
+        <span class="kicker">${t(course.isLabs ? "Lab {n}" : "Lecture {n}", { n: number })}${SEP}<bdi>${esc(course.code)}</bdi></span>
+        <span class="course-name">${esc(lecture.title)}</span>
+        <span class="course-by">${niceDate(lecture.date)}</span>
+        ${lecture.summary ? `<span class="lecture-summary">${esc(lecture.summary)}</span>` : ""}
+      </span>
+      <span class="lecture-count"><b>${(lecture.files || []).length}</b><small>${t("Files")}</small></span>
+    </section>
+    ${files ? `<ul class="group icons lecture-list">${files}</ul>` : `<p class="text-block secondary">${t("No files yet.")}</p>`}
     ${(lecture.earlier || []).length ? `<h2 class="label">${t("Earlier files")}</h2><ul class="group icons earlier">${lecture.earlier.map((file, i) => archivedFileRow(file, here + "-earlier-" + (i + 1))).join("")}</ul>` : ""}
-    <nav class="pager" aria-label="${t("Lectures")}">${previous}${next}</nav>`;
+`;
+  // The bar: Next, then the lecture's own buttons: download to your files (a zip), keep in this browser, share
+  const saves = zipFiles(lecture).length ? [
+    { id: "downloadAll", icon: "download", label: t("Download to your files") },
+    window.caches ? { id: "keepOffline", icon: "tray", label: t("Save in this browser") } : null] : [];
+  pagerDock(
+    before && { attrs: `href="${base}-${before.id || number - 1}"`, kicker: t(course.isLabs ? "Previous lab" : "Previous lecture"), name: before.title },
+    after && { attrs: `href="${base}-${after.id || number + 1}"`, kicker: t(course.isLabs ? "Next lab" : "Next lecture"), name: after.title, end: "skip" },
+    saves.concat([shareItem()]));
   markSaved();
   wireShare(lecture.title);
   wireDownloadAll(lecture, course);
@@ -982,8 +1361,9 @@ async function wireKeepOffline(lecture) {
   if (!button) return;
   const files = zipFiles(lecture);
   const address = file => file.from || file.url;
-  const state = document.getElementById("downloadAllState");
-  const label = document.getElementById("keepLabel");
+  const say = statusTip(button);
+  const label = { set textContent(text) { say(text); } }; // what the button would have said, in a bubble
+  const state = { set textContent(text) { say(text, true); } };
   const view = viewNumber;
   const count = async () => {
     try { const cache = await caches.open(FILE_CACHE); let n = 0; for (const file of files) if (await cache.match(address(file))) n += 1; return n; } catch (error) { return 0; }
@@ -992,14 +1372,15 @@ async function wireKeepOffline(lecture) {
     const all = saved === files.length;
     button.dataset.all = all ? "yes" : "";
     button.classList.toggle("is-saved", all);
-    document.getElementById("keepIcon").innerHTML = icon(all ? "check" : "tray");
-    label.textContent = t(all ? "Saved offline" : "Save offline");
+    button.innerHTML = icon(all ? "check" : "tray");
+    const words = t(all ? "Saved in this browser" : "Save in this browser");
+    button.setAttribute("aria-label", words); button.dataset.tip = words;
   };
   show(await count());
   button.addEventListener("click", async () => {
     if (button.dataset.busy) return;
     if (button.dataset.all) { // already saved: a second tap removes the copies
-      if (!button.dataset.armed) { button.dataset.armed = "yes"; label.textContent = t("Tap again to remove"); setTimeout(() => { if (button.isConnected && button.dataset.armed) { delete button.dataset.armed; show(files.length); } }, 4000); return; }
+      if (!button.dataset.armed) { button.dataset.armed = "yes"; say(t("Tap again to remove"), true); setTimeout(() => { if (button.isConnected && button.dataset.armed) { delete button.dataset.armed; show(files.length); } }, 4000); return; }
       delete button.dataset.armed;
       const cache = await caches.open(FILE_CACHE);
       for (const file of files) await cache.delete(address(file));
@@ -1035,10 +1416,141 @@ function loadZipLibrary() {
   });
   return zipLibrary;
 }
+// Files on the device: one file as itself, several as one zip. `say` shows how it is going.
+async function downloadToDevice(files, name, say) {
+  const clean = text => text.replace(/[\\/:*?"<>|]/g, "-");
+  try {
+    let blob, filename;
+    if (files.length === 1) {
+      say(t("Getting file {i} of {n}…", { i: 1, n: 1 }));
+      blob = (await getFile(files[0].from || files[0].url)).blob;
+      filename = clean(downloadName(files[0]));
+    } else {
+      const JSZip = await loadZipLibrary();
+      const zip = new JSZip();
+      const used = new Set();
+      for (let i = 0; i < files.length; i += 1) {
+        say(t("Getting file {i} of {n}…", { i: i + 1, n: files.length }));
+        const got = await getFile(files[i].from || files[i].url);
+        let entry = clean(downloadName(files[i]));
+        if (used.has(entry.toLowerCase())) entry = (i + 1) + " " + entry;
+        used.add(entry.toLowerCase());
+        zip.file(entry, got.blob);
+      }
+      say(t("Making the zip…"));
+      blob = await zip.generateAsync({ type: "blob" });
+      filename = clean(name) + ".zip";
+    }
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    document.body.append(link); link.click(); link.remove();
+    setTimeout(() => URL.revokeObjectURL(link.href), 60000);
+    say(t("Downloaded."), true);
+  } catch (error) {
+    say(t("Couldn’t download everything. Check your connection, then try again."), true);
+  }
+}
+
+// A ⬇ button at the end of every lecture, lab and source of a course: download it to your files, or
+// keep it in this browser. Once it is kept, the button is a green tick (tap it to remove it).
+function wireRowSaves(course, shown, section) {
+  const list = app.querySelector(".course-list");
+  if (!list) return;
+  const items = section === "sources"
+    ? (course.sources || []).map(source => ({ title: source.label, files: [source], name: source.label }))
+    : shown.lectures.map(lecture => ({ title: lecture.title, files: lecture.files || [], name: course.code + " – " + lecture.title }));
+  const address = file => file.from || file.url;
+  [...list.children].forEach(async (row, i) => {
+    const item = items[i];
+    const files = item ? item.files.filter(file => file.url && !/^https?:/.test(address(file))) : [];
+    if (!files.length) return;
+    const button = document.createElement("button");
+    button.type = "button"; button.className = "row-save";
+    button.setAttribute("aria-label", t("Download or save") + ": " + item.title);
+    button.innerHTML = icon("download");
+    row.classList.add("has-save"); row.append(button);
+    const isSaved = async () => {
+      if (!window.caches) return false;
+      try { const cache = await caches.open(FILE_CACHE); for (const file of files) if (!(await cache.match(address(file)))) return false; return true; } catch (error) { return false; }
+    };
+    const show = async () => { const all = await isSaved(); button.classList.toggle("is-saved", all); button.innerHTML = icon(all ? "check" : "download"); return all; };
+    await show();
+    button.addEventListener("click", async () => {
+      const saved = button.classList.contains("is-saved");
+      const choice = await chooseFrom(item.title, [
+        { label: t("Download to your files"), value: "download" },
+        window.caches ? (saved ? { label: t("Remove from this browser"), value: "remove" } : { label: t("Save in this browser"), value: "save" }) : null
+      ].filter(Boolean));
+      if (!choice) return;
+      const say = statusTip(button);
+      if (choice === "download") { await downloadToDevice(files, item.name, say); await show(); markSaved(); return; }
+      if (choice === "remove") {
+        const cache = await caches.open(FILE_CACHE);
+        for (const file of files) await cache.delete(address(file));
+        await show(); markSaved();
+        return say(t("Removed from this browser."), true);
+      }
+      let failed = 0;
+      for (let k = 0; k < files.length; k += 1) {
+        say(t("Saving {i} of {n}…", { i: k + 1, n: files.length }));
+        try { await getFile(address(files[k])); } catch (error) { failed += 1; }
+      }
+      await show(); markSaved();
+      say(failed ? t("{n} couldn’t be saved. Check your connection.", { n: failed }) : t("Saved in this browser"), true);
+    });
+  });
+}
+
+// The whole course as one zip on the device: a folder for each lecture and lab, and one for the sources
+function wireDownloadCourse(course) {
+  const button = document.getElementById("downloadCourse");
+  if (!button) return;
+  const say = statusTip(button);
+  const clean = name => name.replace(/[\\/:*?"<>|]/g, "-");
+  button.addEventListener("click", async () => {
+    if (button.disabled) return;
+    const parts = [];
+    course.lectures.forEach((lecture, i) => (lecture.files || []).forEach(file => parts.push([clean(t("Lecture {n}", { n: i + 1 }) + " – " + lecture.title), file])));
+    (course.labs || []).forEach((lab, i) => (lab.files || []).forEach(file => parts.push([clean(t("Lab {n}", { n: i + 1 }) + " – " + lab.title), file])));
+    (course.sources || []).forEach(file => parts.push([clean(t("Sources")), file]));
+    const files = parts.filter(([, file]) => file.url && !/^https?:/.test(file.from || file.url));
+    if (!files.length) return;
+    button.disabled = true;
+    try {
+      const JSZip = await loadZipLibrary();
+      const zip = new JSZip();
+      const used = new Set();
+      for (let i = 0; i < files.length; i += 1) {
+        say(t("Getting file {i} of {n}…", { i: i + 1, n: files.length }));
+        const [folder, file] = files[i];
+        const got = await getFile(file.from || file.url);
+        let name = folder + "/" + clean(downloadName(file));
+        if (used.has(name.toLowerCase())) name = folder + "/" + (i + 1) + " " + clean(downloadName(file));
+        used.add(name.toLowerCase());
+        zip.file(name, got.blob);
+      }
+      say(t("Making the zip…"));
+      const blob = await zip.generateAsync({ type: "blob" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = clean(course.code + " – " + course.title) + ".zip";
+      document.body.append(link); link.click(); link.remove();
+      setTimeout(() => URL.revokeObjectURL(link.href), 60000);
+      say(t("Downloaded."), true); markSaved();
+    } catch (error) {
+      say(t("Couldn’t download everything. Check your connection, then try again."), true);
+    } finally {
+      button.disabled = false;
+    }
+  });
+}
+
 function wireDownloadAll(lecture, course) {
   const button = document.getElementById("downloadAll");
   if (!button) return;
-  const state = document.getElementById("downloadAllState");
+  const say = statusTip(button);
+  const state = { set textContent(text) { say(text, /^(Downloaded|Couldn|تم|تعذ)/.test(text) || text === t("Downloaded.")); } };
   const view = viewNumber;
   button.addEventListener("click", async () => {
     const files = zipFiles(lecture);
@@ -1123,12 +1635,18 @@ async function showFile(file, backAddress, backLabel, pager) {
     <a class="back" href="${backAddress}">${esc(backLabel)}</a>
     <h1>${esc(file.label)}</h1>
     <p id="fileStatus" class="secondary" role="status">${t("Downloading…")}</p>
-    <p class="file-actions"><a id="fileDownload" class="button" hidden>${icon("download")}${t("Download")}</a>
-      <button id="fileCopy" class="button secondary" type="button" hidden>${t("Copy")}</button>
-      <a id="fileOpen" class="button secondary" href="${esc(file.from || file.url)}" target="_blank" rel="noopener" hidden>${t("Open in your device’s viewer")}</a></p>
     <div id="pages" class="pages"></div>
     <div id="shown" class="shown"></div>
-    ${pager || ""}`;
+    ${pager ? pager.count : ""}`;
+  // The bar: Next file (›) and Next lecture (»), both (after the last file, Next lecture is the blue one),
+  // then the file's own buttons, each shown once it can be used: download, open in the device's viewer, copy
+  const moves = !pager ? [] : pager.after
+    ? [Object.assign({ main: true, end: "chevron" }, pager.after), pager.following]
+    : [pager.following && Object.assign({ main: true }, pager.following)];
+  setDock(moves.concat([
+    { id: "fileDownload", attrs: `href="#"`, icon: "download", label: t("Download"), hidden: true },
+    { id: "fileOpen", attrs: `href="${esc(file.from || file.url)}" target="_blank" rel="noopener"`, icon: "external", label: t("Open in your device’s viewer"), hidden: true },
+    { id: "fileCopy", icon: "copy", label: t("Copy"), hidden: true }]));
   const status = document.getElementById("fileStatus");
   const type = fileType(file.url) || { kind: "pdf", name: "PDF" };
 
@@ -1147,13 +1665,12 @@ async function showFile(file, backAddress, backLabel, pager) {
     if (type.kind !== "pdf") {
       const shown = await showInPage(document.getElementById("shown"), got.blob, type, file.label);
       if (view !== viewNumber) return;
-      status.textContent = t(type.name) + (shown.lines ? SEP + plural(shown.lines, "line") : "") + (got.saved ? SEP + t("saved in this browser") : "");
+      status.hidden = true; // the file speaks for itself: no line about its kind or size
       if (shown.text !== null) {
         const copy = document.getElementById("fileCopy");
         copy.hidden = false;
         copy.addEventListener("click", async () => {
-          copy.textContent = t(await copyText(shown.text) ? "Copied" : "Can’t copy here");
-          setTimeout(() => { if (copy.isConnected) copy.textContent = t("Copy"); }, 2000);
+          showTip(copy, t(await copyText(shown.text) ? "Copied" : "Can’t copy here")); // an icon: say it in a bubble
         });
       }
       return;
@@ -1163,11 +1680,12 @@ async function showFile(file, backAddress, backLabel, pager) {
     const library = await loadPdfLibrary();
     const pdf = await library.getDocument({ data: await got.blob.arrayBuffer() }).promise;
     if (view !== viewNumber) return;
-    status.textContent = plural(pdf.numPages, "page") + (got.saved ? SEP + t("saved in this browser") : "");
+    status.hidden = true; // no "4 pages" line: the pages are right there
     document.getElementById("fileOpen").hidden = false;
     await showPages(pdf, view);
   } catch (error) {
     if (view !== viewNumber) return;
+    status.hidden = false;
     status.textContent = fileUrl
       ? t("Can’t show this file here. You can still download it.")
       : t("Can’t get this file. Check your connection, then reload.");
@@ -1192,6 +1710,24 @@ async function showPages(pdf, view) {
     drawPage(pdf, entry.target, view);
   }), { rootMargin: "800px 0px" });
 
+  // While scrolling, a small "3 / 12" floats under the top bar, then fades away
+  if (pdf.numPages > 1) {
+    const badge = document.createElement("div");
+    badge.className = "page-badge"; badge.setAttribute("aria-hidden", "true");
+    document.body.append(badge);
+    let fade = null;
+    const update = () => {
+      if (view !== viewNumber || !holder.isConnected) { removeEventListener("scroll", update); badge.remove(); return; }
+      const middle = innerHeight / 2;
+      const current = [...holder.children].find(box => box.getBoundingClientRect().bottom > middle);
+      if (!current) return;
+      badge.textContent = current.dataset.page + " / " + pdf.numPages;
+      badge.classList.add("show");
+      clearTimeout(fade); fade = setTimeout(() => badge.classList.remove("show"), 1200);
+    };
+    addEventListener("scroll", update, { passive: true });
+  }
+
   for (let number = 1; number <= pdf.numPages; number += 1) {
     const box = document.createElement("div");
     box.className = "page";
@@ -1207,7 +1743,7 @@ async function drawPage(pdf, box, view) {
   const page = await pdf.getPage(Number(box.dataset.page));
   if (view !== viewNumber) return;
   // Draw at the width of the box, a little sharper on high-resolution screens
-  const sharpness = Math.min(window.devicePixelRatio || 1, 2);
+  const sharpness = Math.min(window.devicePixelRatio || 1, 3);
   const natural = page.getViewport({ scale: 1 });
   if (box.parentElement.classList.contains("actual")) box.style.width = Math.round(natural.width * ACTUAL) + "px";
   const scale = box.clientWidth / natural.width; // the page's size on the screen
@@ -1234,6 +1770,7 @@ async function drawPage(pdf, box, view) {
     await pdfjsLib.renderTextLayer({ textContentSource: text, container: layer, viewport: page.getViewport({ scale: scale }), textDivs: [] }).promise;
   } catch (error) { /* the page is still shown, only without selectable text */ }
   await drawing;
+  box.classList.add("drawn");
 }
 
 // ----- Shown while the content is loading, or if it can’t be loaded -----
@@ -1370,7 +1907,6 @@ async function showNotifications() {
   app.innerHTML = `
     <a class="back" href="#settings">${t("Settings")}</a>
     <h1>${t("Notifications")}</h1>
-    <p class="lead secondary">${t("Get a notification when a new lecture, lab or announcement is added to the stages you follow, even when Opely is closed.")}</p>
     <div id="notifyBody"><p class="secondary">${t("Loading…")}</p></div>`;
   const setup = await notifySetup();
   if (view !== viewNumber) return;
@@ -1446,7 +1982,8 @@ const setOpeningPage = value => { try { localStorage.setItem(START_KEY, value); 
 
 // ----- Settings: appearance, language, saved files, and the way to the admin page -----
 
-async function showSettings() {
+async function showSettings(page) {
+  page = page || "";
   const view = viewNumber;
   document.title = t("Settings") + " | Opely";
   // A switch made of buttons. `choices` is a list of [value, words shown].
@@ -1481,7 +2018,7 @@ async function showSettings() {
   const choiceRow = (label, shape, color, control) => `
     <li><div class="row choice">${tile(shape, color)}<span class="grow">${t(label)}</span>${control}</div></li>`;
   const pairSwitch = (name, value, choices, disabled) => `
-    <div class="segments setting-pair" role="radiogroup" data-pair="${name}">
+    <div class="segments setting-pair${choices.length === 3 ? " three" : ""}" role="radiogroup" data-pair="${name}">
       ${choices.map(([v, words]) => `<button class="segment" type="button" role="radio" data-value="${v}" aria-checked="${value === v}"
         ${value === v ? 'aria-current="true"' : ""} ${disabled && v !== value ? "disabled" : ""}>${words}</button>`).join("")}
     </div>`;
@@ -1510,58 +2047,83 @@ async function showSettings() {
       ${readerCard("", { kind: "text", lines: [esc(t("A line of a text file looks like this."))], bar: false })}
     </div>`;
 
-  app.innerHTML = `
-    <a class="back" href="${lastPlace}">${t("Back")}</a>
-    <h1>${t("Settings")}</h1>
-
+  const semester = savedSemester();
+  // Settings is one short list; each part with more than one choice has its own page
+  const pages = {
+    "": { title: "Settings", html: `
     <ul class="group icons app-card"><li><a class="row" href="#about">
       <img src="icon.svg" alt="" class="app-icon">
       <span class="grow"><span class="app-name">Opely</span><br><span class="secondary small">${t("Version {v}", { v: VERSION })}${SEP}${t("About")}</span></span>
     </a></li></ul>
+    <ul class="group icons settings-list">
+      ${linkRow("#settings-stage", "My stage", "school", "teal")}
+      ${toggleRow("notifySwitch", "Notifications", !!notify, "bell", "red")}
+      ${notify ? linkRow("#notifications", "Stages you follow", "people", "orange") : ""}
+    </ul>
+    <p class="hint-below" id="notifySay" role="status"></p>
+    <ul class="group icons settings-list">
+      ${linkRow("#settings-appearance", "Appearance", "appearance", "indigo")}
+      ${linkRow("#settings-reading", "Reading", "textsize", "blue")}
+      ${linkRow("#settings-storage", "Storage", "tray", "green")}
+    </ul>
+    <ul class="group icons settings-list">
+      <li><button id="checkUpdates" class="row" type="button">${tile("refresh", "blue")}<span class="grow">${t("Check for updates")}</span><span class="end" id="updateState">${haveUpdate() ? t("Update {n}", { n: haveUpdate() }) : ""}</span></button></li>
+      ${linkRow("admin.html", "Admin page", "key", "gray")}
+    </ul>` },
 
-    ${section("My stage",
-      (mine
+    stage: { title: "My stage", html: `
+    <ul class="group icons settings-list">
+      ${mine
         ? `<li><span class="row">${tile(mineDept ? mineDept.icon || "school" : "school", mineDept ? mineDept.color : "gray")}
-            <span class="grow">${t("My stage")}${sub(esc(stageText(mine.dept, mine.stage)))}</span>
-            <button id="forgetStage" class="plain" type="button">${t("Remove")}</button></span></li>`
-        : `<li><span class="row">${tile("school", "gray")}<span class="grow">${t("My stage")}${sub(t("Not chosen yet"))}</span></span></li>`) +
-      choiceRow("Opely opens on", "play", "teal", pairSwitch("start", mine ? start : "home", [["home", t("Home")], ["mystage", t("My stage")]], !mine)),
-      mine ? undefined : "Open your stage and tap “Make this my stage” to open Opely there.")}
+            <span class="grow">${esc(stageText(mine.dept, mine.stage))}</span></span></li>
+           <li><button id="pickAnother" class="row" type="button">${tile("layers", "blue")}<span class="grow">${t("Choose another stage")}</span></button></li>
+           <li><button id="forgetStage" class="row danger" type="button">${t("Remove my stage")}</button></li>`
+        : `<li><button id="pickAnother" class="row" type="button">${tile("school", "blue")}<span class="grow">${t("Pick your stage")}</span></button></li>`}
+    </ul>
+    <ul class="group icons settings-list">
+      ${choiceRow("Opely opens on", "play", "teal", pairSwitch("start", mine ? start : "home", [["home", t("Home")], ["mystage", t("My stage")]], !mine))}
+      ${choiceRow("Semester", "calendar", "orange", pairSwitch("semester", semester, [["auto", t("Automatic")], ["1", "1"], ["2", "2"]]))}
+    </ul>
+    <p class="hint-below">${t("Automatic opens the semester with the newest lecture.")}</p>` },
 
-    ${section("Notifications",
-      toggleRow("notifySwitch", "Notifications", !!notify, "bell", "red",
-        t(notify ? "On" : "New lectures, labs and announcements, even when Opely is closed.")) +
-      (notify ? linkRow("#notifications", "Stages you follow", "people", "orange",
-        esc(notify.topics.map(topic => { const [d, ...s] = topic.split("-"); return stageText(d, s.join("-")); }).join(" · "))) : ""),
-      "", "notifySay")}
+    appearance: { title: "Appearance", html: `
+    <ul class="group icons settings-list">
+      ${choiceRow("Theme", "appearance", "indigo", choiceSwitch(APPEARANCE_KEY, [["auto", t("Automatic")], ["light", t("Light")], ["dark", t("Dark")]]))}
+      ${choiceRow("Language", "globe", "blue", choiceSwitch(LANGUAGE_KEY, [["auto", t("Automatic")], ["en", "English"], ["ar", "العربية"]]))}
+      ${toggleRow("boldText", "Bold text", document.documentElement.classList.contains("bold-text"), "bold", "gray")}
+    </ul>
+    <p class="hint-below">${t("Automatic follows your device.")}</p>` },
 
-    ${section("Appearance",
-      choiceRow("Theme", "appearance", "indigo", choiceSwitch(APPEARANCE_KEY, [["auto", t("Automatic")], ["light", t("Light")], ["dark", t("Dark")]])) +
-      choiceRow("Language", "globe", "blue", choiceSwitch(LANGUAGE_KEY, [["auto", t("Automatic")], ["en", "English"], ["ar", "العربية"]])) +
-      toggleRow("boldText", "Bold text", document.documentElement.classList.contains("bold-text"), "bold", "gray"),
-      "Automatic follows your device.")}
-
-    <h2 class="label">${t("Reading")}</h2>
+    reading: { title: "Reading", html: `
     ${preview}
-    <ul class="group icons">
+    <ul class="group icons settings-list">
       ${stepRow("textSize", "Text size", "textsize", "blue")}
       ${stepRow("size", "Code size", "code", "indigo")}
       ${toggleRow("readWrap", "Wrap long lines", reading.wrap, "wrap", "green")}
       ${toggleRow("readNumbers", "Line numbers", reading.numbers, "numbers", "gray")}
       ${choiceRow("PDF pages", "doc", "red", pairSwitch("pdf", reading.pdf, [["fit", t("Fit width")], ["actual", t("Actual size")]]))}
     </ul>
-    <p class="hint-below">${t("The buttons above every text and code file change these too.")}</p>
+    <p class="hint-below">${t("The buttons above every text and code file change these too.")}</p>` },
 
-    ${section("Storage",
-      `<li><span class="row">${tile("tray", "green")}<span class="grow">${t("Saved files")}</span><span id="savedSize" class="end">${t("Loading…")}</span></span></li>
-       <li id="clearRow" hidden><button id="clearFiles" class="row danger" type="button">${t("Remove saved files")}</button></li>
-       <li><span class="row">${tile("check", "blue")}<span class="grow">${t("Lectures opened")}</span><span class="end">${Object.keys(opened).length}</span></span></li>
-       ${Object.keys(opened).length ? `<li><button id="clearProgress" class="row danger" type="button">${t("Reset progress")}</button></li>` : ""}`,
-      "Kept in this browser only: files you opened open faster, and offline.")}
-
-    ${section("More",
-      `<li><button id="checkUpdates" class="row" type="button">${tile("refresh", "blue")}<span class="grow">${t("Check for updates")}${sub(`<span id="updateState">${haveUpdate() ? t("Update {n}", { n: haveUpdate() }) : ""}</span>`)}</span></button></li>` +
-      linkRow("admin.html", "Admin page", "key", "gray", t("For people who manage a stage.")))}`;
+    storage: { title: "Storage", html: `
+    <ul class="group icons settings-list">
+      <li><span class="row">${tile("tray", "green")}<span class="grow">${t("Saved files")}</span><span id="savedSize" class="end">${t("Loading…")}</span></span></li>
+      <li id="clearRow" hidden><button id="clearFiles" class="row danger" type="button">${t("Remove saved files")}</button></li>
+    </ul>
+    <ul class="group icons settings-list">
+      <li><span class="row">${tile("check", "blue")}<span class="grow">${t("Lectures opened")}</span><span class="end">${Object.keys(opened).length}</span></span></li>
+      ${Object.keys(opened).length ? `<li><button id="clearProgress" class="row danger" type="button">${t("Reset progress")}</button></li>` : ""}
+    </ul>
+    <p class="hint-below">${t("Kept in this browser only: files you opened open faster, and offline.")}</p>` }
+  };
+  const shown = pages[page];
+  if (!shown) return showNotFound();
+  document.title = t(shown.title) + " | Opely";
+  app.innerHTML = `
+    ${page ? `<a class="back" href="#settings">${t("Settings")}</a>` : `<a class="back" href="${lastPlace}">${t("Back")}</a>`}
+    <h1>${t(shown.title)}</h1>
+    ${shown.html}`;
+  const on = (id, kind, work) => { const element = document.getElementById(id); if (element) element.addEventListener(kind, work); };
 
   // The reading preview shows the settings as they are
   const showPreview = () => {
@@ -1577,18 +2139,18 @@ async function showSettings() {
   const changeReading = change => { const now = readerSettings(); change(now); saveReaderSettings(now); };
   app.querySelectorAll("[data-step]").forEach(button => button.addEventListener("click", () => {
     changeReading(now => { now[button.dataset.step] = Math.max(-4, Math.min(8, now[button.dataset.step] + Number(button.dataset.by))); });
-    showSettings();
+    route(true); // redrawn the normal way, so its back link moves into the top bar
   }));
-  document.getElementById("readWrap").addEventListener("change", event => { changeReading(now => { now.wrap = event.target.checked; }); showPreview(); });
-  document.getElementById("readNumbers").addEventListener("change", event => { changeReading(now => { now.numbers = event.target.checked; }); showPreview(); });
+  on("readWrap", "change", event => { changeReading(now => { now.wrap = event.target.checked; }); showPreview(); });
+  on("readNumbers", "change", event => { changeReading(now => { now.numbers = event.target.checked; }); showPreview(); });
   // Notifications: one switch. Turning it on follows My stage (or the stages chosen before).
-  document.getElementById("notifySwitch").addEventListener("change", async event => {
+  on("notifySwitch", "change", async event => {
     const toggle = event.target;
     const sayIt = (text, bad) => { const line = document.getElementById("notifySay"); if (line) { line.textContent = t(text); line.classList.toggle("error-text", !!bad); } };
     toggle.disabled = true;
     try {
       const setup = await notifySetup();
-      if (!toggle.checked) { await unsubscribe(setup); return showSettings(); }
+      if (!toggle.checked) { await unsubscribe(setup); return route(true); }
       if (!setup) throw new Error("Notifications aren’t set up yet. The site’s owner turns them on from the admin page.");
       const support = pushSupport();
       if (support === "home-screen") throw new Error("On iPhone and iPad, notifications work once Opely is on your Home Screen. Tap the Share button, then “Add to Home Screen”, and open Opely from there.");
@@ -1599,14 +2161,14 @@ async function showSettings() {
       if (!topics.length) { location.hash = "#notifications"; return; } // no stage yet: choose them there
       sayIt("Saving…");
       await subscribe(setup, topics);
-      showSettings();
+      route(true); // redrawn the normal way, so its back link moves into the top bar
     } catch (error) {
       toggle.checked = !!savedNotify();
       toggle.disabled = false;
       sayIt(error.message || String(error), true);
     }
   });
-  document.getElementById("boldText").addEventListener("change", event => {
+  on("boldText", "change", event => {
     try { localStorage.setItem(BOLD_KEY, event.target.checked ? "on" : "off"); } catch (error) { /* storage blocked */ }
     applyBold();
   });
@@ -1614,10 +2176,11 @@ async function showSettings() {
     const name = button.parentElement.dataset.pair;
     if (name === "pdf") changeReading(now => { now.pdf = button.dataset.value; });
     if (name === "start") setOpeningPage(button.dataset.value);
-    showSettings();
+    if (name === "semester") { try { localStorage.setItem(SEMESTER_KEY, button.dataset.value); } catch (error) { /* storage blocked */ } }
+    route(true); // redrawn the normal way, so its back link moves into the top bar
   }));
 
-  document.getElementById("checkUpdates").addEventListener("click", async () => {
+  on("checkUpdates", "click", async () => {
     const state = document.getElementById("updateState");
     state.textContent = t("Checking…");
     const answer = await checkForUpdate(true);
@@ -1625,7 +2188,11 @@ async function showSettings() {
     state.textContent = t(answer === "offline" ? "Couldn’t check. Are you online?" : answer === "updating" ? "Updating Opely…" : "Opely is up to date.");
   });
   const forget = document.getElementById("forgetStage");
-  if (forget) forget.addEventListener("click", () => { setMyStage(null); showSettings(); });
+  if (forget) forget.addEventListener("click", () => {
+    if (!forget.dataset.armed) { forget.dataset.armed = "yes"; forget.textContent = t("Tap again to remove"); return; } // two taps, like other removals
+    setMyStage(null); route(true); // redrawn the normal way, so its back link moves into the top bar
+  });
+  on("pickAnother", "click", () => pickMyStage());
 
   // Choosing in a switch: appearance changes at once, a new language reloads the page in that language
   app.querySelectorAll(".setting button").forEach(button => button.addEventListener("click", () => {
@@ -1634,7 +2201,7 @@ async function showSettings() {
     saveChoice(key, button.dataset.value);
     if (key === LANGUAGE_KEY) return location.reload();
     applyAppearance();
-    showSettings();
+    route(true); // redrawn the normal way, so its back link moves into the top bar
   }));
 
   // Resetting progress needs two taps, like removing files
@@ -1643,12 +2210,13 @@ async function showSettings() {
     if (!resetButton.dataset.armed) { resetButton.dataset.armed = "yes"; resetButton.textContent = t("Tap again to reset"); return; }
     opened = {};
     try { localStorage.removeItem(OPENED_KEY); localStorage.removeItem(LAST_KEY); } catch (error) { /* ignored */ }
-    showSettings();
+    route(true); // redrawn the normal way, so its back link moves into the top bar
   });
 
   // How much space the saved PDFs take
   const sizeText = document.getElementById("savedSize");
   const clear = document.getElementById("clearFiles");
+  if (!sizeText) return; // only on the Storage page
   if (!window.caches) { sizeText.textContent = t("Saving files isn’t available in this browser."); return; }
   try {
     const cache = await caches.open(FILE_CACHE);
@@ -1678,7 +2246,7 @@ async function showSettings() {
       return;
     }
     await caches.delete(FILE_CACHE);
-    showSettings();
+    route(true); // redrawn the normal way, so its back link moves into the top bar
   });
 }
 
@@ -1739,7 +2307,7 @@ function depthOf(name) {
   if (parts[2] === "archived") return 2.5; // a stage's archived courses: between the stage and a course
   return parts.length;
 }
-const tabOf = name => (name === "settings" || name === "about" || name === "notifications") ? "settings" : "browse";
+const tabOf = name => (name === "settings" || name.startsWith("settings-") || name === "about" || name === "notifications") ? "settings" : "browse";
 
 let shownName = null;       // the page on screen
 const scrollPlaces = {};    // where each page was scrolled to, so going back returns there
@@ -1750,6 +2318,7 @@ function route(keepScroll) {
   const previous = shownName;
   if (previous !== null && previous !== name) scrollPlaces[previous] = window.scrollY;
   if (name === "search" && previous !== null && previous !== "search") searchFrom = "#" + (previous || "home");
+  if (name.split("-")[1] === "news" && previous !== null && previous.split("-")[1] !== "news") newsFrom = "#" + (previous || "home");
   shownName = name;
 
   // Pages slide in from the side when going deeper, and back out when going up
@@ -1758,10 +2327,25 @@ function route(keepScroll) {
     if (tabOf(previous) !== tabOf(name)) motion = tabOf(name) === "settings" ? "push" : "pop";
     else if (depthOf(name) > depthOf(previous)) motion = "push";
     else if (depthOf(name) < depthOf(previous)) motion = "pop";
+    else motion = "fade"; // the same level (a semester, Lectures / Labs): a quick cross-fade
   }
-  drawRoute(name);
-  afterDraw(motion, keepScroll ? null : motion === "pop" ? (scrollPlaces[name] || 0) : 0);
+  const scrollTo = keepScroll ? null : motion === "pop" ? (scrollPlaces[name] || 0) : 0;
+  const draw = withClass => { drawRoute(name); if (!dockSet) setDock([]); afterDraw(withClass ? motion : "", scrollTo); };
+  // Like iPhone: the new page slides over the old one, which moves a little the same way and dims;
+  // going back, it slides off again. The top bar and the bottom bar stay put. Browsers without
+  // view transitions get a simpler slide of the new page only.
+  const swiped = skipMotion;
+  skipMotion = false;
+  const quiet = !motion || swiped || matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (!quiet && document.startViewTransition) {
+    document.documentElement.dataset.motion = motion;
+    const change = document.startViewTransition(() => draw(false));
+    change.finished.finally(() => { delete document.documentElement.dataset.motion; });
+  } else {
+    draw(!swiped);
+  }
 }
+let skipMotion = false; // set by the swipe back: the finger already moved the page
 
 function drawRoute(name) {
 
@@ -1775,9 +2359,12 @@ function drawRoute(name) {
   const tab = tabOf(name);
   document.getElementById("navSettings").hidden = tab === "settings";
   document.getElementById("navSearch").hidden = tab === "settings" || name === "search";
+  document.querySelectorAll(".dock-tip, .page-badge").forEach(bubble => bubble.remove());
+  dockSet = false; // each page fills the bar with its own buttons; one that doesn't gets none (see route)
   if (name === "search") return showSearch();
   if (tab === "browse") lastPlace = "#" + (name || "home");
   if (name === "settings") return showSettings();
+  if (name.startsWith("settings-")) return showSettings(name.slice("settings-".length)); // a part of Settings
   if (name === "about") return showAbout();
   if (name === "notifications") return showNotifications();
 
@@ -1791,11 +2378,12 @@ function drawRoute(name) {
   if (!content[dept.id]) return showLoading();
   const stages = content[dept.id].stages;
   if (stageId === undefined) return showDepartment(dept, stages);
-  if (stageId === "news") return showNews(dept, stages);
+  if (stageId === "news") return showNews(dept, stages, courseId); // #cs-news, or one stage's: #cs-news-stage1
 
   const stage = stages.find(s => s.id === stageId);
   if (!stage) return showNotFound();
-  if (courseId === undefined || courseId === "sem1") return showStage(dept, stage, 1);
+  if (courseId === undefined) return showStage(dept, stage, currentSemester(stage));
+  if (courseId === "sem1") return showStage(dept, stage, 1);
   if (courseId === "sem2") return showStage(dept, stage, 2);
 
   if (courseId === "archived") return showArchivedCourses(dept, stage);
@@ -1855,30 +2443,25 @@ function filePager(dept, stage, course, index, place) {
   const base = "#" + dept.id + "-" + stage.id + "-" + course.id;
   const here = base + "-" + (lecture.id || index + 1);
   const position = (lecture.files || []).indexOf(lecture.files[place]);
-  const link = (i, cls, words, arrow) => {
+  const link = (i, words) => {
     const file = lecture.files[i];
     const where = isPdf(file.url) ? `href="${here}-${i + 1}"` : `href="${esc(file.from || file.url)}" ${linkAttrs(file.url)}`;
-    return `<a class="${cls}" ${where} title="${esc(file.label)}">${arrow === "before" ? icon("back", "flip") : ""}<span class="pager-text">${t(words)}<small>${esc(file.label)}</small></span>${arrow === "after" ? icon("chevron", "flip") : ""}</a>`;
+    return { attrs: where, kicker: t(words), name: file.label };
   };
-  let before = "<span></span>", after = "<span></span>";
-  for (let i = position - 1; i >= 0; i -= 1) if (lecture.files[i].url) { before = link(i, "", "Previous file", "before"); break; }
-  for (let i = position + 1; i < lecture.files.length; i += 1) if (lecture.files[i].url) { after = link(i, "next", "Next file", "after"); break; }
+  let before = null, after = null;
+  for (let i = position - 1; i >= 0; i -= 1) if (lecture.files[i].url) { before = link(i, "Previous file"); break; }
+  for (let i = position + 1; i < lecture.files.length; i += 1) if (lecture.files[i].url) { after = link(i, "Next file"); break; }
   // Where another lecture opens: its only file straight away (like from the course), or its page
   const lectureAddress = (other, n) => {
     const only = directFile(other);
     return base + "-" + (other.id || n) + (only && isPdf(only.url) ? "-1" : "");
   };
   const nextLecture = course.lectures[index + 1];
-  if (after === "<span></span>" && nextLecture) {
-    after = `<a class="next" href="${lectureAddress(nextLecture, index + 2)}"><span class="pager-text">${t(course.isLabs ? "Next lab" : "Next lecture")}<small>${esc(nextLecture.title)}</small></span>${icon("chevron", "flip")}</a>`;
-  }
+  const following = nextLecture ? { attrs: `href="${lectureAddress(nextLecture, index + 2)}"`, kicker: t(course.isLabs ? "Next lab" : "Next lecture"), name: nextLecture.title, end: "skip" } : null;
   const previousLecture = course.lectures[index - 1];
-  if (before === "<span></span>" && previousLecture) {
-    before = `<a href="${lectureAddress(previousLecture, index)}">${icon("back", "flip")}<span class="pager-text">${t(course.isLabs ? "Previous lab" : "Previous lecture")}<small>${esc(previousLecture.title)}</small></span></a>`;
-  }
-  if (before === "<span></span>" && after === "<span></span>") return "";
-  return `${files.length > 1 ? `<p class="file-count">${t("File {i} of {n}", { i: files.indexOf(lecture.files[place]) + 1, n: files.length })}</p>` : ""}
-    <nav class="pager file-pager" aria-label="${t(files.length > 1 ? "Files" : "Lectures")}">${before}${after}</nav>`;
+  if (!before && previousLecture) before = { attrs: `href="${lectureAddress(previousLecture, index)}"`, kicker: t(course.isLabs ? "Previous lab" : "Previous lecture"), name: previousLecture.title };
+  return { before: before, after: after, following: following,
+    count: files.length > 1 ? `<p class="file-count">${t("File {i} of {n}", { i: files.indexOf(lecture.files[place]) + 1, n: files.length })}</p>` : "" };
 }
 
 // After a page is drawn: move its back link into the navigation bar,
@@ -1888,21 +2471,30 @@ let titleWatcher = null;
 // (for example when a hidden part of the page is shown again)
 app.addEventListener("animationend", event => { if (event.target === app) app.classList.remove("push", "pop", "fade"); });
 function afterDraw(motion, scrollTo) {
-  const back = document.getElementById("navBack");
   const title = document.getElementById("navTitle");
   const link = app.querySelector(":scope > .back");
-  back.hidden = !link;
-  document.getElementById("navBrand").hidden = !!link || tabOf(shownName || "") === "settings";
-  if (link) {
-    back.href = link.getAttribute("href");
-    back.setAttribute("aria-label", t("Back") + ": " + link.textContent);
-    link.remove();
-  }
-  const h1 = app.querySelector("h1");
+  const home = !shownName || shownName === "home";
+  document.getElementById("navMoves").hidden = home; // Back and Home: on every page but home
+  document.getElementById("navBrand").hidden = !home;
+  // Back in the bar: the page above, or where the student was before Search or Settings
+  dockBack = link ? link.getAttribute("href")
+    : shownName === "search" ? searchFrom : shownName === "settings" ? lastPlace : "#home";
+  if (link) link.remove();
+  const backButton = document.getElementById("navBack");
+  backButton.href = dockBack;
+  backButton.setAttribute("aria-label", t("Back") + (link ? ": " + link.textContent : ""));
+  // A page whose name is its plain big title shows the name in the top bar instead, to save room.
+  // (A course or a lecture keeps the name in its main card.)
+  const plain = app.querySelector(":scope > h1"); // home too: "Departments" sits next to the logo
+  if (plain) plain.classList.add("visually-hidden");
+  document.body.classList.toggle("title-nav", !!plain);
+  const h1 = plain || app.querySelector("h1");
   title.textContent = h1 ? h1.textContent : "";
+  // A long name that doesn't fit in the top bar: its short form instead (Computer Science → CS)
+  if (plain && plain.dataset.short && title.scrollWidth > title.clientWidth) title.textContent = plain.dataset.short;
   if (titleWatcher) titleWatcher.disconnect();
   document.body.classList.remove("scrolled-title");
-  if (h1) {
+  if (h1 && !plain) {
     titleWatcher = new IntersectionObserver(([entry]) =>
       document.body.classList.toggle("scrolled-title", !entry.isIntersecting && entry.boundingClientRect.top < 60),
       { rootMargin: "-60px 0px 0px 0px" });
@@ -2026,6 +2618,9 @@ window.addEventListener("hashchange", () => {
 // Check again whenever the student comes back to the tab
 document.addEventListener("visibilitychange", () => { if (!document.hidden) refresh(); });
 
+// The light/dark button in the top bar: Settings, if it is open, shows the new choice
+document.addEventListener("opely-appearance", () => { if (location.hash.startsWith("#settings")) route(true); });
+
 // Updates: checked at the start, when the student comes back to Opely, and every half hour
 document.addEventListener("visibilitychange", () => { if (!document.hidden && Date.now() - updateChecked > 10 * 60 * 1000) checkForUpdate(false); });
 setInterval(() => { if (!document.hidden) checkForUpdate(false); }, 30 * 60 * 1000);
@@ -2042,6 +2637,48 @@ setTimeout(() => {
 if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
   navigator.serviceWorker.register("sw.js").catch(() => { /* Opely still works, just not offline */ });
 }
+
+// Swipe from the edge to go back (from the right edge in Arabic). Opened from the Home Screen, a phone
+// has no back gesture of its own; in a browser, the browser's own swipe already goes back.
+(() => {
+  const standalone = matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+  if (!standalone && !window.OPELY_SWIPE) return;
+  const rtl = () => document.documentElement.dir === "rtl";
+  let startX = null, startY = 0, moved = 0, sliding = false;
+  addEventListener("touchstart", event => {
+    startX = null;
+    if (event.touches.length !== 1 || !shownName || shownName === "home" || document.querySelector(".sheet-backdrop")) return;
+    const x = event.touches[0].clientX;
+    if ((rtl() ? innerWidth - x : x) > 24) return; // only from the very edge
+    startX = x; startY = event.touches[0].clientY; moved = 0; sliding = false;
+  }, { passive: true });
+  addEventListener("touchmove", event => {
+    if (startX === null) return;
+    const touch = event.touches[0];
+    const along = (touch.clientX - startX) * (rtl() ? -1 : 1);
+    const across = Math.abs(touch.clientY - startY);
+    if (!sliding) {
+      if (across > 12 && across > along) { startX = null; return; } // scrolling, not going back
+      if (along > 10) sliding = true;
+    }
+    if (sliding) {
+      moved = Math.max(0, along);
+      app.style.transition = "none";
+      app.style.transform = `translateX(${(rtl() ? -1 : 1) * moved}px)`;
+      app.style.opacity = String(1 - Math.min(moved / innerWidth, 0.5));
+    }
+  }, { passive: true });
+  addEventListener("touchend", () => {
+    if (startX === null) return;
+    startX = null;
+    const go = sliding && moved > Math.min(100, innerWidth * 0.28);
+    app.style.transition = go ? "none" : "transform 0.22s, opacity 0.22s";
+    app.style.transform = "";
+    app.style.opacity = "";
+    setTimeout(() => { app.style.transition = ""; }, 240);
+    if (go) { skipMotion = true; location.hash = dockBack || "#home"; }
+  });
+})();
 
 // Start: show the copies saved in this browser, then ask the site for the newest
 try {

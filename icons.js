@@ -27,7 +27,7 @@ const ICON_PATHS = {
   picture: '<rect x="3.5" y="4.5" width="17" height="15" rx="3"/><circle cx="9" cy="9.5" r="1.6"/><path d="M4 17l4.5-4.5 3.5 3.5 2.5-2.5L20 19"/>',
   notebook: '<rect x="5" y="3.5" width="14" height="17" rx="2.5"/><path d="M5 8h-1.5M5 12h-1.5M5 16h-1.5"/><path d="M9.5 8.5h5M9.5 12h5"/>',
   play: '<circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l5.5-3.5z"/>',
-  megaphone: '<path d="M4 10v4a1 1 0 0 0 1 1h2l6 4.5V4.5L7 9H5a1 1 0 0 0-1 1z"/><path d="M16.5 9a4 4 0 0 1 0 6"/><path d="M19 6.5a7.5 7.5 0 0 1 0 11"/>',
+  megaphone: '<path d="M3.5 10.5v3a1.5 1.5 0 0 0 1.5 1.5h2.5L17 19.5v-15L7.5 9H5a1.5 1.5 0 0 0-1.5 1.5z"/><path d="M7.5 15l1.3 4.2a1 1 0 0 0 1 .8h1.4a.8.8 0 0 0 .8-1l-1.1-3.4"/><path d="M20.5 10v4"/>',
   grip: '<path d="M5 8h14M5 12h14M5 16h14"/>',
   bold: '<path d="M7 4.5h6a3.75 3.75 0 0 1 0 7.5H7z"/><path d="M7 12h7a3.75 3.75 0 0 1 0 7.5H7z"/>',
   textsize: '<path d="M3 19L8 6l5 13"/><path d="M4.8 14.5h6.4"/><path d="M14 19l3.5-8.5L21 19"/><path d="M15.2 16.3h4.6"/>',
@@ -57,7 +57,11 @@ const ICON_PATHS = {
   signout: '<path d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4"/><path d="M15 16l4-4-4-4M19 12H9"/>',
   search: '<circle cx="11" cy="11" r="7"/><path d="M20.5 20.5L16 16"/>',
   chevron: '<path d="M9 5l7 7-7 7"/>',
+  external: '<path d="M14 4.5h5.5V10"/><path d="M19.5 4.5L11 13"/><path d="M18 14v4.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 4 18.5v-11A1.5 1.5 0 0 1 5.5 6H10"/>',
+  copy: '<rect x="8.5" y="8.5" width="11" height="11" rx="2"/><path d="M15.5 8.5V6a1.5 1.5 0 0 0-1.5-1.5H6A1.5 1.5 0 0 0 4.5 6v8A1.5 1.5 0 0 0 6 15.5h2.5"/>',
+  skip: '<path d="M5.5 5.5l6.5 6.5-6.5 6.5"/><path d="M12.5 5.5l6.5 6.5-6.5 6.5"/>',
   back: '<path d="M15 5l-7 7 7 7"/>',
+  home: '<path d="M3.5 11L12 4l8.5 7"/><path d="M6 9.5V20h4.5v-5.5h3V20H18V9.5"/>',
   wifioff: '<path d="M2 8.5a15 15 0 0 1 4.6-2.8M22 8.5A15 15 0 0 0 10 5.1"/><path d="M5 12a10 10 0 0 1 4-2.3M19 12a10 10 0 0 0-2.3-1.6"/><path d="M8.5 15.5a5 5 0 0 1 7 0"/><path d="M12 19.5v.1"/><path d="M3 3l18 18"/>'
 };
 

@@ -180,6 +180,38 @@ const TRANSLATIONS = {
     "Larger than 25 MB": "أكبر من 25 ميغابايت",
     "Already on the site": "موجود في الموقع",
     "Cancel": "إلغاء",
+    "Choose a file": "اختر ملفاً",
+    "New announcement": "إعلان جديد",
+    "Send it a minute after your change is on GitHub.": "أرسله بعد دقيقة من وصول تغييرك إلى GitHub.",
+    "Up to 25 MB each.": "حتى 25 ميغابايت لكل ملف.",
+    "Up to 25 MB, or a link below.": "حتى 25 ميغابايت، أو رابط في الأسفل.",
+    "Students can still open what is archived, and you can restore it.": "يبقى بإمكان الطلبة فتح ما في الأرشيف، ويمكنك استعادته.",
+    "Choose another stage": "اختر مرحلة أخرى",
+    "Remove my stage": "إزالة مرحلتي",
+    "Automatic opens the semester with the newest lecture.": "«تلقائي» يفتح الفصل الذي فيه أحدث محاضرة.",
+    "Text, code and PDF pages": "النصوص والبرمجة وصفحات PDF",
+    "Saved files and progress": "الملفات المحفوظة والتقدّم",
+    "Remove from this browser": "إزالة من هذا المتصفح",
+    "Download or save": "تنزيل أو حفظ",
+    "Less": "أقل",
+    "Watch the recording": "شاهد التسجيل",
+    "Download the course to your files": "تنزيل المادة إلى ملفاتك",
+    "Save the course in this browser": "حفظ المادة في هذا المتصفح",
+    "Download to your files": "تنزيل إلى ملفاتك",
+    "Save in this browser": "حفظ في هذا المتصفح",
+    "Saved in this browser": "محفوظة في هذا المتصفح",
+    "Coming up": "القادم",
+    "Lectures by department": "المحاضرات حسب القسم",
+    "Lectures by stage": "المحاضرات حسب المرحلة",
+    "lecture": "محاضرة",
+    "lectures": "محاضرات",
+    "Statistics": "الإحصائيات",
+    "{n} opened": "فُتح {n}",
+    "Welcome to Opely": "أهلاً بك في Opely",
+    "Pick your stage": "اختر مرحلتك",
+    "It stays here, one tap away.": "تبقى هنا، على بُعد نقرة.",
+    "Your department": "قسمك",
+    "Your stage": "مرحلتك",
     "Add many lectures at once. Opely sorts your files into lectures, and you check everything before it’s uploaded.": "أضف محاضرات كثيرة مرة واحدة. يرتّب Opely ملفاتك في محاضرات، وتراجع كل شيء قبل رفعه.",
     "Files or zip files": "ملفات أو ملفات zip",
     "Zip files are opened for you, even zips inside zips.": "تُفتح ملفات zip تلقائياً، حتى الموجودة داخل ملفات zip أخرى.",
@@ -422,6 +454,7 @@ const TRANSLATIONS = {
     "Admin page": "صفحة الإدارة",
     "About": "حول الموقع",
     "Opely is open source, under the MIT License.": "موقع Opely مفتوح المصدر، برخصة MIT.",
+    "Light or dark": "فاتح أو داكن",
     "Previous lecture": "المحاضرة السابقة",
     "Previous lab": "المختبر السابق",
     "Previous file": "الملف السابق",
@@ -571,7 +604,7 @@ const TRANSLATIONS = {
 // Words used when counting things, for languages where "5 lectures" needs
 // grammar that changes with the number. They are shown as "Lectures: 5".
 const COUNT_WORDS = {
-  ar: { course: "المواد", lecture: "المحاضرات", source: "المصادر", file: "الملفات", page: "الصفحات", announcement: "الإعلانات", admin: "المشرفون", stage: "المراحل", "new lecture": "محاضرات جديدة", line: "الأسطر", lab: "المختبرات", "new lab": "مختبرات جديدة", "earlier version": "النسخ السابقة", "removed item": "العناصر المحذوفة" }
+  ar: { course: "المواد", lecture: "المحاضرات", source: "المصادر", file: "الملفات", page: "الصفحات", announcement: "الإعلانات", admin: "المشرفون", stage: "المراحل", department: "الأقسام", "new lecture": "محاضرات جديدة", line: "الأسطر", lab: "المختبرات", "new lab": "مختبرات جديدة", "earlier version": "النسخ السابقة", "removed item": "العناصر المحذوفة" }
 };
 
 const RIGHT_TO_LEFT = ["ar"];
@@ -603,6 +636,27 @@ function applyAppearance() {
   });
 }
 applyAppearance();
+
+// The light/dark button in the top bar: one tap switches to the other, everywhere, at once.
+// ("Automatic", which follows the device, is chosen in Settings.)
+function isDarkNow() {
+  const theme = document.documentElement.dataset.theme;
+  return theme ? theme === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+}
+document.addEventListener("click", event => {
+  const button = event.target.closest && event.target.closest("[data-theme-toggle]");
+  if (!button) return;
+  const change = () => {
+    saveChoice(APPEARANCE_KEY, isDarkNow() ? "light" : "dark");
+    applyAppearance();
+    document.dispatchEvent(new Event("opely-appearance")); // Settings, if it is open, shows the new choice
+  };
+  // A soft cross-fade from light to dark, where the browser can do it
+  if (document.startViewTransition && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    document.documentElement.dataset.motion = "theme";
+    document.startViewTransition(change).finished.finally(() => { delete document.documentElement.dataset.motion; });
+  } else change();
+});
 
 // Settings → Bold text: every letter a little heavier (see "bold-text" in style.css)
 const BOLD_KEY = "opely-bold";

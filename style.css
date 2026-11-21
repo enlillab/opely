@@ -267,7 +267,7 @@ body.scrolled-title .nav-brand { opacity: 0; pointer-events: none; }
 [dir="rtl"] .nav-back:not(.nav-end) svg { transform: scaleX(-1); }
 .nav-back:active { transform: scale(0.9); }
 .nav-title {
-  position: absolute; inset: 0 72px; display: grid; place-items: center;
+  position: absolute; inset-block: 0; inset-inline: var(--nav-start, 16px) var(--nav-end, 72px); display: block; line-height: 56px; text-align: center;
   font-size: 17px; font-weight: 600; letter-spacing: -0.02em;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis; unicode-bidi: plaintext;
   opacity: 0; transform: translateY(6px); transition: opacity 0.2s, transform 0.25s var(--ease);
@@ -276,6 +276,35 @@ body.scrolled-title .nav-brand { opacity: 0; pointer-events: none; }
 body.scrolled-title .nav-title { opacity: 1; transform: none; }
 .nav + .wrap { padding-top: 0; }
 .nav + .wrap h1 { margin-top: 2px; }
+
+/* The tools at the end of the top bar: search, light/dark and settings, in one glass pill */
+.nav-tools { margin-inline-start: auto; position: relative; z-index: 1; display: flex; align-items: center; gap: 2px; padding: 3px;
+  border-radius: var(--r-pill); background: var(--surface-float); -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur);
+  box-shadow: inset 0 1px 0 var(--highlight), inset 0 0 0 1px var(--rim), 0 4px 14px -4px rgba(0, 0, 0, 0.18); }
+.nav-icon { display: grid; place-items: center; width: 38px; height: 38px; min-height: 0; padding: 0; border: 0; border-radius: 50%;
+  background: none; color: var(--label); cursor: pointer; transition: transform 0.2s var(--ease), background 0.2s; }
+.nav-icon svg { width: 20px; height: 20px; }
+.nav-icon:active { transform: scale(0.88); background: var(--field); }
+.nav-icon[hidden] { display: none; }
+:root { --nav-end: 148px; }
+.admin-tools + .nav-pill { margin-inline-start: 8px; }
+:root:has(.admin-tools) { --nav-end: 176px; }
+/* The light/dark button shows where one tap takes you: the moon in light, the sun in dark */
+.theme-sun { display: none; }
+:root[data-theme="dark"] .theme-moon { display: none; }
+:root[data-theme="dark"] .theme-sun { display: block; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .theme-moon { display: none; }
+  :root:not([data-theme="light"]) .theme-sun { display: block; }
+}
+
+/* Home: the small Continue / My stage card, then the departments right under their title */
+.widgets.depts + .quick-card { margin-top: 24px; }
+.quick-row .grow { line-height: 1.3; }
+.quick-kicker { display: block; font-size: 12px; font-weight: 600; letter-spacing: 0.02em; color: var(--tint); margin-bottom: 1px; }
+.home-title { margin-top: 10px; margin-bottom: 0; }
+/* The department cards: a little shorter, so all of them fit on a phone's first screen */
+.home-title + .widgets.depts { margin-top: 10px; }
 
 /* ---------- Settings card and About ---------- */
 .app-card { margin-top: 20px; }
@@ -625,11 +654,21 @@ a.hero:active { transform: scale(0.98); }
 .progress span { display: block; height: 100%; border-radius: inherit; background: var(--c, var(--tint)); }
 
 /* Department tiles */
+/* Spacing inside a card: icon, 12px, name, 2px, one line, then the bar at the bottom */
 .widgets.depts { margin-top: 0; }
-.widget.dept { min-height: 150px; justify-content: flex-end; }
-.widget.dept .head { position: absolute; top: 16px; inset-inline: 16px; }
-.widget.dept .title { margin-top: 56px; }
-.widget.dept.wide .title { margin-top: 56px; }
+.widget.dept { gap: 0; padding: 14px 16px 16px; }
+.widget.dept .title { margin-top: 12px; }
+.widget.dept .sub { margin-top: 2px; }
+.widget.dept .sub { margin-bottom: 12px; }
+.widget.dept .progress { margin-top: auto; }
+/* A card on its own row: icon beside the name, so it doesn't leave an empty half */
+.widget.dept.wide { display: grid; grid-template-columns: auto 1fr auto; column-gap: 12px; align-items: center; }
+.widget.dept.wide .head { display: contents; }
+.widget.dept.wide .head .tile { grid-column: 1; grid-row: 1 / 3; }
+.widget.dept.wide .head > .ic { grid-column: 3; grid-row: 1 / 3; }
+.widget.dept.wide .title { grid-column: 2; grid-row: 1; margin-top: 0; align-self: end; }
+.widget.dept.wide .sub { grid-column: 2; grid-row: 2; align-self: start; margin-bottom: 0; }
+.widget.dept.wide .progress { grid-column: 1 / -1; grid-row: 3; margin-top: 14px; }
 
 /* Stage tiles: a small ring in the corner, like the Today tile in Mo Focus */
 .widget.stage { min-height: 140px; }
@@ -1187,3 +1226,724 @@ html.bold-text body { -webkit-text-stroke: 0.35px currentColor; }
 .new-version { margin-top: 20px; }
 .new-version .card-head h2 { font-size: 18px; }
 .earlier .grow { color: var(--secondary); }
+
+/* ---------- The floating bar at the bottom: each page's next step ---------- */
+.dock {
+  position: fixed; z-index: 20; inset-inline: 0; margin-inline: auto;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 14px);
+  width: min(calc(100% - 32px), 30rem);
+  display: flex; gap: 4px; padding: 5px;
+  border-radius: var(--r-pill); background: var(--surface-float);
+  -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur);
+  box-shadow: inset 0 1px 0 var(--highlight), inset 0 0 0 1px var(--rim), 0 10px 30px -8px rgba(0, 0, 0, 0.28);
+  animation: dock-up 0.4s var(--ease) both;
+}
+.dock[hidden] { display: none; }
+@keyframes dock-up { from { transform: translateY(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .dock { animation: none; } }
+.dock-button {
+  display: flex; align-items: center; gap: 10px; min-width: 0; min-height: 52px; padding: 0 16px 0 10px;
+  border: 0; border-radius: var(--r-pill); background: none; color: var(--label); font: inherit; text-align: start;
+  cursor: pointer; -webkit-tap-highlight-color: transparent; transition: transform 0.2s var(--ease), background 0.2s;
+}
+.dock-button:active { transform: scale(0.96); }
+.dock-button:not(.dock-main) { flex: 0 0 auto; }
+.dock-button:not(.dock-main):active { background: var(--field); }
+.dock-main { flex: 1; color: #FFFFFF; background: linear-gradient(180deg, color-mix(in srgb, var(--tint) 82%, #FFFFFF), var(--tint)); padding-inline-start: 14px; }
+.dock-main > .ic { width: 22px; height: 22px; flex: none; }
+.dock-button .tile { flex: none; }
+.dock-text { display: flex; flex-direction: column; min-width: 0; line-height: 1.2; }
+.dock-kicker { font-size: 12px; font-weight: 600; opacity: 0.85; }
+.dock-name { font-size: 16px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dock-main .tile { box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.55); }
+body.has-dock .wrap { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 96px); }
+.dock-round { flex: 0 0 52px; width: 52px; padding: 0; justify-content: center; }
+.dock-round > .ic { width: 20px; height: 20px; }
+.dock-wide { flex: 1; }
+.dock-button > .ic { flex: none; }
+.dock-end { width: 18px; height: 18px; margin-inline-start: auto; opacity: 0.9; }
+.dock-button[aria-pressed="true"] { color: var(--green); }
+.dock-button[aria-pressed="true"] > .ic { color: var(--green); }
+.dock-button:not(.dock-main) > .ic { color: var(--tint); }
+.dock-button[aria-pressed="true"]:not(.dock-main) > .ic { color: var(--green); }
+.dock-sep { flex: none; width: 1px; margin: 12px 2px; background: var(--separator); }
+.dock-round .tile { width: 32px; height: 32px; }
+
+/* Back and Home: a small pill at the start of the top bar */
+.nav-moves { margin-inline-start: 0; }
+.nav-moves[hidden] { display: none; }
+[dir="rtl"] .nav-back-icon svg { transform: scaleX(-1); }
+:root:has(#navMoves:not([hidden])) { --nav-start: 102px; }
+/* The page's name in the top bar */
+body.title-nav .nav-title {
+  opacity: 1; transform: none; inset-inline: var(--nav-start, 16px) var(--nav-end, 72px); text-align: center;
+  font-size: 17px; font-weight: 650; letter-spacing: -0.02em;
+}
+body.title-nav #app > h1 + * { margin-top: 8px; }
+
+/* Information cards (not buttons): flat, with no arrow */
+.widget.info { background: var(--field); box-shadow: none; }
+.widget.info::before, .widget.info::after { display: none; }
+.widget.news-half .title { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; font-size: 16px; }
+.widget.news-half .meta-row { margin-top: auto; font-size: 13px; color: var(--secondary); }
+.dock-round[aria-pressed="true"] { color: #FFFFFF; background: linear-gradient(180deg, color-mix(in srgb, var(--green) 78%, #FFFFFF), var(--green)); }
+.dock .dock-button.dock-round[aria-pressed="true"] > .ic { color: #FFFFFF; }
+.dock-round.dock-wide { flex: 1; }
+.widget.news-half .meta-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+
+/* The bottom bar in the same style as the top bar: a glass pill as wide as its buttons, plain buttons */
+.dock {
+  width: fit-content; max-width: calc(100% - 32px); gap: 2px; padding: 3px;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
+  box-shadow: inset 0 1px 0 var(--highlight), inset 0 0 0 1px var(--rim), 0 4px 14px -4px rgba(0, 0, 0, 0.18);
+}
+.dock .dock-button { min-height: 38px; padding: 0 14px 0 10px; gap: 8px; color: var(--label); background: none; }
+.dock .dock-button:active { background: var(--field); transform: scale(0.94); }
+.dock .dock-main { flex: 0 1 auto; color: var(--label); background: none; }
+.dock .dock-main::after { display: none; }
+.dock .dock-button > .ic { width: 20px; height: 20px; color: var(--tint); }
+.dock .dock-main > .ic:first-child { color: var(--tint); }
+.dock .dock-end { width: 16px; height: 16px; color: var(--tertiary) !important; margin-inline-start: 2px; }
+.dock .dock-round { flex: 0 0 38px; width: 38px; padding: 0; }
+.dock .dock-round.dock-wide { flex: 0 0 38px; }
+.dock .dock-button .tile { width: 26px; height: 26px; border-radius: 7px; box-shadow: none; }
+.dock .dock-button .tile .ic { width: 15px; height: 15px; }
+.dock .dock-text { line-height: 1.15; }
+.dock .dock-kicker { font-size: 11px; font-weight: 600; color: var(--secondary); opacity: 1; }
+.dock .dock-name { font-size: 15px; font-weight: 600; }
+.dock .dock-button[aria-pressed="true"], .dock .dock-button.dock-round[aria-pressed="true"] { background: none; color: var(--green); }
+.dock .dock-button.dock-round[aria-pressed="true"] > .ic, .dock .dock-button[aria-pressed="true"] > .ic { color: var(--green); }
+.dock .dock-sep { margin: 8px 2px; }
+body.has-dock .wrap { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 84px); }
+
+/* A course card's bar, with the opened count at its end */
+.progress-line { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+.progress-line .progress { flex: 1; margin-top: 0; }
+.progress-count { font-size: 13px; font-weight: 600; color: var(--secondary); font-variant-numeric: tabular-nums; }
+/* Small information cards (a stage's numbers) */
+.widgets.stat-cards { margin-top: 16px; }
+.widget.stat { min-height: 0; gap: 2px; padding: 12px 16px 14px; }
+.widget.stat .kicker { font-size: 12px; }
+.widget.stat .big { font-size: 28px; margin-top: 2px; }
+.widget.stat .sub { font-size: 13px; }
+.widget.stat .ring { position: absolute; bottom: 14px; inset-inline-end: 14px; }
+.widgets.stat-cards + .courses { margin-top: 12px; }
+/* On My stage itself, the My stage button shows a small tick */
+.dock .dock-here { width: 14px; height: 14px; color: var(--green) !important; margin-inline-start: -12px; margin-top: 18px; stroke-width: 3; }
+
+/* A stage's next exam or deadline: one slim line */
+.countdown-line { display: flex; align-items: center; gap: 12px; margin-top: 12px; padding: 10px 12px 10px 14px; color: var(--label);
+  background: var(--surface); border-radius: var(--r-surface); box-shadow: inset 0 1px 0 var(--highlight), inset 0 0 0 1px var(--rim), var(--shadow); }
+.countdown-line:active { transform: scale(0.98); }
+.countdown-line .grow { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.3; }
+.countdown-title { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.countdown-chip { flex: none; padding: 5px 10px; border-radius: var(--r-pill); font-size: 13px; font-weight: 700; color: #FFFFFF;
+  background: linear-gradient(180deg, color-mix(in srgb, #FF9500 80%, #FFFFFF), #FF9500); }
+.countdown-chip b { font-size: 15px; }
+.countdown-line + .segments { margin-top: 14px; }
+/* A count on a bar button (new announcements) */
+.dock .dock-button { position: relative; }
+.dock-badge { position: absolute; top: 2px; inset-inline-end: 2px; min-width: 17px; height: 17px; padding: 0 4px; border-radius: 9px;
+  font-size: 11px; font-weight: 700; line-height: 17px; text-align: center; color: #FFFFFF; background: var(--red); }
+/* A department's Progress card on its own row: short, the ring at the end */
+.widget.stage.info.wide { min-height: 0; padding-block: 14px; }
+.widget.stage.info.wide .ring { top: 50%; bottom: auto; transform: translateY(-50%); }
+
+/* A department in numbers: the total, then a small bar chart of the lectures in each stage (flat: information) */
+.stats-card { display: flex; align-items: stretch; gap: 16px; margin-top: 12px; padding: 16px; border-radius: var(--r-surface); background: var(--field); }
+.stats-head { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.stats-total { margin-top: 6px; font-size: 15px; color: var(--secondary); }
+.stats-total b { display: block; font-family: var(--font-display); font-size: 40px; font-weight: 750; letter-spacing: -0.035em; line-height: 1; color: var(--label); }
+.stats-more { margin-top: auto; padding-top: 8px; font-size: 13px; color: var(--secondary); line-height: 1.35; }
+.stats-chart { flex: 0 0 52%; display: flex; flex-direction: column; }
+.stats-chart-label { font-size: 12px; font-weight: 600; color: var(--secondary); text-align: end; }
+.stat-bars { flex: 1; display: flex; align-items: stretch; gap: 8px; margin-top: 6px; min-height: 92px; }
+.stat-bar { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; min-width: 0; }
+.stat-value { font-size: 12px; font-weight: 650; color: var(--label); font-variant-numeric: tabular-nums; margin-bottom: 3px; }
+.stat-fill { width: 100%; max-width: 26px; border-radius: 4px 4px 0 0; background: var(--tint); }
+.stat-fill[style*="height:0%"] { height: 2px !important; background: var(--separator); border-radius: 1px; }
+.stat-name { width: 100%; padding-top: 4px; border-top: 1px solid var(--separator); text-align: center; font-size: 12px; color: var(--secondary); font-variant-numeric: tabular-nums; }
+.stats-card + .widgets { margin-top: 12px; }
+
+/* A stage card: just its name, its ring and what is new */
+.widget.stage.slim { min-height: 0; gap: 14px; padding: 14px 16px 16px; }
+.widget.stage.slim .head { min-height: 30px; }
+.widget.stage.slim .ring { position: relative; inset: auto; }
+.widget.stage.slim .ring-space { width: 30px; height: 30px; }
+.widget.stage.slim .stage-name { font-family: var(--font-display); font-size: 20px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; }
+.dock .dock-button.is-here > .ic { color: var(--green); } /* on My stage itself */
+
+/* Home: the Statistics card under the title, then department cards with just an icon and a name */
+.home-title + .stats-card { margin-top: 10px; }
+.stats-card + .widgets.depts { margin-top: 12px; }
+.widget.dept.slim { gap: 0; padding: 14px 16px 16px; }
+.widget.dept.slim .title { margin-top: 12px; margin-bottom: 0; }
+.widget.dept.slim.wide .title { grid-row: 1 / 3; align-self: center; }
+.widget.dept.slim.wide { column-gap: 14px; }
+.widget.dept.slim.wide .title { margin-top: 0; }
+
+/* Home: "Departments" in the top bar too, after the logo and name */
+:root:has(#navBrand:not([hidden])) { --nav-start: 124px; }
+body.title-nav #app > .home-title + .stats-card { margin-top: 8px; }
+.widget.stage.slim .head { min-height: 22px; }
+/* The Statistics card, a little smaller */
+.stats-card { padding: 12px 14px; gap: 14px; }
+.stats-total { margin-top: 2px; font-size: 14px; }
+.stats-total b { font-size: 32px; }
+.stats-more { padding-top: 4px; font-size: 12px; }
+.stats-chart-label { font-size: 11px; }
+.stat-bars { min-height: 64px; margin-top: 4px; gap: 6px; }
+.stat-value, .stat-name { font-size: 11px; }
+.stat-fill { max-width: 22px; }
+
+/* One size for department, stage and course cards: half the width, the same height */
+.courses { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.widget.card-size { height: 118px; min-height: 0; gap: 0; padding: 14px 16px; justify-content: space-between; overflow: hidden; }
+.widget.card-size .head { min-height: 30px; }
+.widget.card-size .title, .widget.card-size .stage-name { margin: 0; font-size: 17px; font-weight: 650; line-height: 1.25; letter-spacing: -0.015em;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.widget.stage.card-size .stage-name { font-family: var(--font-display); font-size: 20px; font-weight: 700; }
+.widget.course.card-size .title { font-size: 15px; -webkit-line-clamp: 2; }
+.widget.course.card-size .head { min-height: 22px; }
+.widget.course.card-size .progress-line { margin-top: 6px; }
+.widget.course.card-size .foot { margin-top: 6px; }
+.news-line .new-badge { flex: none; }
+.countdown-line + .news-line { margin-top: 8px; }
+.news-line + .segments { margin-top: 14px; }
+.widget.card-size .kicker { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.widget.card-size .head-end { flex: none; }
+.widget.card-size .new-badge { font-size: 11px; padding: 2px 7px; }
+.widget.course.card-size .chev { display: none; } /* the whole card is the button; the code needs the room */
+/* A stage page's rhythm: the lines at the top 8px apart, then 16px between the switch, the courses and the archive */
+#app > .countdown-line:first-of-type, body.title-nav #app > h1 + .countdown-line { margin-top: 8px; }
+.countdown-line + .countdown-line { margin-top: 8px; }
+.countdown-line + .segments { margin-top: 16px; }
+.segments + .courses { margin-top: 16px; }
+.courses + .archive-row { margin-top: 16px; }
+.archive-row .row { min-height: 64px; }
+/* A course page's rhythm: the main card, then 12px to Save for offline, 16px to the switch, 20px to the list */
+#app > .course-hero:first-child, #app > .hero.course-hero { margin-top: 8px; }
+.course-hero + .offline-row, .course-hero + .archived-note { margin-top: 12px; }
+.offline-row + .segments, .archived-note + .segments { margin-top: 16px; }
+.segments + .count { margin-top: 20px; }
+
+/* A stage's "Coming up" card: like Statistics, with the next exams and deadlines and their days left */
+.up-card { display: block; color: var(--label); margin-top: 8px; }
+.up-card:active { transform: scale(0.98); }
+.up-list { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.up-row { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.up-days { flex: none; width: 46px; height: 42px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: var(--surface); color: var(--secondary); line-height: 1; }
+.up-days b { font-family: var(--font-display); font-size: 18px; font-weight: 750; color: var(--label); }
+.up-days small { font-size: 10px; font-weight: 600; margin-top: 2px; }
+.up-days.soon { color: #FFFFFF; background: linear-gradient(180deg, color-mix(in srgb, #FF9500 80%, #FFFFFF), #FF9500); }
+.up-days.soon b { color: #FFFFFF; }
+.up-days b:empty { display: none; }
+.up-text { display: flex; flex-direction: column; min-width: 0; line-height: 1.3; }
+.up-title { font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.up-when { font-size: 12px; color: var(--secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.up-card + .segments { margin-top: 16px; }
+/* "Coming up", smaller */
+.up-card { padding: 10px 12px; }
+.up-card .kicker { font-size: 11px; }
+.up-list { margin-top: 6px; gap: 6px; }
+.up-row { gap: 10px; }
+.up-days { width: 40px; height: 34px; border-radius: 10px; flex-direction: row; gap: 2px; align-items: baseline; padding-top: 8px; }
+.up-days b { font-size: 16px; }
+.up-days small { font-size: 9px; margin-top: 0; }
+.up-title { font-size: 14px; }
+.up-when { font-size: 11px; }
+/* One background only: the plain page colour, with no soft glow behind it */
+body::before { display: none; }
+
+/* Dark mode, calm like light mode: flat dark cards with no outlines, glass gradient or sheen.
+   Cards stand apart only by being a little lighter than the black page. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --surface: #1C1C1E; --glass-top: #1C1C1E; --glass-bottom: #1C1C1E;
+    --rim: transparent; --rim-light: transparent; --rim-soft: transparent; --highlight: transparent; --sheen: transparent;
+    --shadow: none; --field: #2C2C2E; --surface-float: rgba(30, 30, 32, 0.92);
+  }
+}
+:root[data-theme="dark"] {
+  --surface: #1C1C1E; --glass-top: #1C1C1E; --glass-bottom: #1C1C1E;
+  --rim: transparent; --rim-light: transparent; --rim-soft: transparent; --highlight: transparent; --sheen: transparent;
+  --shadow: none; --field: #2C2C2E; --surface-float: rgba(30, 30, 32, 0.92);
+}
+
+/* The bottom bar: round icon buttons only; the page's main one is a blue circle */
+.dock .dock-button.dock-round { flex: 0 0 44px; width: 44px; height: 44px; min-height: 0; padding: 0; justify-content: center; border-radius: 50%; }
+.dock .dock-button.dock-round > .ic { width: 22px; height: 22px; }
+.dock .dock-button.dock-main { color: #FFFFFF; background: linear-gradient(180deg, color-mix(in srgb, var(--tint) 82%, #FFFFFF), var(--tint)); }
+.dock .dock-button.dock-main > .ic { color: #FFFFFF; }
+.dock { gap: 6px; padding: 4px; }
+.dock-badge { top: 0; inset-inline-end: 0; }
+.dock-button { -webkit-touch-callout: none; user-select: none; -webkit-user-select: none; }
+/* The bubble that says what a bar button does (press and hold) */
+.dock-tip { position: fixed; z-index: 40; max-width: min(80vw, 320px); padding: 8px 12px; border-radius: 12px;
+  font-size: 14px; font-weight: 600; line-height: 1.3; color: var(--label); background: var(--surface-float);
+  -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur); box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.3), inset 0 0 0 1px var(--separator);
+  pointer-events: none; animation: tip-in 0.18s var(--ease) both; }
+@keyframes tip-in { from { opacity: 0; transform: translateY(4px) scale(0.96); } to { opacity: 1; transform: none; } }
+.up-card:active { transform: none; }
+
+/* The archive: a quiet grey line at the end of a list, centred, with no card */
+.archive-link { display: flex; align-items: center; justify-content: center; gap: 6px; width: fit-content; margin: 18px auto 0;
+  padding: 8px 12px; border-radius: var(--r-pill); font-size: 14px; font-weight: 500; color: var(--secondary); }
+.archive-link .ic { width: 15px; height: 15px; flex: none; }
+.archive-link:active { background: var(--field); }
+
+/* A course's card: the same size and look as the Statistics card (code, name, teacher, and the ring) */
+.course-card { align-items: center; margin-top: 8px; }
+.course-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.course-name { font-family: var(--font-display); font-size: 20px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.2;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.course-by { font-size: 13px; color: var(--secondary); }
+.course-card .done-note { margin-top: 4px; font-size: 13px; }
+.course-card + .offline-row { margin-top: 12px; }
+.segments + .group, .segments + ol.group, .segments + .empty-state { margin-top: 16px; }
+.dock.dock-still { animation: none; } /* already showing: no rising in again */
+
+/* A lecture's card: like the course card, with how many files it has */
+.lecture-count { flex: none; display: flex; flex-direction: column; align-items: center; min-width: 56px; line-height: 1; }
+.lecture-count b { font-family: var(--font-display); font-size: 30px; font-weight: 750; letter-spacing: -0.03em; }
+.lecture-count small { margin-top: 4px; font-size: 12px; color: var(--secondary); }
+.lecture-card + .label, .lecture-card + h2 { margin-top: 20px; }
+.dock .dock-button.is-saved > .ic { color: var(--green); }
+.dock .dock-button:disabled { opacity: 0.5; }
+.dock .dock-button[hidden] { display: none; }
+
+/* A lecture's Summary and Recording: flat cards like Statistics, each with its small label */
+.info-card { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; color: var(--label); }
+.lecture-summary { font-size: 15px; line-height: 1.45; unicode-bidi: plaintext;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.lecture-summary.open { display: block; -webkit-line-clamp: unset; }
+.summary-more { align-self: flex-start; padding: 0; border: 0; background: none; font: inherit; font-size: 14px; font-weight: 600; color: var(--tint); cursor: pointer; }
+.video-card:active { transform: scale(0.98); }
+.video-row { display: flex; align-items: center; gap: 12px; }
+.video-play { flex: none; width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; color: #FFFFFF;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--tint) 82%, #FFFFFF), var(--tint)); }
+.video-play .ic { width: 20px; height: 20px; }
+.video-words { flex: 1; min-width: 0; font-weight: 600; }
+.video-site { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; color: var(--secondary); }
+.video-site .ic { width: 14px; height: 14px; }
+.info-card + .label, .info-card + h2 { margin-top: 20px; }
+
+/* The summary inside the lecture card: softer text under the date, four lines, More opens the rest */
+.lecture-card .lecture-summary { margin-top: 8px; font-size: 14px; color: var(--secondary); -webkit-line-clamp: 4; }
+.lecture-card .lecture-summary.open { -webkit-line-clamp: unset; }
+.lecture-card .summary-more { margin-top: 2px; }
+.row .video-site { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; color: var(--secondary); }
+.lecture-card .lecture-summary { display: block; -webkit-line-clamp: unset; overflow: visible; } /* the whole summary */
+.lecture-card + .lecture-list, .lecture-card + .text-block { margin-top: 12px; }
+
+/* A course's lists: a round download button at the end of each row (a green tick once it is saved) */
+.course-list > li.has-save > .row { padding-inline-end: 60px; }
+.course-list > li.has-save > a.row::after { display: none; }
+.course-list > li.has-save .end.saved { display: none; }
+.row-save { position: absolute; top: 50%; inset-inline-end: 10px; transform: translateY(-50%); z-index: 2;
+  width: 40px; height: 40px; padding: 0; border: 0; border-radius: 50%; display: grid; place-items: center;
+  background: none; color: var(--tint); cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.row-save .ic { width: 20px; height: 20px; }
+.row-save:active { background: var(--field); }
+.row-save.is-saved { color: var(--green); }
+body.title-nav #app > h1 + #fileStatus[hidden] + * { margin-top: 8px; }
+
+/* PDF pages: like cards, with rounded corners and a soft shadow, a little space between them */
+.pages { gap: 14px; margin: 12px 0 0; }
+.page { border-radius: 14px; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 8px 24px -10px rgba(0, 0, 0, 0.22); }
+/* A page not drawn yet: a soft shimmer instead of a white box */
+.page:not(.drawn) { background: linear-gradient(100deg, #FFFFFF 40%, #F1F1F5 50%, #FFFFFF 60%) 0 0 / 300% 100%; animation: page-wait 1.4s linear infinite; }
+@keyframes page-wait { to { background-position: -150% 0; } }
+@media (prefers-reduced-motion: reduce) { .page:not(.drawn) { animation: none; } }
+/* In dark mode the white pages are dimmed a little, easier on the eyes */
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .page canvas { filter: brightness(0.9); } :root:not([data-theme="light"]) .page { box-shadow: none; } }
+:root[data-theme="dark"] .page canvas { filter: brightness(0.9); }
+:root[data-theme="dark"] .page { box-shadow: none; }
+/* The page you are on, while scrolling */
+.page-badge { position: fixed; z-index: 15; top: calc(env(safe-area-inset-top, 0px) + 64px); left: 50%; transform: translate(-50%, -6px);
+  padding: 5px 12px; border-radius: var(--r-pill); font-size: 13px; font-weight: 650; font-variant-numeric: tabular-nums; direction: ltr;
+  color: var(--label); background: var(--surface-float); -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur);
+  box-shadow: 0 4px 14px -4px rgba(0, 0, 0, 0.2); opacity: 0; pointer-events: none; transition: opacity 0.25s, transform 0.25s var(--ease); }
+.page-badge.show { opacity: 1; transform: translate(-50%, 0); }
+.pages + .shown:empty + .file-count { margin-top: 20px; }
+
+/* Settings: short groups, 16px apart */
+.settings-list { margin-top: 16px; }
+.app-card + .settings-list { margin-top: 16px; }
+.hint-below + .settings-list { margin-top: 12px; }
+.settings-list + .hint-below:empty { display: none; }
+.reading-preview + .settings-list { margin-top: 12px; }
+
+/* =====================================================================
+   MOTION: one set of timings for the whole app, after iPhone's
+   --ease       the iOS curve: quick start, long soft landing (pages, sheets, bars)
+   --spring     a small overshoot, for things that pop (a press letting go, a bubble)
+   ===================================================================== */
+:root { --ease: cubic-bezier(0.32, 0.72, 0, 1); --spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --t-press: 0.12s; --t-quick: 0.25s; --t-page: 0.5s; }
+
+/* Pages (view transitions): the page moves, the top and bottom bars stay */
+/* the sliding page is solid, like an iPhone screen: the whole width and at least the whole height */
+.wrap { view-transition-name: page; background: var(--bg); min-height: 100vh; min-height: 100dvh; }
+@media (min-width: 46rem) { .wrap { box-shadow: 0 0 0 100vmax var(--bg); clip-path: inset(0 -100vmax); } }
+.nav { view-transition-name: topbar; }
+.dock { view-transition-name: bottombar; }
+::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+::view-transition-group(page) { animation-duration: var(--t-page); animation-timing-function: var(--ease); }
+::view-transition-old(page), ::view-transition-new(page) { animation-duration: var(--t-page); animation-timing-function: var(--ease); animation-fill-mode: both; mix-blend-mode: normal; height: auto; }
+/* deeper: the new page comes from the right edge; the old one drifts a third to the left and dims */
+html[data-motion="push"]::view-transition-new(page) { animation-name: vt-from-right; }
+html[data-motion="push"]::view-transition-old(page) { animation-name: vt-to-left; }
+/* back: the reverse */
+html[data-motion="pop"]::view-transition-new(page) { animation-name: vt-from-left; }
+html[data-motion="pop"]::view-transition-old(page) { animation-name: vt-to-right; z-index: 2; }
+/* the same level: a quick cross-fade */
+html[data-motion="fade"]::view-transition-old(page) { animation: vt-fade-out var(--t-quick) ease both; }
+html[data-motion="fade"]::view-transition-new(page) { animation: vt-fade-in var(--t-quick) ease both; }
+/* light ↔ dark: the whole screen cross-fades */
+html[data-motion="theme"]::view-transition-old(root) { animation: vt-fade-out 0.35s ease both; }
+html[data-motion="theme"]::view-transition-new(root) { animation: vt-fade-in 0.35s ease both; }
+/* the bars cross-fade only if their buttons change */
+::view-transition-old(bottombar), ::view-transition-new(bottombar),
+::view-transition-old(topbar), ::view-transition-new(topbar) { animation-duration: var(--t-quick); }
+@keyframes vt-from-right { from { transform: translateX(100%); box-shadow: -8px 0 24px rgba(0, 0, 0, 0.12); } to { transform: none; box-shadow: none; } }
+@keyframes vt-to-left    { to { transform: translateX(-30%); filter: brightness(0.92); opacity: 0.6; } }
+@keyframes vt-from-left  { from { transform: translateX(-30%); filter: brightness(0.92); opacity: 0.6; } to { transform: none; } }
+@keyframes vt-to-right   { to { transform: translateX(100%); } }
+@keyframes vt-fade-out { to { opacity: 0; } }
+@keyframes vt-fade-in { from { opacity: 0; } }
+[dir="rtl"][data-motion="push"]::view-transition-new(page) { animation-name: vt-from-left-edge; }
+[dir="rtl"][data-motion="push"]::view-transition-old(page) { animation-name: vt-to-right-third; }
+[dir="rtl"][data-motion="pop"]::view-transition-new(page) { animation-name: vt-from-right-third; }
+[dir="rtl"][data-motion="pop"]::view-transition-old(page) { animation-name: vt-to-left-edge; }
+@keyframes vt-from-left-edge  { from { transform: translateX(-100%); } }
+@keyframes vt-to-right-third  { to { transform: translateX(30%); filter: brightness(0.92); opacity: 0.6; } }
+@keyframes vt-from-right-third { from { transform: translateX(30%); filter: brightness(0.92); opacity: 0.6; } }
+@keyframes vt-to-left-edge    { to { transform: translateX(-100%); } }
+/* the fallback slide (no view transitions) uses the same curve and length */
+#app.push { animation-duration: var(--t-page); }
+#app.pop { animation-duration: 0.44s; }
+#app.fade { animation-duration: var(--t-quick); }
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+}
+
+/* Pressing: everything that can be tapped shrinks a little at once, and springs back when let go */
+:where(a.widget, a.hero, .countdown-line, .archive-link, .dock-button, .nav-icon, .nav-back, .row-save, .segment,
+  button.primary, .button, .glow-button, .summary-more, .sheet-option, .sheet-cancel, .step, .app-card .row) {
+  transition: transform 0.45s var(--spring), background-color var(--t-quick), color var(--t-quick), opacity var(--t-quick);
+}
+:where(a.widget, a.hero, .countdown-line, button.primary, .button, .glow-button, .sheet-cancel):active { transform: scale(0.97); transition-duration: var(--t-press); }
+:where(.dock-button, .nav-icon, .row-save, .step):active { transform: scale(0.9); transition-duration: var(--t-press); }
+:where(.segment, .archive-link):active { transform: scale(0.96); transition-duration: var(--t-press); }
+a.row, button.row { transition: background-color 0.35s ease; }
+a.row:active, button.row:active { transition-duration: 0s; }
+@media (prefers-reduced-motion: reduce) { :where(a.widget, .dock-button, .nav-icon, .segment, .button):active { transform: none; } }
+
+/* The sheet from the bottom: rises with the iOS curve, and goes back down when closed */
+.sheet { animation: sheet-up 0.45s var(--ease) both; }
+.sheet-backdrop { animation: sheet-fade 0.3s ease both; }
+.sheet-backdrop.closing { opacity: 0; transition: opacity 0.28s ease; }
+.sheet-backdrop.closing .sheet { transform: translateY(105%); transition: transform 0.3s var(--ease); }
+
+/* The bottom bar rises in with a small spring; its bubbles pop */
+.dock { animation: dock-up 0.55s var(--spring) both; }
+.dock-tip { animation: tip-in 0.3s var(--spring) both; transform-origin: 50% 100%; }
+@keyframes tip-in { from { opacity: 0; transform: translateY(6px) scale(0.9); } to { opacity: 1; transform: none; } }
+.dock-badge { animation: badge-pop 0.45s var(--spring) both; }
+@keyframes badge-pop { from { transform: scale(0.4); opacity: 0; } }
+
+/* Switches and choices glide */
+.switch::after { transition: transform 0.35s var(--spring); }
+.segment { transition: background-color var(--t-quick), color var(--t-quick), box-shadow var(--t-quick), transform 0.45s var(--spring); }
+/* The top bar's page name eases in */
+.nav-title { transition: opacity var(--t-quick) ease, transform 0.35s var(--ease); }
+
+/* The bottom bar: as wide as its buttons, and every button the same size, with the same size of icon */
+.dock { width: fit-content; max-width: calc(100% - 32px); justify-content: center; gap: 6px; }
+.dock .dock-button, .dock .dock-button.dock-round, .dock .dock-button.dock-main { flex: 0 0 44px; width: 44px; height: 44px; padding: 0; }
+.dock .dock-button > .ic, .dock .dock-button.dock-round > .ic { width: 22px; height: 22px; }
+
+/* A little faster everywhere, same curves */
+:root { --t-press: 0.1s; --t-quick: 0.2s; --t-page: 0.38s; }
+#app.pop { animation-duration: 0.34s; }
+:where(a.widget, a.hero, .countdown-line, .archive-link, .dock-button, .nav-icon, .nav-back, .row-save, .segment,
+  button.primary, .button, .glow-button, .summary-more, .sheet-option, .sheet-cancel, .step, .app-card .row) {
+  transition: transform 0.34s var(--spring), background-color var(--t-quick), color var(--t-quick), opacity var(--t-quick);
+}
+.sheet { animation-duration: 0.36s; }
+.sheet-backdrop { animation-duration: 0.24s; }
+.sheet-backdrop.closing, .sheet-backdrop.closing .sheet { transition-duration: 0.24s; }
+.dock { animation-duration: 0.42s; }
+.dock-tip { animation-duration: 0.24s; }
+.dock-badge { animation-duration: 0.36s; }
+.switch::after { transition-duration: 0.28s; }
+.segment { transition-duration: var(--t-quick), var(--t-quick), var(--t-quick), 0.34s; }
+html[data-motion="theme"]::view-transition-old(root), html[data-motion="theme"]::view-transition-new(root) { animation-duration: 0.28s; }
+
+/* A soft dark fade behind the bottom bar, so it stands apart from the page under it */
+body.has-dock::after {
+  content: ""; position: fixed; inset-inline: 0; bottom: 0; z-index: 19; pointer-events: none;
+  height: calc(env(safe-area-inset-bottom, 0px) + 120px);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.16), rgba(0, 0, 0, 0.06) 55%, rgba(0, 0, 0, 0));
+  animation: sheet-fade 0.3s ease both;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) body.has-dock::after { background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.55) 50%, rgba(0, 0, 0, 0)); }
+}
+:root[data-theme="dark"] body.has-dock::after { background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.55) 50%, rgba(0, 0, 0, 0)); }
+
+/* =====================================================================
+   COLOUR, like Apple's apps: every department, stage and course keeps its own system colour.
+   A card takes a soft wash of it; its small label, its bar and its ring take the colour itself.
+   ===================================================================== */
+.tinted { --wash: 9%; }
+.widget.tinted, .stats-card.tinted { background: color-mix(in srgb, var(--c) var(--wash), var(--surface)); }
+.stats-card.tinted { --wash: 12%; background: color-mix(in srgb, var(--c) var(--wash), var(--field-solid, #ECECF1)); }
+.widget.tinted::after { display: none; } /* no white sheen over the colour */
+.tinted .kicker { color: color-mix(in srgb, var(--c) 85%, var(--label)); }
+.tinted .progress span, .tinted .ring .bar { background: var(--c); stroke: var(--c); }
+.tinted .progress { background: color-mix(in srgb, var(--c) 16%, transparent); }
+.tinted .ring .track { stroke: color-mix(in srgb, var(--c) 18%, transparent); }
+.tinted .progress-count { color: color-mix(in srgb, var(--c) 80%, var(--label)); }
+/* the statistics bars: each bar in the colour of what it counts */
+.stat-bar .stat-fill { background: var(--c, var(--tint)); }
+.stat-bar.tinted .stat-fill { background: var(--c); }
+/* dark mode: a little more colour, on the dark cards */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .tinted { --wash: 16%; }
+  :root:not([data-theme="light"]) .stats-card.tinted { --wash: 18%; background: color-mix(in srgb, var(--c) var(--wash), #1C1C1E); }
+}
+:root[data-theme="dark"] .tinted { --wash: 16%; }
+:root[data-theme="dark"] .stats-card.tinted { --wash: 18%; background: color-mix(in srgb, var(--c) var(--wash), #1C1C1E); }
+/* a stage card: its coloured square, then its name */
+.widget.stage.card-size .head .tile { width: 30px; height: 30px; }
+/* "Coming up": the soon ones are already orange; the card wears a little of it */
+.up-card.tinted .up-days:not(.soon) { background: var(--surface); }
+
+/* =====================================================================
+   COLOUR, refined: the cards you tap (departments, stages, courses) are solid colour,
+   like Apple's Shortcuts tiles: a soft gradient of their colour, white words, a frosted icon.
+   The cards that only tell you something (statistics, a course's or lecture's card, Coming up)
+   keep a light wash, so the page has one clear kind of button.
+   ===================================================================== */
+.widget.card-size.tinted {
+  color: #FFFFFF;
+  background: linear-gradient(155deg, color-mix(in srgb, var(--c) 72%, #FFFFFF) 0%, var(--c) 55%, color-mix(in srgb, var(--c) 82%, #000000) 100%);
+  box-shadow: 0 10px 22px -12px color-mix(in srgb, var(--c) 70%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+.widget.card-size.tinted::before, .widget.card-size.tinted::after { display: none; }
+.widget.card-size.tinted .kicker { color: rgba(255, 255, 255, 0.85); }
+.widget.card-size.tinted .title, .widget.card-size.tinted .stage-name { color: #FFFFFF; }
+.widget.card-size.tinted .chev { color: rgba(255, 255, 255, 0.75); }
+.widget.card-size.tinted .foot { color: rgba(255, 255, 255, 0.8); }
+.widget.card-size.tinted .tile { background: rgba(255, 255, 255, 0.24); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3); }
+.widget.card-size.tinted .new-badge { background: #FFFFFF; color: var(--c); box-shadow: none; }
+.widget.card-size.tinted .progress { background: rgba(255, 255, 255, 0.28); }
+.widget.card-size.tinted .progress span { background: #FFFFFF; }
+.widget.card-size.tinted .progress-count { color: rgba(255, 255, 255, 0.9); }
+/* yellow and light colours: a touch darker, so white words stay readable */
+.widget.card-size.tinted.yellow, .widget.card-size.tinted.green, .widget.card-size.tinted.teal, .widget.card-size.tinted.orange {
+  background: linear-gradient(155deg, color-mix(in srgb, var(--c) 85%, #FFFFFF) 0%, color-mix(in srgb, var(--c) 92%, #000000) 55%, color-mix(in srgb, var(--c) 74%, #000000) 100%);
+}
+/* dark mode: the same colour, a little deeper */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .widget.card-size.tinted { background: linear-gradient(155deg, color-mix(in srgb, var(--c) 88%, #FFFFFF) 0%, color-mix(in srgb, var(--c) 82%, #000000) 60%, color-mix(in srgb, var(--c) 62%, #000000) 100%); box-shadow: none; }
+}
+:root[data-theme="dark"] .widget.card-size.tinted { background: linear-gradient(155deg, color-mix(in srgb, var(--c) 88%, #FFFFFF) 0%, color-mix(in srgb, var(--c) 82%, #000000) 60%, color-mix(in srgb, var(--c) 62%, #000000) 100%); box-shadow: none; }
+
+/* the information cards: a clearer wash, and their numbers in their colour */
+.stats-card.tinted { --wash: 15%; }
+.stats-card.tinted .stats-total b, .stats-card.tinted .lecture-count b { color: color-mix(in srgb, var(--c) 80%, var(--label)); }
+
+/* =====================================================================
+   THE COLOUR SYSTEM
+   1. Colours: Apple's system colours, each with its light-mode and dark-mode value.
+   2. Roles (never mixed):
+        content  blue indigo purple teal pink cyan mint brown: departments, stages, courses
+        status   orange = soon (Coming up)   blue badge = new   red count = unread, and danger   green = done and saved
+        action   the tint (blue): buttons, links, the bar's main button
+   3. Three strengths of a content colour, from one token --c:
+        fill   solid tiles you tap (departments, stages, courses): a soft gradient, white words
+        wash   cards that tell you something (statistics, a course's card): --c-wash
+        ink    words and numbers on a wash: --c-ink (dark enough to read in light mode, light in dark)
+   A department, stage or course keeps its colour on every page where it shows.
+   ===================================================================== */
+:root {
+  --sys-blue: #007AFF; --sys-indigo: #5856D6; --sys-purple: #AF52DE; --sys-pink: #FF2D55; --sys-red: #FF3B30;
+  --sys-orange: #FF9500; --sys-yellow: #FFCC00; --sys-green: #34C759; --sys-mint: #00C7BE; --sys-teal: #30B0C7;
+  --sys-cyan: #32ADE6; --sys-brown: #A2845E; --sys-gray: #8E8E93;
+  --wash-base: #FFFFFF; --ink-mix: #000000; --ink-amount: 72%;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --sys-blue: #0A84FF; --sys-indigo: #5E5CE6; --sys-purple: #BF5AF2; --sys-pink: #FF375F; --sys-red: #FF453A;
+    --sys-orange: #FF9F0A; --sys-yellow: #FFD60A; --sys-green: #30D158; --sys-mint: #63E6E2; --sys-teal: #40CBE0;
+    --sys-cyan: #64D2FF; --sys-brown: #AC8E68; --sys-gray: #98989D;
+    --wash-base: #1C1C1E; --ink-mix: #FFFFFF; --ink-amount: 78%;
+  }
+}
+:root[data-theme="dark"] {
+  --sys-blue: #0A84FF; --sys-indigo: #5E5CE6; --sys-purple: #BF5AF2; --sys-pink: #FF375F; --sys-red: #FF453A;
+  --sys-orange: #FF9F0A; --sys-yellow: #FFD60A; --sys-green: #30D158; --sys-mint: #63E6E2; --sys-teal: #40CBE0;
+  --sys-cyan: #64D2FF; --sys-brown: #AC8E68; --sys-gray: #98989D;
+  --wash-base: #1C1C1E; --ink-mix: #FFFFFF; --ink-amount: 78%;
+}
+.blue { --c: var(--sys-blue); } .indigo { --c: var(--sys-indigo); } .purple { --c: var(--sys-purple); }
+.pink { --c: var(--sys-pink); } .red { --c: var(--sys-red); } .orange { --c: var(--sys-orange); }
+.yellow { --c: var(--sys-yellow); } .green { --c: var(--sys-green); } .mint { --c: var(--sys-mint); }
+.teal { --c: var(--sys-teal); } .cyan { --c: var(--sys-cyan); } .brown { --c: var(--sys-brown); } .gray { --c: var(--sys-gray); }
+:is(.blue, .indigo, .purple, .pink, .red, .orange, .yellow, .green, .mint, .teal, .cyan, .brown, .gray) { --c-wash: color-mix(in srgb, var(--c) 14%, var(--wash-base)); --c-ink: color-mix(in srgb, var(--c) var(--ink-amount), var(--ink-mix)); }
+
+/* fill: the tiles you tap */
+.widget.card-size.tinted, :root .widget.card-size.tinted {
+  color: #FFFFFF; box-shadow: 0 8px 20px -12px color-mix(in srgb, var(--c) 80%, transparent);
+  background: linear-gradient(160deg, color-mix(in srgb, var(--c) 80%, #FFFFFF) 0%, var(--c) 45%, color-mix(in srgb, var(--c) 80%, #000000) 100%);
+}
+/* light colours get a deeper fill, so white words always read */
+.widget.card-size.tinted:is(.yellow, .mint, .cyan, .teal, .green, .orange) {
+  background: linear-gradient(160deg, var(--c) 0%, color-mix(in srgb, var(--c) 82%, #000000) 55%, color-mix(in srgb, var(--c) 66%, #000000) 100%);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .widget.card-size.tinted { box-shadow: none;
+    background: linear-gradient(160deg, color-mix(in srgb, var(--c) 86%, #000000) 0%, color-mix(in srgb, var(--c) 70%, #000000) 100%); }
+}
+:root[data-theme="dark"] .widget.card-size.tinted { box-shadow: none;
+  background: linear-gradient(160deg, color-mix(in srgb, var(--c) 86%, #000000) 0%, color-mix(in srgb, var(--c) 70%, #000000) 100%); }
+.widget.card-size.tinted .new-badge { color: var(--c-ink); }
+
+/* wash: the cards that tell you something */
+.stats-card.tinted, :root .stats-card.tinted { background: var(--c-wash); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .stats-card.tinted { background: var(--c-wash); } }
+:root[data-theme="dark"] .stats-card.tinted { background: var(--c-wash); }
+.stats-card.tinted .kicker, .stats-card.tinted .stats-total b, .stats-card.tinted .lecture-count b,
+.stats-card.tinted .progress-count, .stats-card.tinted .ring-text b { color: var(--c-ink); }
+.stats-card.tinted .ring .bar { stroke: var(--c); }
+.stats-card.tinted .ring .track { stroke: color-mix(in srgb, var(--c) 22%, transparent); }
+
+/* a course's lecture list: numbers in a little of the course's colour, opened ones filled with it */
+.course-tint .num { background: var(--c-wash); color: var(--c-ink); }
+.course-tint .num.done { color: #FFFFFF; background: var(--c); }
+
+/* status colours */
+.dock-badge { background: var(--sys-red); }
+.up-days.soon { background: linear-gradient(180deg, color-mix(in srgb, var(--sys-orange) 85%, #FFFFFF), var(--sys-orange)); }
+.up-card.tinted { --c: var(--sys-orange); }
+.row-save.is-saved, .dock .dock-button.is-saved > .ic, .dock .dock-button.is-here > .ic { color: var(--sys-green); }
+.stat-bar .stat-fill { background: var(--c, var(--tint)); border-radius: 5px 5px 2px 2px; }
+
+/* Admin: the same top bar and bottom bar as the student site */
+:root:has(.admin-tools) { --nav-end: 112px; }
+:root:has(.admin-tools #navMoves:not([hidden])), :root:has(.admin-tools) :has(#navMoves:not([hidden])) { --nav-start: 102px; }
+.account-list { margin-top: 24px; }
+.widgets.stages + .settings-list { margin-top: 20px; }
+.lecture-list + .lecture-list { margin-top: 12px; }
+.courses + .archive-link, .empty-state + .archive-link { margin-top: 18px; }
+
+/* Admin forms: the main button lives in the bottom bar */
+#app button.primary.in-dock { display: none; }
+.dock .dock-button.is-off { opacity: 0.4; pointer-events: none; }
+/* Admin: under a page name in the top bar, a short note in small grey, no big lead; no count labels */
+:root:has(.admin-tools) body.title-nav #app > .lead { margin: 8px 4px 0; font-size: 13px; line-height: 1.4; }
+:root:has(.admin-tools) #app > .count { display: none; }
+:root:has(.admin-tools) #app > .card:first-of-type, :root:has(.admin-tools) body.title-nav #app > h1 + form { margin-top: 8px; }
+
+/* Admin: the small round icon buttons at the end of a row (Restore), like Edit and Delete */
+.icon-button { flex: none; width: 36px; height: 36px; padding: 0; border: 0; border-radius: 50%; display: grid; place-items: center;
+  background: var(--field); color: var(--tint); cursor: pointer; }
+.icon-button .ic { width: 18px; height: 18px; }
+.icon-button:active { transform: scale(0.9); }
+/* Import: "How it works" folded, opened when wanted */
+.how-it-works { margin-top: 16px; }
+.how-it-works summary { width: fit-content; margin: 0 auto; padding: 8px 12px; border-radius: var(--r-pill); font-size: 14px; font-weight: 500;
+  color: var(--secondary); cursor: pointer; list-style: none; }
+.how-it-works summary::-webkit-details-marker { display: none; }
+.how-it-works[open] summary { margin-bottom: 8px; color: var(--label); }
+/* lists first, then their form */
+.news-list + .card, .group + #adminForm, .empty-state + #newsForm { margin-top: 16px; }
+
+/* =====================================================================
+   ADMIN FORMS, like iPhone's Settings and Contacts: one white group, a row for each field,
+   a small grey name over a plain value (no grey boxes), thin lines between the rows
+   ===================================================================== */
+.edit-card { margin-top: 8px; }
+.edit-card + .form-list, .course-card + .segments + .form-list { margin-top: 12px; }
+form.card.form-list { padding: 0 16px; margin-top: 12px; }
+body.title-nav #app > h1 + form.form-list { margin-top: 8px; }
+.form-list > .card-head { padding: 14px 0 4px; margin: 0; }
+.form-list > .card-head h2 { font-size: 17px; }
+.form-list .field { margin: 0; padding: 10px 0 8px; border-bottom: 1px solid var(--separator); }
+.form-list .two { gap: 0; border-bottom: 1px solid var(--separator); }
+.form-list .two > .field { border-bottom: 0; }
+.form-list .two > .field + .field { padding-inline-start: 14px; border-inline-start: 1px solid var(--separator); }
+.form-list > .field:last-of-type, .form-list > .switch-row:last-child { border-bottom: 0; }
+.form-list .field > label:first-child { margin: 0 0 2px; font-size: 13px; font-weight: 500; letter-spacing: 0; text-transform: none; color: var(--secondary); }
+.form-list :is(input[type="text"], input[type="password"], input[type="url"], input[type="date"], input[type="time"], select, textarea) {
+  min-height: 34px; padding: 4px 0; border-radius: 0; background: none; font-size: 17px; box-shadow: none; }
+.form-list :is(input, select, textarea):focus { outline: none; }
+.form-list .field:focus-within > label:first-child { color: var(--tint); }
+.form-list textarea { min-height: 64px; }
+.form-list .two input[type="date"], .form-list .two input[type="time"] { width: 100%; }
+.form-list .field .two { border-bottom: 0; gap: 12px; }
+.form-list .hint { margin: 2px 0 0; font-size: 12px; }
+.form-list .switch-row { margin: 0; padding: 12px 0; border-radius: 0; background: none; border-bottom: 1px solid var(--separator); }
+.form-list .chips { margin-top: 6px; }
+.form-list > p.secondary.small { margin: 14px 0 0; }
+/* files: their rows, then "Add files" as the last row */
+.form-files .import-files { margin: 4px 0 0; background: none; box-shadow: none; }
+.form-files .import-files::before { display: none; }
+.form-files .import-files .row { padding-inline: 0; }
+.add-files { display: flex; align-items: center; gap: 10px; padding: 10px 0 4px; color: var(--tint); font-size: 16px; font-weight: 600; cursor: pointer; }
+.add-files .ic { width: 22px; height: 22px; padding: 4px; border-radius: 50%; background: color-mix(in srgb, var(--tint) 14%, transparent); flex: none; }
+.add-files small { margin-inline-start: auto; font-size: 12px; font-weight: 400; color: var(--secondary); }
+.file-hidden { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.file-chosen { margin: 2px 0 0; font-size: 13px; color: var(--secondary); overflow-wrap: anywhere; }
+.file-chosen:empty { display: none; }
+/* the cards that act on the whole thing (archive) and Delete: groups of their own under the form */
+.form-list + .label, .form-list ~ .new-version { margin-top: 20px; }
+#app > button.danger { margin-top: 20px; }
+.form-list .add-files { margin: 0; text-transform: none; letter-spacing: 0; font-size: 16px; font-weight: 600; color: var(--tint); }
+.form-files .import-files > li, .form-files .import-files .row { background: none; }
+.form-files .import-files > li + li::before { inset-inline-start: 44px; }
+.form-list input[type="time"], .form-list input[type="date"] { border: 0; background: none; box-shadow: none; padding-inline: 0; color: var(--label); }
+/* archive actions in their own groups: a title row, the name field, then the action as a blue row */
+.form-list.new-version { padding-bottom: 0; }
+.form-list.new-version .card-head h2 { font-size: 16px; }
+.form-list .button.secondary { width: 100% !important; justify-content: flex-start; gap: 10px; min-height: 48px; margin: 0; padding: 0;
+  border-radius: 0; background: none; border-top: 1px solid var(--separator); color: var(--tint); font-weight: 600; }
+.form-list.new-version > .card-head + .button.secondary { border-top: 0; }
+.form-list ~ .form-list { margin-top: 12px; }
+.form-list .add-files { display: flex; align-items: center; }
+.form-list .add-files span { flex: none; }
+.form-files .import-files, .form-files .import-files > li, .form-files .import-files .row { background: none !important; box-shadow: none !important; }
+
+/* =====================================================================
+   THE LAST DETAILS: the few places that still looked different
+   ===================================================================== */
+/* archived courses: grey tiles in the shared size */
+.widget.card-size.tinted.gray .foot { color: rgba(255, 255, 255, 0.85); }
+/* the import plan: each card a grouped form; its file list flat inside it */
+.import-card.form-list { padding-top: 12px; padding-bottom: 8px; }
+.import-card.form-list .import-head { padding-bottom: 8px; }
+.import-card.form-list .kind-toggle { margin-bottom: 4px; }
+.import-card.form-list .import-files { background: none !important; margin-top: 4px; }
+.import-card.form-list .import-files .row { padding-inline: 0; }
+/* an announcement's date of event, small and orange like Coming up */
+.event-mini { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; color: var(--sys-orange); }
+.event-mini .ic { width: 13px; height: 13px; }
+/* sign in: the grouped look; its own button stays inside (there is no bar before signing in) */
+.sign-form { padding-bottom: 16px !important; }
+.sign-form > .card-head { padding-top: 16px; }
+.sign-form > p.secondary.small { margin: 0 0 4px; }
+.sign-form .field { border-bottom: 0; }
+.sign-form .field input { border-bottom: 1px solid var(--separator); }
+.sign-form button.primary { margin-top: 12px; }
+#signIn > .card:first-of-type, #signIn > form:first-of-type { margin-top: 8px; }
+/* the cards with steps (notifications setup): their buttons as blue rows, like the forms */
+#app > .card:not(.form-list) .button.secondary { width: 100%; justify-content: center; }
+/* every list row with buttons at its end: the buttons line up, the name gets the room */
+.row .move-button, .row .icon-button, .row .edit-button, .row .delete { flex: none; }
+.import-card.form-list .two { display: block; border-bottom: 0; }
+.import-card.form-list .two > .field + .field { border-inline-start: 0; padding-inline-start: 0; border-top: 1px solid var(--separator); }
+@media (min-width: 34rem) { .import-card.form-list .two { display: grid; } .import-card.form-list .two > .field + .field { border-top: 0; border-inline-start: 1px solid var(--separator); padding-inline-start: 14px; } }

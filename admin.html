@@ -10,30 +10,37 @@
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="style.css?v=45">
-<script src="lang.js?v=45"></script>
-<script src="icons.js?v=45"></script>
-<script src="viewer.js?v=45"></script>
+<link rel="stylesheet" href="style.css?v=50">
+<script src="lang.js?v=50"></script>
+<script src="icons.js?v=50"></script>
+<script src="viewer.js?v=50"></script>
+<!-- local test: only on your own computer (localhost). It does nothing on the real site. -->
+<script>if (/^(localhost|127\.0\.0\.1|0\.0\.0\.0|\[::1\])$/.test(location.hostname)) document.write('<script src="test-owner.js?v=6"><\/script>');</script>
 </head>
 <body>
 <!-- The navigation bar, the same as on the student site -->
 <header class="nav">
   <div class="nav-inner">
-    <a id="navBack" class="nav-back" href="#home" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></a>
+    <span id="navMoves" class="nav-tools nav-moves" hidden>
+      <a id="navBack" class="nav-icon nav-back-icon" href="#home" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></a>
+      <a id="navHome" class="nav-icon" href="#home" aria-label="Home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 11L12 4l8.5 7"/><path d="M6 9.5V20h4.5v-5.5h3V20H18V9.5"/></svg></a>
+    </span>
     <a id="navBrand" class="nav-brand" href="#home"><img src="icon.svg" alt="">Opely Admin</a>
     <span id="navTitle" class="nav-title" aria-hidden="true"></span>
-    <a class="nav-pill nav-end" href="index.html">Student site</a>
+    <span class="nav-tools admin-tools">
+      <button class="nav-icon theme-toggle" type="button" data-theme-toggle aria-label="Light or dark"><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4L6 18M18 6l1.4-1.4"/></svg></button>
+      <a id="navStudent" class="nav-icon" href="index.html" aria-label="Student site"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 12s3.5-6.5 9.5-6.5S21.5 12 21.5 12s-3.5 6.5-9.5 6.5S2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></svg></a>
+    </span>
   </div>
 </header>
 <div class="wrap">
 <main>
   <!-- Step 1: sign in (only needed once per device). The repository is found automatically. -->
   <div id="signIn">
-    <h1>Admin</h1>
-    <p class="lead secondary">Manage your stage’s courses, lectures, sources, and announcements.</p>
+    <h1 class="visually-hidden">Admin</h1>
 
     <!-- Step 1: sign in with the token alone. The site knows who each token belongs to. -->
-    <form id="connectForm" class="card" novalidate>
+    <form id="connectForm" class="card form-list sign-form" novalidate>
       <div class="card-head" data-icon="key" data-color="blue"><h2>Sign in</h2></div>
       <p class="secondary small">Paste the access token the site owner gave you. It is saved in this browser only. Never share it.</p>
       <div class="field">
@@ -45,7 +52,7 @@
     </form>
 
     <!-- Shown once, when no admin is registered yet: the owner registers themselves -->
-    <form id="setupForm" class="card" novalidate hidden>
+    <form id="setupForm" class="card form-list sign-form" novalidate hidden>
       <div class="card-head" data-icon="person" data-color="indigo"><h2>Set up the owner</h2></div>
       <p class="secondary small">No admins are registered yet. Register yourself as the owner. You can then add the other admins.</p>
       <div class="field"><label for="ownerName">Full name</label><input id="ownerName" type="text" autocomplete="name" placeholder="First Father Grandfather">
@@ -70,6 +77,8 @@
   </div>
 </main>
 </div>
+<!-- The floating bar at the bottom: the page's own buttons, near the thumb (the same as the student site) -->
+<nav id="dock" class="dock" hidden></nav>
 <p id="toast" class="toast" role="status" hidden></p>
 
 <script>
@@ -85,7 +94,7 @@
    There is no server.
    ===================================================================== */
 translatePage(); // the words written in the HTML above
-document.querySelector(".nav-pill").textContent = t("Student site");
+
 // The bar turns to frosted glass once the page scrolls under it
 window.addEventListener("scroll", () => document.body.classList.toggle("scrolled", window.scrollY > 4), { passive: true });
 document.querySelectorAll(".card-head[data-icon]").forEach(head => head.insertAdjacentHTML("afterbegin", tile(head.dataset.icon, head.dataset.color, "big")));
@@ -529,6 +538,140 @@ document.addEventListener("click", event => { if (!event.target.closest(".picker
 
 // ---------- Small helpers for drawing pages ----------
 const app = $("app");
+// A hidden file input behind an "Add files" row: the chosen names show under it
+document.addEventListener("change", event => {
+  const input = event.target;
+  if (!input.classList || !input.classList.contains("file-hidden")) return;
+  const line = $(input.id + "Chosen");
+  if (line) line.textContent = [...input.files].map(file => file.name).join(", ");
+});
+$("navStudent").setAttribute("aria-label", t("Student site")); $("navStudent").title = t("Student site");
+$("navHome").setAttribute("aria-label", t("Home"));
+
+// ----- The floating bar at the bottom (the same as the student site): icons only; press and hold says what -----
+function dockItem(item) {
+  const words = item.label || [item.kicker, item.name].filter(Boolean).join(": ");
+  const shape = item.end ? icon(item.end, "flip") : (item.icon ? icon(item.icon, item.flip ? "flip" : "") : "");
+  const cls = "dock-button dock-round" + (item.main ? " dock-main" : "");
+  const label = ` aria-label="${esc(words)}" data-tip="${esc(words)}"`;
+  const hidden = item.hidden ? " hidden" : "";
+  if (item.id && !item.attrs) return `<button class="${cls}" type="button" id="${item.id}"${label}${hidden}>${shape}</button>`;
+  return `<a class="${cls}"${item.id ? ` id="${item.id}"` : ""} ${item.attrs || `href="${esc(item.href)}"`}${label}${hidden}>${shape}${item.badge ? `<span class="dock-badge">${item.badge}</span>` : ""}</a>`;
+}
+// A list page whose form waits behind + in the bar (announcements, admins): tapping + shows the form,
+// then the bar's blue button becomes the form's own (Post, Add)
+function openFormFromBar(formId, words, focusId) {
+  setDock([{ id: "openForm", main: true, icon: "plus", label: words }]);
+  $("openForm").addEventListener("click", () => {
+    const form = $(formId);
+    form.hidden = false;
+    setDock([]);
+    dockFromForm();
+    form.scrollIntoView({ behavior: "smooth", block: "start" });
+    setTimeout(() => { if ($(focusId)) $(focusId).focus({ preventScroll: true }); }, 350);
+  });
+}
+// A page with a form and no bar of its own: its main button (Save, Add, Upload, Post...) moves into the bar
+// as the blue button. When the form shows a different main button later (Import), the bar follows.
+let dockAuto = false;
+function dockFromForm() {
+  const dock = $("dock");
+  if (dock.children.length && !dockAuto) return; // the page has its own bar
+  const buttons = [...app.querySelectorAll("button.primary")].filter(b => !b.closest("[hidden]") && b.offsetParent !== null || b.classList.contains("in-dock"));
+  const button = buttons.filter(b => !b.closest("[hidden]")).pop();
+  app.querySelectorAll("button.primary.in-dock").forEach(b => { if (b !== button) b.classList.remove("in-dock"); });
+  if (!button) { if (dockAuto) { dockAuto = false; setDock([]); } return; }
+  const words = button.textContent.trim();
+  const now = $("dockSubmit");
+  if (now && now.dataset.tip === words) { now.classList.toggle("is-off", button.disabled); return; }
+  button.classList.add("in-dock");
+  setDock([{ id: "dockSubmit", main: true, icon: button.dataset.icon || "check", label: words }]);
+  dockAuto = true;
+  const bar = $("dockSubmit");
+  bar.classList.toggle("is-off", button.disabled);
+  bar.addEventListener("click", () => { if (!button.disabled) button.click(); });
+}
+new MutationObserver(() => { clearTimeout(dockFromForm.timer); dockFromForm.timer = setTimeout(dockFromForm, 30); })
+  .observe(app, { childList: true, subtree: true, attributes: true, attributeFilter: ["disabled", "hidden"] });
+let dockSet = false;
+function setDock(items) {
+  const dock = $("dock");
+  items = (items || []).filter(Boolean);
+  dockSet = true;
+  dock.classList.toggle("dock-still", !dock.hidden && items.length > 0);
+  dock.innerHTML = items.map(dockItem).join("");
+  dock.hidden = !items.length;
+  document.body.classList.toggle("has-dock", !dock.hidden);
+}
+function showTip(button, text, kept) {
+  const bubble = document.createElement("div");
+  bubble.className = "dock-tip"; bubble.textContent = text;
+  document.body.append(bubble);
+  const box = button.getBoundingClientRect(), width = bubble.offsetWidth;
+  bubble.style.left = Math.min(innerWidth - width - 12, Math.max(12, box.left + box.width / 2 - width / 2)) + "px";
+  bubble.style.top = (box.top - bubble.offsetHeight - 10) + "px";
+  if (!kept) setTimeout(() => bubble.remove(), 1600);
+  return bubble;
+}
+(() => {
+  const dock = $("dock");
+  let timer = null, held = false, bubble = null;
+  const hide = () => { if (bubble) { bubble.remove(); bubble = null; } };
+  dock.addEventListener("pointerdown", event => {
+    const button = event.target.closest(".dock-button");
+    if (!button) return;
+    held = false; clearTimeout(timer);
+    timer = setTimeout(() => { held = true; hide(); bubble = showTip(button, button.dataset.tip || "", true); if (navigator.vibrate) navigator.vibrate(8); }, 420);
+  });
+  const end = () => { clearTimeout(timer); setTimeout(hide, held ? 1400 : 0); };
+  ["pointerup", "pointercancel", "pointerleave"].forEach(kind => dock.addEventListener(kind, end));
+  dock.addEventListener("contextmenu", event => event.preventDefault());
+  dock.addEventListener("click", event => { if (held) { event.preventDefault(); event.stopImmediatePropagation(); held = false; } }, true);
+})();
+
+// ----- Colour (the same system as the student site): each stage and course keeps its own -----
+const PALETTE = ["blue", "indigo", "purple", "teal", "pink", "cyan", "mint", "brown"];
+const stageColor = (stage, i) => stage.color || PALETTE[i % PALETTE.length];
+function courseColor(stage, course) {
+  if (course.color) return course.color;
+  const sorted = stage.courses.slice().sort((a, b) => a.code.localeCompare(b.code, "en", { numeric: true }));
+  const place = Math.max(0, sorted.findIndex(c => c.id === course.id.replace(/-labs$/, "")));
+  return PALETTE[place % PALETTE.length];
+}
+// Numbers as a card: a big total, other counts, and a small bar chart (the same as the student site)
+function numbersCard(total, more, chartLabel, bars, tint) {
+  const most = Math.max(1, ...bars.map(bar => bar.n));
+  const columns = bars.map(bar => `<span class="stat-bar ${esc(bar.color || "")}" title="${esc(bar.words)}" aria-label="${esc(bar.words)}" role="img">
+      <span class="stat-value">${bar.n}</span>
+      <span class="stat-fill" style="height:${bar.n ? Math.max(6, Math.round(bar.n / most * 100)) : 0}%"></span>
+      <span class="stat-name">${esc(bar.name)}</span></span>`).join("");
+  return `<section class="stats-card${tint ? " tinted " + esc(tint) : ""}" aria-label="${t("Statistics")}">
+    <div class="stats-head">
+      <span class="kicker">${t("Statistics")}</span>
+      <span class="stats-total"><b>${total}</b> ${t(total === 1 ? "lecture" : "lectures")}</span>
+      <span class="stats-more">${more}</span>
+    </div>
+    <div class="stats-chart">
+      <span class="stats-chart-label">${t(chartLabel)}</span>
+      <div class="stat-bars">${columns}</div>
+    </div>
+  </section>`;
+}
+// The coloured card on top of an edit page: what it changes, in its course's colour
+function editCard(stage, course, kicker, name) {
+  return `<section class="stats-card course-card edit-card tinted ${esc(courseColor(stage, course))}">
+    <span class="course-info"><span class="kicker">${kicker}</span><span class="course-name">${esc(name)}</span></span>
+  </section>`;
+}
+// The signed-in admin, as a row with Sign out (at the end of the home page)
+function accountRows() {
+  return `<ul class="group icons settings-list account-list">
+    <li><span class="row"><span class="avatar ${settings.owner ? "indigo" : "blue"}" style="width:34px;height:34px;font-size:13px">${esc(initials(settings.name))}</span>
+      <span class="grow">${esc(settings.name)}</span>
+      <button class="plain" type="button" id="heroSignOut">${t("Sign out")}</button></span></li>
+  </ul>`;
+}
+document.querySelectorAll("[data-theme-toggle]").forEach(button => button.setAttribute("aria-label", t("Light or dark")));
 
 // Makes text safe to place inside HTML
 function esc(text) {
@@ -678,124 +821,65 @@ function showStage(stage, semester) {
   const news = (data.announcements || []).filter(item => reaches(item, stage.id));
   const segments = [1, 2].map(number => `
     <a class="segment" href="${base}-sem${number}" ${number === semester ? 'aria-current="page"' : ""}>${t("Semester {n}", { n: number })}</a>`).join("");
-
   const courses = stage.courses
     .filter(course => course.semester === semester)
     .sort((a, b) => a.code.localeCompare(b.code, "en", { numeric: true }));
-
-  const chevron = () => icon("chevron", "flip chev");
+  // A course card: the same size and colour as on the student site, with what it holds
   const courseWidgets = courses.map(course => `
-    <a class="widget course" href="${base}-${course.id}">
-      <span class="head"><span class="kicker" dir="ltr">${esc(course.code)}</span>${chevron()}</span>
+    <a class="widget course card-size tinted ${esc(courseColor(stage, course))}" href="${base}-${course.id}" ${course.instructor ? `title="${esc(course.instructor)}"` : ""}>
+      <span class="head"><span class="kicker" dir="ltr">${esc(course.code)}</span></span>
       <span class="title">${esc(course.title)}</span>
-      ${course.instructor ? `<span class="sub">${esc(course.instructor)}</span>` : ""}
-      <span class="foot meta-row"><span>${plural(course.lectures.length, "lecture")}</span>${courseHasLabs(course) ? `<span>${plural((course.labs || []).length, "lab")}</span>` : ""}<span>${plural((course.sources || []).length, "source")}</span></span>
+      <span class="foot">${plural(course.lectures.length, "lecture")}${courseHasLabs(course) ? SEP + plural((course.labs || []).length, "lab") : ""}</span>
     </a>`).join("");
-  const lectures = stage.courses.reduce((n, course) => n + course.lectures.length, 0);
-
   const ownerView = isOwner();
   app.innerHTML = `
     ${ownerView ? `<a class="back" href="#home">${esc(localName(dept))}</a>` : ""}
-    <h1>${esc(stageName(stage))}</h1>
-    <p class="lead secondary">${esc(localName(dept))}</p>
-    ${ownerView ? "" : `<div class="hero static who-hero">
-      <span class="avatar big ${settings.owner ? "indigo" : "blue"}">${esc(initials(settings.name))}</span>
-      <span class="hero-text">
-        <span class="kicker">${t("Connected as")}</span>
-        <span class="hero-title">${esc(settings.name)}</span>
-        <span class="sub">${esc(settings.username) + SEP}${plural(stage.courses.length, "course")}${SEP}${plural(lectures, "lecture")}</span>
-      </span>
-      <button class="glass-pill" type="button" id="heroSignOut">${t("Sign out")}</button>
-    </div>
-    `}
-    <div class="widgets">
-        <a class="widget wide" href="${ownerView ? base + "-news" : "#news"}">
-          <span class="head"><span class="kicker">${t("Announcements")}</span>${chevron()}</span>
-          <span class="title">${news.length ? esc(news[0].title) : t("No announcements yet")}</span>
-          <span class="meta-row">${news.length ? `<span>${plural(news.length, "announcement")}</span>` : ""}<span>${t("Post or remove")}</span></span>
-        </a>
-        ${settings.owner && !ownerView ? `<a class="widget wide" href="#admins">
-          <span class="head"><span class="kicker">${t("Admins")}</span>${chevron()}</span>
-          <span class="title">${plural(admins.length, "admin")}</span>
-          <span class="meta-row"><span>${t("Add or remove")}</span></span>
-        </a>` : ""}
-    </div>
+    <h1 class="${ownerView ? "" : "home-title"}">${esc(stageName(stage))}</h1>
     <nav class="segments" aria-label="${t("Semester")}">${segments}</nav>
-    <p class="count">${plural(courses.length, "course")}</p>
-    <div class="courses">
-      ${courseWidgets}
-      <a class="widget course add" href="${base}-sem${semester}-add">
-        <span class="plus">${icon("plus")}</span>
-        <span class="title">${t("Add course")}</span>
-      </a>
-    </div>
-    ${archivedCoursesRow(stage)}`;
+    ${courses.length ? `<div class="courses">${courseWidgets}</div>` : emptyState("book", "No courses yet.")}
+    ${archivedCoursesRow(stage)}
+    ${ownerView ? "" : `${settings.owner ? `<ul class="group icons settings-list"><li><a class="row" href="#admins">${tile("people", "indigo")}<span class="grow">${t("Admins")}</span><span class="end">${admins.length}</span></a></li></ul>` : ""}
+    ${accountRows()}`}`;
   if ($("heroSignOut")) $("heroSignOut").addEventListener("click", () => $("changeButton").click());
+  // The bar: add a course, and the stage's announcements
+  setDock([
+    { href: `${base}-sem${semester}-add`, main: true, icon: "plus", label: t("Add course") },
+    { href: ownerView ? base + "-news" : "#news", icon: "megaphone", label: t("Announcements") }]);
 }
 
 // ---------- The owner's home: every stage of a department, and a switch between departments ----------
 function showOwnerHome() {
   document.title = localName(dept) + " | " + t("Admin");
-  const chevron = () => icon("chevron", "flip chev");
-  const totals = data.stages.reduce(([c, l], stage) =>
-    [c + stage.courses.length, l + stage.courses.reduce((n, course) => n + course.lectures.length, 0)], [0, 0]);
   const switcher = departments.length > 1 ? `
     <nav class="segments${departments.length === 3 ? " three" : ""}" aria-label="${t("Department")}">
       ${departments.map(other => `<a class="segment" href="#dept-${esc(other.id)}" ${other.id === dept.id ? 'aria-current="page"' : ""}>${esc(other.short || localName(other))}</a>`).join("")}
     </nav>` : "";
-  const stageTiles = data.stages.map((stage, i) => {
-    const lectures = stage.courses.reduce((n, course) => n + course.lectures.length, 0);
-    const news = (data.announcements || []).filter(item => reaches(item, stage.id)).length;
-    return `<a class="widget stage" href="#${stage.id}">
-      <span class="head"><span class="kicker">${t("Stage")}</span>${chevron()}</span>
-      <span class="big">${i + 1}</span>
-      <span class="sub">${plural(stage.courses.length, "course")}<br>${plural(lectures, "lecture")}${news ? "<br>" + plural(news, "announcement") : ""}</span>
-    </a>`;
-  }).join("");
+  const courses = data.stages.reduce((n, stage) => n + stage.courses.length, 0);
+  const labs = data.stages.reduce((n, stage) => n + stage.courses.reduce((m, course) => m + (course.labs || []).length, 0), 0);
+  const bars = data.stages.map((stage, i) => {
+    const n = stage.courses.reduce((m, course) => m + course.lectures.length, 0);
+    return { name: String(i + 1), words: stageName(stage) + ": " + plural(n, "lecture"), n: n, color: stageColor(stage, i) };
+  });
+  // A stage card: its name, the same size and colour as on the student site
+  const stageTiles = data.stages.map((stage, i) => `<a class="widget stage slim card-size tinted ${esc(stageColor(stage, i))}" href="#${stage.id}">
+      <span class="head">${tile("layers", stageColor(stage, i))}${icon("chevron", "flip chev")}</span>
+      <span class="stage-name">${esc(stageName(stage))}</span>
+    </a>`).join("");
 
   app.innerHTML = `
-    <h1>${esc(localName(dept))}</h1>
-    <p class="lead secondary">${t("As the owner, you manage every stage of every department.")}</p>
-    <div class="hero static who-hero">
-      <span class="avatar big indigo">${esc(initials(settings.name))}</span>
-      <span class="hero-text">
-        <span class="kicker">${t("Connected as")}</span>
-        <span class="hero-title">${esc(settings.name)}</span>
-        <span class="sub">${esc(settings.username) + SEP}${plural(totals[0], "course")}${SEP}${plural(totals[1], "lecture")}</span>
-      </span>
-      <button class="glass-pill" type="button" id="heroSignOut">${t("Sign out")}</button>
-    </div>
-    
-    <div class="widgets">
-      <a class="widget wide" href="#news">
-        <span class="head"><span class="kicker">${t("Announcements")}</span>${chevron()}</span>
-        <span class="title">${(data.announcements || []).length ? esc(data.announcements[0].title) : t("No announcements yet")}</span>
-        <span class="meta-row">${(data.announcements || []).length ? `<span>${plural(data.announcements.length, "announcement")}</span>` : ""}<span>${t("Send to all stages or some")}</span></span>
-      </a>
-    </div>
-    <div class="widgets">
-      <a class="widget wide" href="#admins">
-        <span class="head"><span class="kicker">${t("Admins")}</span>${chevron()}</span>
-        <span class="title">${plural(admins.length, "admin")}</span>
-        <span class="meta-row"><span>${t("Add or remove")}</span></span>
-      </a>
-    </div>
-    <div class="widgets two-up">
-      <a class="widget" href="#notify">
-        <span class="head"><span class="kicker">${t("Notifications")}</span>${chevron()}</span>
-        <span class="title">${t("For students")}</span>
-        <span class="meta-row"><span>${t("Set up")}</span></span>
-      </a>
-      <a class="widget" href="#updates">
-        <span class="head"><span class="kicker">${t("Updates")}</span>${chevron()}</span>
-        <span class="title">${t("Update Opely")}</span>
-        <span class="meta-row"><span>${t("For every student")}</span></span>
-      </a>
-    </div>
+    <h1 class="home-title">${esc(localName(dept))}</h1>
     ${switcher}
-    <p class="count">${t("Stages")}</p>
-    <div class="widgets stages" style="margin-top:0">${stageTiles}</div>`;
+    ${numbersCard(bars.reduce((a, b) => a + b.n, 0), plural(courses, "course") + SEP + plural(data.stages.length, "stage") + (labs ? SEP + plural(labs, "lab") : ""), "Lectures by stage", bars, dept.color)}
+    <div class="widgets stages">${stageTiles}</div>
+    <ul class="group icons settings-list">
+      <li><a class="row" href="#admins">${tile("people", "indigo")}<span class="grow">${t("Admins")}</span><span class="end">${admins.length}</span></a></li>
+      <li><a class="row" href="#notify">${tile("bell", "red")}<span class="grow">${t("Notifications")}</span></a></li>
+      <li><a class="row" href="#updates">${tile("refresh", "blue")}<span class="grow">${t("Updates for students")}</span></a></li>
+    </ul>
+    ${accountRows()}`;
   $("heroSignOut").addEventListener("click", () => $("changeButton").click());
+  // The bar: the department's announcements
+  setDock([{ href: "#news", main: true, icon: "megaphone", label: t("Announcements") }]);
 }
 
 // ---------- Files next to the page that the owner keeps: version.json and notify.json ----------
@@ -821,7 +905,6 @@ async function showUpdates() {
   app.innerHTML = `
     <a class="back" href="#home">${t("Home")}</a>
     <h1>${t("Updates for students")}</h1>
-    <p class="lead secondary">${t("After you change Opely’s code, send the update. Every student’s Opely then offers to update, or updates by itself at once.")}</p>
     <div id="updateBody"><p class="secondary">${t("Loading…")}</p></div>`;
   let current;
   try { current = await readSiteFile("version.json"); } catch (error) { $("updateBody").innerHTML = `<p class="text-block error-text">${esc(explain(error))}</p>`; return; }
@@ -829,15 +912,15 @@ async function showUpdates() {
   $("updateBody").innerHTML = `
     <ul class="group icons"><li><span class="row">${tile("download", "blue")}<span class="grow">${t("Last update sent")}<br>
       <span class="secondary small">${now.update ? t("Update {n}", { n: now.update }) + (now.sent ? SEP + niceDate(now.sent.slice(0, 10)) : "") + (now.force ? SEP + t("Everyone at once") : "") : t("None yet")}</span></span></span></li></ul>
-    <form class="card" novalidate>
+    <form class="card form-list" novalidate>
       <div class="field"><label for="updateNote">${t("What changed (optional)")}</label><input id="updateNote" type="text" autocomplete="off" placeholder="${t("For example: a faster reader")}"></div>
       <label class="switch-row" for="updateForce">
-        <span class="grow">${t("Make everyone update now")}<br><span class="secondary small">${t("Opely updates by itself on every phone and computer, without asking. Use it for an important fix.")}</span></span>
+        <span class="grow">${t("Make everyone update now")}</span>
         <input id="updateForce" type="checkbox" role="switch"><span class="switch" aria-hidden="true"></span>
       </label>
-      <button class="primary" type="submit" id="sendUpdate">${icon("upload")}${t("Send the update")}</button>
+      <button class="primary" type="submit" id="sendUpdate" data-icon="upload">${icon("upload")}${t("Send the update")}</button>
     </form>
-    <p class="hint-below">${t("Send it after your change is on the site (a minute or two after saving it on GitHub).")}</p>`;
+    <p class="hint-below">${t("Send it a minute after your change is on GitHub.")}</p>`;
   onSubmit(async () => {
     const button = $("sendUpdate");
     if (!button.dataset.armed) { button.dataset.armed = "yes"; button.textContent = t("Tap again to send"); return; }
@@ -871,7 +954,6 @@ async function showNotifySetup() {
   app.innerHTML = `
     <a class="back" href="#home">${t("Home")}</a>
     <h1>${t("Notifications")}</h1>
-    <p class="lead secondary">${t("Students get a notification when a new lecture, lab or announcement is added to the stages they follow. It is set up once, for free, in about 15 minutes.")}</p>
     <div id="notifyBody"><p class="secondary">${t("Loading…")}</p></div>`;
   let current;
   try { current = await readSiteFile("notify.json"); } catch (error) { $("notifyBody").innerHTML = `<p class="text-block error-text">${esc(explain(error))}</p>`; return; }
@@ -924,7 +1006,7 @@ async function showNotifySetup() {
     <form class="card setup-step" novalidate><div class="card-head"><h2>${t("4. Turn them on")}</h2></div>
       <div class="field"><label for="workerAddress">${t("The worker’s address")}</label>
         <input id="workerAddress" type="url" dir="ltr" autocomplete="off" placeholder="https://opely-notify.name.workers.dev" value="${esc(setup ? setup.worker : "")}"></div>
-      <button class="primary" type="submit">${icon("check")}${t("Check and turn on")}</button>
+      <button class="primary" type="submit" data-icon="check">${icon("check")}${t("Check and turn on")}</button>
     </form>`;
 
   app.querySelectorAll("[data-copy]").forEach(button => button.addEventListener("click", async () => {
@@ -981,7 +1063,7 @@ async function showNotifySetup() {
 // The "This course has labs" switch, used when adding a course and in its details
 function labsSwitch(on) {
   return `<label class="switch-row" for="courseLabs">
-    <span class="grow">${t("This course has labs")}<br><span class="secondary small">${t("Adds a Labs part to the course, next to Lectures and Sources.")}</span></span>
+    <span class="grow">${t("This course has labs")}</span>
     <input id="courseLabs" type="checkbox" role="switch" ${on ? "checked" : ""}><span class="switch" aria-hidden="true"></span>
   </label>`;
 }
@@ -992,14 +1074,14 @@ function showAddCourse(stage, semester) {
   app.innerHTML = `
     <a class="back" href="#${stage.id}-sem${semester}">${esc(stageName(stage))}${SEP}${t("Semester {n}", { n: semester })}</a>
     <h1>${t("New course")}</h1>
-    <form class="card" novalidate>
+    <form class="card form-list" novalidate>
       <div class="two">
         <div class="field"><label for="courseCode">${t("Course code")}</label><input id="courseCode" type="text" placeholder="CS 101" autocomplete="off"></div>
         <div class="field"><label for="courseLecturer">${t("Lecturer")}</label><input id="courseLecturer" type="text" autocomplete="off"></div>
       </div>
       <div class="field"><label for="courseTitle">${t("Course title")}</label><input id="courseTitle" type="text" autocomplete="off"></div>
       ${labsSwitch(false)}
-      <button class="primary" type="submit">${icon("plus")}${t("Add course")}</button>
+      <button class="primary" type="submit" data-icon="plus">${icon("plus")}${t("Add course")}</button>
     </form>`;
 
   onSubmit(async () => {
@@ -1032,38 +1114,33 @@ function showCourse(stage, course, tab) {
       <li><span class="row has-link">
         <a class="row-link" ${viewAttrs(source, base + "-sources-" + (i + 1))}>
         ${tile(fileKind(source.url)[0], source.url ? fileKind(source.url)[1] : "gray")}
-        <span class="grow">${esc(source.label)}<br>
-          <span class="secondary small">${t(!source.url ? "Not added yet" : isWebLink(source.url) ? "Link" : "File")}</span></span></a>
+        <span class="grow">${esc(source.label)}${!source.url ? `<br><span class="secondary small">${t("Not added yet")}</span>` : ""}</span></a>
         <button class="delete" type="button" aria-label="${t("Delete")}" data-key="${i}">${icon("trash")}${t("Delete")}</button>
       </span></li>`).join("");
     body = `
-      <a class="button" href="${base}-sources-add">${icon("plus")}${t("Add source")}</a>
-      ${sources.length
-        ? `<p class="count">${plural(sources.length, "source")}</p><ul class="group icons">${rows}</ul>`
-        : emptyState("book", "No sources yet.")}`;
+      ${sources.length ? `<ul class="group icons">${rows}</ul>` : emptyState("book", "No sources yet.")}`;
   } else if (tab === "details") {
     body = `
-      <form class="card" novalidate>
+      <form class="card form-list" novalidate>
         <div class="two">
           <div class="field"><label for="courseCode">${t("Course code")}</label><input id="courseCode" type="text" autocomplete="off" value="${esc(course.code)}"></div>
           <div class="field"><label for="courseLecturer">${t("Lecturer")}</label><input id="courseLecturer" type="text" autocomplete="off" value="${esc(course.instructor)}"></div>
         </div>
         <div class="field"><label for="courseTitle">${t("Course title")}</label><input id="courseTitle" type="text" autocomplete="off" value="${esc(course.title)}"></div>
         ${labsSwitch(courseHasLabs(course))}
-        <button class="primary" type="submit">${icon("check")}${t("Save changes")}</button>
+        <button class="primary" type="submit" data-icon="check">${icon("check")}${t("Save changes")}</button>
       </form>
       <h2 class="label">${t("Archive")}</h2>
-      <form class="card new-version" novalidate id="versionForm">
+      <form class="card form-list new-version" novalidate id="versionForm">
         <div class="card-head"><h2>${t("Archive the lectures")}</h2></div>
-        <p class="secondary small">${t("For a new year or a new lecturer: the course’s lectures, labs and sources move to its archive, where students can still open them, and the course starts empty. The archive takes no space on the site.")}</p>
         <div class="field"><label for="versionName">${t("Name of the current version")}</label><input id="versionName" type="text" autocomplete="off" value="${esc(academicYear())}"></div>
         <button class="button secondary" type="submit" id="versionButton" style="width:100%">${icon("clock")}${t("Archive the current version")}</button>
       </form>
-      <div class="card new-version">
+      <div class="card form-list new-version">
         <div class="card-head"><h2>${t("Archive this course")}</h2></div>
-        <p class="secondary small">${t("When the course is no longer taught: the whole course leaves the stage and goes to the stage’s archived courses. Students can still open it, read only. You can bring it back at any time. It takes no space on the site.")}</p>
         <button class="button secondary" type="button" id="archiveCourseButton" style="width:100%">${icon("clock")}${t("Archive this course")}</button>
       </div>
+      <p class="hint-below">${t("Students can still open what is archived, and you can restore it.")}</p>
       <button class="danger" type="button" data-key="course">${icon("trash")}${t("Delete course")}</button>`;
   } else {
     const shown = tab === "labs" ? labView(course) : course; // lectures, or labs
@@ -1075,22 +1152,15 @@ function showCourse(stage, course, tab) {
           : `href="${listBase}-${lecture.id || i + 1}"`}>
         <span class="num">${i + 1}</span>
         <span class="grow">${esc(lecture.title)}<br>
-          <span class="secondary small">${niceDate(lecture.date)}${SEP}${plural((lecture.files || []).length, "file")}</span></span></a>
+          <span class="secondary small">${niceDate(lecture.date)}</span></span></a>
         <a class="edit-button" href="${listBase}-${lecture.id || i + 1}-edit" aria-label="${t("Edit")}" title="${t("Edit")}">${icon("pencil")}</a>
         ${shown.lectures.length > 1 ? dragHandle(lecture.title) : ""}
       </span></li>`).join("");
     const byHand = shown[shown.isLabs ? "labsOrdered" : "lecturesOrdered"];
     body = `
-      <div class="button-pair">
-        <a class="button" href="${listBase}-add">${icon("plus")}${W(shown, "Add lecture", "Add lab")}</a>
-        <a class="button secondary" href="${base}${shown.isLabs ? "-labs" : ""}-import">${icon("layers")}${t("Import")}</a>
-      </div>
       ${shown.lectures.length
-        ? `<p class="count">${plural(shown.lectures.length, shown.isLabs ? "lab" : "lecture")}</p>
-           <ol class="group icons" id="lectureList">${rows}</ol>
-           ${shown.lectures.length > 1 ? `<p class="hint-below order-line">${byHand
-             ? `${t("Order set by hand")}${SEP}<button id="sortByDate" class="link-button" type="button">${t("Sort by date")}</button>`
-             : t(shown.isLabs ? "In date order. Drag the three lines to move a lab." : "In date order. Drag the three lines to move a lecture.")}</p>` : ""}`
+        ? `<ol class="group icons course-tint ${esc(courseColor(stage, course))}" id="lectureList">${rows}</ol>
+           ${shown.lectures.length > 1 && byHand ? `<p class="hint-below order-line">${t("Order set by hand")}${SEP}<button id="sortByDate" class="link-button" type="button">${t("Sort by date")}</button></p>` : ""}`
         : emptyState(shown.isLabs ? "flask" : "doc", shown.isLabs ? "No labs yet." : "No lectures yet.")}
       ${archiveRow(course, base)}`;
   }
@@ -1098,13 +1168,15 @@ function showCourse(stage, course, tab) {
   const current = name => (tab === name ? 'aria-current="page"' : "");
   app.innerHTML = `
     <a class="back" href="#${stage.id}-sem${course.semester}">${esc(stageName(stage))}${SEP}${t("Semester {n}", { n: course.semester })}</a>
-    <div class="hero static course-hero">
-      <span class="hero-text">
+    <h1 data-short="${esc(course.code)}">${esc(course.title)}</h1>
+    <section class="stats-card course-card lecture-card tinted ${esc(courseColor(stage, course))}" aria-label="${esc(course.title)}">
+      <span class="course-info">
         <span class="kicker" dir="ltr">${esc(course.code)}</span>
-        <h1>${esc(course.title)}</h1>
-        ${course.instructor ? `<span class="sub">${esc(course.instructor)}</span>` : ""}
+        <span class="course-name">${esc(course.title)}</span>
+        ${course.instructor ? `<span class="course-by">${esc(course.instructor)}</span>` : ""}
       </span>
-    </div>
+      <span class="lecture-count"><b>${course.lectures.length}</b><small>${t("Lectures")}</small></span>
+    </section>
     <nav class="segments ${courseHasLabs(course) ? "four" : "three"}" aria-label="${t("Course")}">
       <a class="segment" href="${base}" ${current("lectures")}>${t("Lectures")}</a>
       ${courseHasLabs(course) ? `<a class="segment" href="${base}-labs" ${current("labs")}>${t("Labs")}</a>` : ""}
@@ -1112,6 +1184,14 @@ function showCourse(stage, course, tab) {
       <a class="segment" href="${base}-details" ${current("details")}>${t("Details")}</a>
     </nav>
     ${body}`;
+
+  // The bar: what this tab adds (a lecture or a lab and Import, or a source), and the course on the student site
+  const shownForBar = tab === "labs" ? labView(course) : course;
+  const studentLink = { attrs: `href="index.html#${dept.id}-${stage.id}-${course.id}" target="_blank" rel="noopener"`, icon: "eye", label: t("Open on the student site") };
+  setDock(tab === "sources" ? [{ href: `${base}-sources-add`, main: true, icon: "plus", label: t("Add source") }, studentLink]
+    : tab === "details" ? [] // its Save goes in the bar by itself (see dockFromForm)
+    : [{ href: `#${stage.id}-${shownForBar.id}-add`, main: true, icon: "plus", label: W(shownForBar, "Add lecture", "Add lab") },
+       { href: `${base}${shownForBar.isLabs ? "-labs" : ""}-import`, icon: "layers", label: t("Import") }, studentLink]);
 
   if (tab === "lectures" || tab === "labs") {
     const shown = tab === "labs" ? labView(course) : course;
@@ -1243,14 +1323,16 @@ function showAddLecture(stage, course) {
   app.innerHTML = `
     <a class="back" href="${back}">${esc(course.title)}</a>
     <h1>${W(course, "New lecture", "New lab")}</h1>
-    <form class="card" novalidate>
+    ${editCard(stage, course, `<bdi>${esc(course.code)}</bdi>` + SEP + W(course, "Lecture {n}", "Lab {n}").replace("{n}", course.lectures.length + 1), course.title)}
+    <form class="card form-list" novalidate>
       <div class="field"><label for="lectureTitle">${W(course, "Lecture title", "Lab title")}</label><input id="lectureTitle" type="text" autocomplete="off"></div>
       <div class="field"><label for="lectureDate">${t("Date")}</label><input id="lectureDate" type="date" value="${today()}"></div>
-      <div class="field"><label for="lectureFiles">${t("Files")}</label><input id="lectureFiles" type="file" multiple>
-        <p class="hint">${t("Up to 25 MB each. Word and PowerPoint files become PDFs by themselves a few minutes after uploading.")}</p></div>
+      <div class="field form-files"><label>${t("Files")}</label>
+        <label class="add-files" for="lectureFiles">${icon("plus")}<span>${t("Add files")}</span><small>${t("Up to 25 MB each.")}</small></label>
+        <input id="lectureFiles" type="file" multiple class="file-hidden"><p class="file-chosen" id="lectureFilesChosen"></p></div>
       <div class="field"><label for="lectureVideo">${t("Recording link (optional)")}</label><input id="lectureVideo" type="url" placeholder="https://youtube.com/…" autocomplete="off"></div>
       <div class="field"><label for="lectureSummary">${t("Summary (optional)")}</label><textarea id="lectureSummary"></textarea></div>
-      <button class="primary" type="submit">${icon("upload")}${t("Upload")}</button>
+      <button class="primary" type="submit" data-icon="upload">${icon("upload")}${t("Upload")}</button>
     </form>`;
 
   onSubmit(async () => {
@@ -1311,8 +1393,7 @@ function archiveRow(course, base) {
   if (!archive || (!archive.versions.length && !archive.removed.length)) return "";
   const parts = [archive.versions.length ? plural(archive.versions.length, "earlier version") : "",
     archive.removed.length ? plural(archive.removed.length, "removed item") : ""].filter(Boolean).join(SEP);
-  return `<ul class="group icons archive-row"><li><a class="row" href="${base}-archive">${tile("clock", "gray")}
-    <span class="grow">${t("Archive")}<br><span class="secondary small">${parts}</span></span></a></li></ul>`;
+  return `<a class="archive-link" href="${base}-archive">${icon("clock")}<span>${t("Archive")} · ${parts}</span>${icon("chevron", "flip")}</a>`;
 }
 // "2025–2026": the academic year, which starts in September
 function academicYear() {
@@ -1351,7 +1432,6 @@ function showArchiveAdmin(stage, course) {
   app.innerHTML = `
     <a class="back" href="${base}">${esc(course.title)}</a>
     <h1>${t("Archive")}</h1>
-    <p class="lead secondary">${t("Earlier versions and removed items. Students can open them too. They take no space on the site: GitHub keeps them in the site’s history.")}</p>
     <h2 class="label">${t("Earlier versions")}</h2>
     ${versions ? `<div class="widgets">${versions}</div>` : `<p class="text-block secondary">${t("No earlier versions. Start one from the course’s Details.")}</p>`}
     <h2 class="label">${t("Removed")}</h2>
@@ -1409,8 +1489,7 @@ function showArchiveAdmin(stage, course) {
 function archivedCoursesRow(stage) {
   const list = stage.archivedCourses || [];
   if (!list.length) return "";
-  return `<ul class="group icons archive-row"><li><a class="row" href="#${stage.id}-archived">${tile("clock", "gray")}
-    <span class="grow">${t("Archived courses")}<br><span class="secondary small">${plural(list.length, "course")}</span></span></a></li></ul>`;
+  return `<a class="archive-link" href="#${stage.id}-archived">${icon("clock")}<span>${t("Archived courses")} · ${list.length}</span>${icon("chevron", "flip")}</a>`;
 }
 // Every file of a course that is on the site (or was, before it was archived)
 const filesOfCourse = course => filesOfItems(course.lectures.concat(course.labs || [])).concat(course.sources || []);
@@ -1418,17 +1497,15 @@ const filesOfCourse = course => filesOfItems(course.lectures.concat(course.labs 
 function showArchivedCourses(stage) {
   document.title = t("Archived courses") + " | " + stageName(stage);
   const list = stage.archivedCourses || [];
-  const rows = list.map(course => `<li><span class="row">${tile("book", "gray")}
-      <span class="grow"><bdi dir="ltr">${esc(course.code)}</bdi>${SEP}${esc(course.title)}<br>
-        <span class="secondary small">${t("Archived {date}", { date: niceDate(course.archivedAt) })}${SEP}${plural(course.lectures.length, "lecture")}</span></span>
-      <a class="move-button" href="index.html#${dept.id}-${stage.id}-${course.id}" target="_blank" rel="noopener">${t("Open")}</a>
-      <button class="move-button" type="button" data-restore-course="${esc(course.id)}">${t("Restore")}</button>
+  const rows = list.map(course => `<li><span class="row has-link">
+      <a class="row-link" href="index.html#${dept.id}-${stage.id}-${course.id}" target="_blank" rel="noopener">${tile("book", "gray")}
+      <span class="grow">${esc(course.title)}<br><span class="secondary small"><bdi dir="ltr">${esc(course.code)}</bdi>${SEP}${niceDate(course.archivedAt)}</span></span></a>
+      <button class="icon-button" type="button" data-restore-course="${esc(course.id)}" aria-label="${t("Restore")}" title="${t("Restore")}">${icon("refresh")}</button>
       <button class="delete" type="button" aria-label="${t("Delete for good")}" data-key="${esc(course.id)}">${icon("trash")}${t("Delete for good")}</button>
     </span></li>`).join("");
   app.innerHTML = `
     <a class="back" href="#${stage.id}">${esc(stageName(stage))}</a>
     <h1>${t("Archived courses")}</h1>
-    <p class="lead secondary">${t("Courses that are no longer taught. Students can still open them, read only. They take no space on the site: GitHub keeps them in the site’s history.")}</p>
     ${rows ? `<ul class="group icons">${rows}</ul>` : emptyState("clock", "No archived courses.")}`;
 
   onDelete(async id => {
@@ -1628,19 +1705,20 @@ function showEditLecture(stage, course, index) {
   app.innerHTML = `
     <a class="back" href="${here}">${esc(lecture.title)}</a>
     <h1>${W(course, "Edit lecture", "Edit lab")}</h1>
-    <form class="card" novalidate>
+    ${editCard(stage, course, W(course, "Lecture {n}", "Lab {n}").replace("{n}", index + 1) + SEP + `<bdi>${esc(course.code)}</bdi>`, lecture.title)}
+    <form class="card form-list" novalidate>
       <div class="field"><label for="lectureTitle">${W(course, "Lecture title", "Lab title")}</label><input id="lectureTitle" type="text" autocomplete="off" value="${esc(lecture.title)}"></div>
       <div class="field"><label for="lectureDate">${t("Date")}</label><input id="lectureDate" type="date" value="${esc(lecture.date)}"></div>
       <div class="field"><label for="lectureVideo">${t("Recording link (optional)")}</label><input id="lectureVideo" type="url" placeholder="https://youtube.com/…" autocomplete="off" value="${esc(lecture.video || "")}"></div>
       <div class="field"><label for="lectureSummary">${t("Summary (optional)")}</label><textarea id="lectureSummary">${esc(lecture.summary || "")}</textarea></div>
-      <div class="field"><label>${t("Files")}</label>
-        ${(lecture.files || []).length ? `<ul class="group icons import-files" id="editFiles">${fileRows()}</ul>` : `<p class="hint">${t("No files yet.")}</p>`}</div>
-      <div class="field"><label for="lectureFiles">${t("Add files")}</label><input id="lectureFiles" type="file" multiple>
-        <p class="hint">${t("Up to 25 MB each. Word and PowerPoint files become PDFs by themselves a few minutes after uploading.")}</p></div>
-      <button class="primary" type="submit">${icon("check")}${t("Save changes")}</button>
+      <div class="field form-files"><label>${t("Files")}</label>
+        ${(lecture.files || []).length ? `<ul class="group icons import-files" id="editFiles">${fileRows()}</ul>` : ""}
+        <label class="add-files" for="lectureFiles">${icon("plus")}<span>${t("Add files")}</span><small>${t("Up to 25 MB each.")}</small></label>
+        <input id="lectureFiles" type="file" multiple class="file-hidden"><p class="file-chosen" id="lectureFilesChosen"></p></div>
+      <button class="primary" type="submit" data-icon="check">${icon("check")}${t("Save changes")}</button>
     </form>
     <button class="danger" type="button" id="archiveLecture">${icon("trash")}${W(course, "Delete lecture", "Delete lab")}</button>
-    <p class="hint-below">${t("Deleted lectures and labs go to the course’s archive, where you can restore them.")}</p>`;
+`;
   $("archiveLecture").addEventListener("click", () => confirmThen($("archiveLecture"), async () => {
     if (await archiveLecture(stage, course, lecture)) go(base);
   }));
@@ -1709,12 +1787,14 @@ function showAddSource(stage, course) {
   app.innerHTML = `
     <a class="back" href="${back}">${esc(course.title)}</a>
     <h1>${t("New source")}</h1>
-    <form class="card" novalidate>
+    ${editCard(stage, course, `<bdi>${esc(course.code)}</bdi>` + SEP + t("Sources"), course.title)}
+    <form class="card form-list" novalidate>
       <div class="field"><label for="sourceLabel">${t("Source name")}</label><input id="sourceLabel" type="text" placeholder="${t("Course textbook")}" autocomplete="off"></div>
-      <div class="field"><label for="sourceFile">${t("File")}</label><input id="sourceFile" type="file">
-        <p class="hint">${t("Up to 25 MB. Or use a link instead.")}</p></div>
+      <div class="field form-files"><label>${t("File")}</label>
+        <label class="add-files" for="sourceFile">${icon("plus")}<span>${t("Choose a file")}</span><small>${t("Up to 25 MB, or a link below.")}</small></label>
+        <input id="sourceFile" type="file" class="file-hidden"><p class="file-chosen" id="sourceFileChosen"></p></div>
       <div class="field"><label for="sourceLink">${t("Link")}</label><input id="sourceLink" type="url" placeholder="https://…" autocomplete="off"></div>
-      <button class="primary" type="submit">${icon("upload")}${t("Upload")}</button>
+      <button class="primary" type="submit" data-icon="upload">${icon("upload")}${t("Upload")}</button>
     </form>`;
 
   onSubmit(async () => {
@@ -1781,27 +1861,32 @@ function showLectureView(stage, course, index) {
   const before = course.lectures[index - 1];
   const after = course.lectures[index + 1];
   const dept_ = dept;
+  // The same as the student site: one card with everything about it, then one list (the recording first)
+  const recording = lecture.video ? (() => {
+    let host = ""; try { host = new URL(lecture.video).hostname.replace(/^www\.|^m\./, ""); } catch (error) { host = ""; }
+    const site = /youtu/.test(host) ? "YouTube" : /drive\.google/.test(host) ? "Google Drive" : /vimeo/.test(host) ? "Vimeo" : host;
+    return `<li><a class="row" href="${esc(lecture.video)}" target="_blank" rel="noopener">${tile("play", "pink")}<span class="grow">${t("Recording")}</span><span class="end video-site">${esc(site)}${icon("external")}</span></a></li>`;
+  })() : "";
   app.innerHTML = `
     <a class="back" href="${base}">${esc(course.title)}</a>
-    <div class="course-head">
-      <span class="pill">${W(course, "Lecture {n}", "Lab {n}").replace("{n}", number)}${SEP}<bdi>${esc(course.code)}</bdi></span>
-      <h1>${esc(lecture.title)}</h1>
-      <p class="meta-row"><span>${niceDate(lecture.date)}</span></p>
-    </div>
-    <h2 class="label">${t("Recording")}</h2>
-    <ul class="group icons"><li>${lecture.video
-      ? `<a class="row" href="${esc(lecture.video)}" target="_blank" rel="noopener">${tile("play", "pink")}<span class="grow">${t("Watch recording")}</span></a>`
-      : `<span class="row secondary">${tile("play", "gray")}<span class="grow">${t("No recording yet")}</span></span>`}</li></ul>
-    ${lecture.summary ? `<h2 class="label">${t("Summary")}</h2><p class="text-block">${esc(lecture.summary)}</p>` : ""}
-    <h2 class="label">${t("Files")}</h2>
-    ${files ? `<ul class="group icons" id="viewFiles">${files}</ul>` : `<p class="text-block secondary">${t("No files yet.")}</p>`}
-    ${many ? `<p class="hint-below" id="viewFilesHint" role="status">${t("Drag the three lines to change the order. It is saved at once.")}</p>` : ""}
-    <a class="button secondary edit-wide" href="${here}-edit">${icon("pencil")}${W(course, "Edit lecture", "Edit lab")}</a>
-    <ul class="group icons" style="margin-top:12px"><li><a class="row" href="index.html#${dept_.id}-${stage.id}-${course.id}-${lecture.id || number}" target="_blank" rel="noopener">${tile("eye", "teal")}<span class="grow">${t("Open on the student site")}</span></a></li></ul>
-    <nav class="pager" aria-label="${t("Lectures")}">
-      ${before ? `<a href="${base}-${before.id || number - 1}">${icon("back", "flip")}${t("Previous")}</a>` : "<span></span>"}
-      ${after ? `<a class="next" href="${base}-${after.id || number + 1}">${t("Next")}${icon("chevron", "flip")}</a>` : "<span></span>"}
-    </nav>`;
+    <h1 data-short="${esc(W(course, "Lecture {n}", "Lab {n}").replace("{n}", number))}">${esc(lecture.title)}</h1>
+    <section class="stats-card course-card lecture-card tinted ${esc(courseColor(stage, course))}" aria-label="${esc(lecture.title)}">
+      <span class="course-info">
+        <span class="kicker">${W(course, "Lecture {n}", "Lab {n}").replace("{n}", number)}${SEP}<bdi>${esc(course.code)}</bdi></span>
+        <span class="course-name">${esc(lecture.title)}</span>
+        <span class="course-by">${niceDate(lecture.date)}</span>
+        ${lecture.summary ? `<span class="lecture-summary">${esc(lecture.summary)}</span>` : ""}
+      </span>
+      <span class="lecture-count"><b>${(lecture.files || []).length}</b><small>${t("Files")}</small></span>
+    </section>
+    ${recording ? `<ul class="group icons lecture-list">${recording}</ul>` : ""}
+    ${files ? `<ul class="group icons lecture-list" id="viewFiles">${files}</ul>` : `<p class="text-block secondary">${t("No files yet.")}</p>`}
+    ${many ? `<p class="hint-below" id="viewFilesHint" role="status"></p>` : ""}`;
+  // The bar: next, edit, and the lecture on the student site
+  setDock([
+    after ? { href: `${base}-${after.id || number + 1}`, main: true, end: "skip", label: W(course, "Next lecture", "Next lab") + ": " + after.title } : null,
+    { href: `${here}-edit`, main: !after, icon: "pencil", label: W(course, "Edit lecture", "Edit lab") },
+    { attrs: `href="index.html#${dept_.id}-${stage.id}-${course.id}-${lecture.id || number}" target="_blank" rel="noopener"`, icon: "eye", label: t("Open on the student site") }]);
 
   // Dropping a file in its new place saves the new order straight away
   if (!many) return;
@@ -1865,10 +1950,10 @@ async function showFileView(file, backAddress, backLabel) {
     <a class="back" href="${backAddress}">${esc(backLabel)}</a>
     <h1>${esc(file.label)}</h1>
     <p id="fileStatus" class="secondary" role="status">${t("Downloading…")}</p>
-    <p class="file-actions"><a id="fileDownload" class="button" hidden>${icon("download")}${t("Download")}</a>
-      <button id="fileCopy" class="button secondary" type="button" hidden>${t("Copy")}</button></p>
     <div id="pages" class="pages"></div>
     <div id="shown" class="shown"></div>`;
+  setDock([{ id: "fileDownload", attrs: `href="#"`, icon: "download", label: t("Download"), hidden: true },
+    { id: "fileCopy", icon: "copy", label: t("Copy"), hidden: true }]);
   const status = $("fileStatus");
   const type = fileType(file.url) || { kind: "pdf", name: "PDF" };
   try {
@@ -1884,12 +1969,11 @@ async function showFileView(file, backAddress, backLabel) {
     if (type.kind !== "pdf") { // text, code, notebooks and pictures, shown by viewer.js
       const shown = await showInPage($("shown"), blob, type, file.label);
       if (view !== viewing) return;
-      status.textContent = t(type.name) + (shown.lines ? SEP + plural(shown.lines, "line") : "");
+      status.hidden = true;
       if (shown.text !== null) {
         $("fileCopy").hidden = false;
         $("fileCopy").addEventListener("click", async () => {
-          $("fileCopy").textContent = t(await copyText(shown.text) ? "Copied" : "Can’t copy here");
-          setTimeout(() => { if ($("fileCopy")) $("fileCopy").textContent = t("Copy"); }, 2000);
+          showTip($("fileCopy"), t(await copyText(shown.text) ? "Copied" : "Can’t copy here"));
         });
       }
       return;
@@ -1897,7 +1981,7 @@ async function showFileView(file, backAddress, backLabel) {
     const library = await loadPdfLibrary();
     const pdf = await library.getDocument({ data: await blob.arrayBuffer() }).promise;
     if (view !== viewing) return;
-    status.textContent = plural(pdf.numPages, "page");
+    status.hidden = true;
     const holder = $("pages");
     const size = (await pdf.getPage(1)).getViewport({ scale: 1 });
     pageWatcher = new IntersectionObserver(entries => entries.forEach(async entry => {
@@ -1913,6 +1997,7 @@ async function showFileView(file, backAddress, backLabel) {
       canvas.setAttribute("aria-label", t("Page {n}", { n: entry.target.dataset.page }));
       entry.target.append(canvas);
       await page.render({ canvasContext: canvas.getContext("2d"), viewport: viewport }).promise;
+      entry.target.classList.add("drawn");
     }), { rootMargin: "800px 0px" });
     for (let number = 1; number <= pdf.numPages; number += 1) {
       const box = document.createElement("div");
@@ -1924,6 +2009,7 @@ async function showFileView(file, backAddress, backLabel) {
     }
   } catch (error) {
     if (view !== viewing) return;
+    status.hidden = false;
     status.textContent = viewedFileUrl
       ? t("Can’t show this file here. You can still download it.")
       : t("Can’t get this file. Check your connection, then reload.");
@@ -2071,19 +2157,18 @@ function showImport(stage, course, startKind) {
   app.innerHTML = `
     <a class="back" href="${back}">${esc(course.title)}</a>
     <h1>${t("Import")}</h1>
-    <p class="lead secondary">${t("Add many lectures at once. Opely sorts your files into lectures, and you check everything before it’s uploaded.")}</p>
     <form class="card drop-zone" novalidate>
       <div class="field"><label for="importFiles">${t("Files or zip files")}</label><input id="importFiles" type="file" multiple>
-        <p class="hint">${t("Zip files are opened for you, even zips inside zips.")}</p></div>
-      <button class="primary" type="submit">${icon("layers")}${t("Sort into lectures")}</button>
+</div>
+      <button class="primary" type="submit" data-icon="layers">${icon("layers")}${t("Sort into lectures")}</button>
     </form>
-    <h2 class="label">${t("How it works")}</h2>
+    <details class="how-it-works"><summary>${t("How it works")}</summary>
     <ul class="group">
       <li><span class="row"><span class="grow">${t("Files in the same folder become one lecture, named after the folder.")}</span></span></li>
       <li><span class="row"><span class="grow">${t("Files outside any folder each become their own lecture, named after the file.")}</span></span></li>
       <li><span class="row"><span class="grow">${t("Before uploading, you can Split a lecture into one per file, Move files, rename lectures, or turn a lecture into a source.")}</span></span></li>
       <li><span class="row"><span class="grow">${t("Word and PowerPoint files become PDFs by themselves a few minutes after uploading, so students can read them inside Opely.")}</span></span></li>
-    </ul>`;
+    </ul></details>`;
 
   // On a computer, files can also be dropped on the card
   let dropped = null;
@@ -2141,7 +2226,7 @@ function renderReview(stage, course) {
     `<button type="button" data-kind="${group.id}" data-value="${value}" aria-pressed="${group.kind === value}">${t(words)}</button>`;
 
   const cards = plan.groups.map(group => `
-    <div class="card import-card is-${group.kind}">
+    <div class="card form-list import-card is-${group.kind}">
       <div class="import-head">
         <span class="kicker">${isItem(group) ? numberOf(group) : t("Course source")}</span>
         ${isItem(group) && plan.files.filter(file => file.place === group.id).length > 1
@@ -2169,12 +2254,9 @@ function renderReview(stage, course) {
       labGroups.length ? plural(labGroups.length, "new lab") : "",
       sourceCount ? plural(sourceCount, "source") : ""
     ].filter(Boolean).join(SEP) || t("Nothing to upload yet.")}</p>
-    <p class="hint-below">${t(labs
-      ? "Choose Lecture, Lab or Source on each card. Split makes one card per file, and Move puts a file in another card."
-      : "Choose Lecture or Source on each card. Split makes one card per file, and Move puts a file in another card.")}</p>
     ${cards}
     ${skipped ? `<h2 class="label">${t("Left out")}</h2><ul class="group icons">${skipped}</ul>` : ""}
-    <form novalidate><button class="primary" type="submit" ${fileCount ? "" : "disabled"}>${icon("upload")}${t("Upload {n} files", { n: fileCount })}</button></form>`;
+    <form novalidate><button class="primary" type="submit" ${fileCount ? "" : "disabled"} data-icon="upload">${icon("upload")}${t("Upload {n} files", { n: fileCount })}</button></form>`;
   const firstTime = !plan.shown;
   plan.shown = true;
   afterDraw(firstTime ? "push" : "", firstTime ? 0 : null); // the back link moves into the bar
@@ -2325,10 +2407,10 @@ function timeFields(item) {
   return `
       <div class="field"><label for="newsEventDay">${t("Exam or event (optional)")}</label>
         <div class="two"><input id="newsEventDay" type="date" value="${esc(eventDay || "")}" aria-label="${t("Date")}"><input id="newsEventTime" type="time" value="${esc(eventTime || "")}" aria-label="${t("Time")}"></div>
-        <p class="hint">${t("Students see a countdown to it, like “Midterm in 5 days”.")}</p></div>
+</div>
       <div class="field"><label for="newsUntilDay">${t("Remove it after (optional)")}</label>
         <div class="two"><input id="newsUntilDay" type="date" value="${esc(untilDay || "")}" aria-label="${t("Date")}"><input id="newsUntilTime" type="time" value="${esc(untilTime || "")}" aria-label="${t("Time")}"></div>
-        <p class="hint">${t("After this time, students no longer see it, and it is deleted the next night. Without a time, it lasts the whole day.")}</p></div>`;
+</div>`;
 }
 // Reads the two times from the form into an announcement
 function readTimes(item) {
@@ -2363,7 +2445,7 @@ function showNews(stage) {
   const rows = news.map((item, i) => `
     <li><span class="row">
       <span class="grow">${esc(item.title)}<br>
-        <span class="secondary small">${niceDate(item.date)}${SEP}${esc(audienceName(item))}${item.event ? SEP + t("Event: {when}", { when: whenText(item.event) }) : ""}${item.until ? SEP + (hasEnded(item) ? t("Ended") : t("Until {date}", { date: whenText(item.until) })) : ""}</span></span>
+        <span class="secondary small">${niceDate(item.date)}${SEP}${esc(audienceName(item))}${item.until && hasEnded(item) ? SEP + t("Ended") : ""}</span>${item.event ? `<br><span class="event-mini">${icon("calendar")}${whenText(item.event)}</span>` : ""}</span>
       ${removable(item) ? `<a class="edit-button" href="#newsedit-${esc(item.id || "")}" aria-label="${t("Edit")}">${icon("pencil")}</a>` : ""}
       ${removable(item) ? `<button class="delete" type="button" aria-label="${t("Delete")}" data-key="${i}">${icon("trash")}${t("Delete")}</button>` : `<span class="end small">${t("From the owner")}</span>`}
     </span></li>`).join("");
@@ -2386,7 +2468,6 @@ function showNews(stage) {
         <button type="button" class="chip-toggle" data-stage="all" aria-pressed="${chosen.size === 0}">${t("All stages")}</button>
         ${data.stages.map(other => `<button type="button" class="chip-toggle" data-stage="${esc(other.id)}" aria-pressed="${chosen.has(other.id)}">${esc(stageName(other))}</button>`).join("")}
       </div>
-      <p class="hint">${t(departmentChoice ? "The stages you choose receive it in every department you choose." : "Choose all stages, or one or more stages.")}</p>
     </div>` : "";
 
   const back = owner ? (fromStage ? "#" + own.id : "#home") : "#home";
@@ -2394,15 +2475,16 @@ function showNews(stage) {
     <a class="back" href="${back}">${esc(owner && !fromStage ? localName(dept) : stageName(own))}</a>
     <h1>${t("Announcements")}</h1>
     <p class="lead secondary">${owner && !fromStage ? esc(localName(dept)) : esc(t("Students of {stage} see these.", { stage: stageName(own) }))}</p>
-    <form class="card" novalidate>
+    ${news.length ? `<ul class="group news-list">${rows}</ul>` : emptyState("megaphone", "No announcements yet.")}
+    <form class="card" novalidate id="newsForm" hidden>
+      <div class="card-head"><h2>${t("New announcement")}</h2></div>
       ${recipients}
       <div class="field"><label for="newsTitle">${t("Title")}</label><input id="newsTitle" type="text" placeholder="${t("Midterm exam dates")}" autocomplete="off"></div>
       <div class="field"><label for="newsText">${t("Message")}</label><textarea id="newsText"></textarea></div>
       ${timeFields(null)}
-      <button class="primary" type="submit">${icon("megaphone")}${t("Post announcement")}</button>
-    </form>
-    <h2>${t("Posted")}</h2>
-    ${news.length ? `<ul class="group">${rows}</ul>` : emptyState("megaphone", "No announcements yet.")}`;
+      <button class="primary" type="submit" data-icon="megaphone">${icon("megaphone")}${t("Post announcement")}</button>
+    </form>`;
+  openFormFromBar("newsForm", t("New announcement"), "newsTitle");
 
   // A group of pills: tapping one adds or removes it; the "All" pill clears the others;
   // choosing every one is the same as All, and nothing chosen means All
@@ -2502,11 +2584,11 @@ function showNewsEdit(id) {
     <a class="back" href="${newsBack}">${t("Announcements")}</a>
     <h1>${t("Edit announcement")}</h1>
     <p class="lead secondary">${esc(t("Sent to: {who}", { who: audienceName(item) }))}${SEP}${niceDate(item.date)}</p>
-    <form class="card" novalidate>
+    <form class="card form-list" novalidate>
       <div class="field"><label for="newsTitle">${t("Title")}</label><input id="newsTitle" type="text" autocomplete="off" value="${esc(item.title)}"></div>
       <div class="field"><label for="newsText">${t("Message")}</label><textarea id="newsText">${esc(item.text || "")}</textarea></div>
       ${timeFields(item)}
-      <button class="primary" type="submit">${icon("check")}${t("Save changes")}</button>
+      <button class="primary" type="submit" data-icon="check">${icon("check")}${t("Save changes")}</button>
     </form>`;
   onSubmit(async () => {
     const title = typed("newsTitle");
@@ -2537,8 +2619,10 @@ function showAdmins() {
   app.innerHTML = `
     <a class="back" href="#home">${esc(isOwner() ? localName(dept) : stageName(ownStage()))}</a>
     <h1>${t("Admins")}</h1>
-    <p class="lead secondary">${t("Make a token on GitHub for each admin, register it here, then send it to them privately.")}</p>
-    <form class="card" novalidate>
+    <ul class="group">${rows}</ul>
+    <form class="card" novalidate id="adminForm" hidden>
+      <div class="card-head"><h2>${t("Add admin")}</h2></div>
+      <p class="secondary small">${t("Make a token on GitHub for each admin, register it here, then send it to them privately.")}</p>
       <div class="field"><label for="newName">${t("Full name")}</label><input id="newName" type="text" autocomplete="off" placeholder="First Father Grandfather">
         <p class="hint">${t("Three-part name, in English.")}</p></div>
       <div class="field"><label for="newUsername">${t("Username")}</label><input id="newUsername" type="text" autocomplete="off" autocapitalize="none" spellcheck="false"></div>
@@ -2546,10 +2630,9 @@ function showAdmins() {
       <div class="field"><label for="newStage">${t("Stage")}</label><select id="newStage"></select></div>
       <div class="field"><label for="newToken">${t("Their access token")}</label><input id="newToken" type="password" autocomplete="off">
         <p class="hint">${t("Only its fingerprint is saved, never the token itself.")}</p></div>
-      <button class="primary" type="submit">${icon("plus")}${t("Add admin")}</button>
-    </form>
-    <h2>${t("Registered")}</h2>
-    <ul class="group">${rows}</ul>`;
+      <button class="primary" type="submit" data-icon="plus">${icon("plus")}${t("Add admin")}</button>
+    </form>`;
+  openFormFromBar("adminForm", t("Add admin"), "newName");
   linkPickers($("newDepartment"), $("newStage"));
 
   onSubmit(async () => {
@@ -2638,10 +2721,50 @@ function route(keepScroll) {
   if (!keepScroll && previous !== null && previous !== name) {
     if (depthOf(name) > depthOf(previous)) motion = "push";
     else if (depthOf(name) < depthOf(previous)) motion = "pop";
+    else motion = "fade";
   }
-  drawRoute(name);
-  afterDraw(motion, keepScroll ? null : motion === "pop" ? (scrollPlaces[name] || 0) : 0);
+  const scrollTo = keepScroll ? null : motion === "pop" ? (scrollPlaces[name] || 0) : 0;
+  const draw = withClass => { document.querySelectorAll(".dock-tip").forEach(b => b.remove()); dockSet = false; dockAuto = false; drawRoute(name); if (!dockSet) setDock([]); dockFromForm(); afterDraw(withClass ? motion : "", scrollTo); };
+  const swiped = skipMotion;
+  skipMotion = false;
+  const quiet = !motion || swiped || matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (!quiet && document.startViewTransition) {
+    document.documentElement.dataset.motion = motion;
+    document.startViewTransition(() => draw(false)).finished.finally(() => { delete document.documentElement.dataset.motion; });
+  } else draw(!swiped);
 }
+let skipMotion = false;
+let dockBack = "#home";
+// Swipe from the edge to go back, when opened from the Home Screen (the same as the student site)
+(() => {
+  const standalone = matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+  if (!standalone && !window.OPELY_SWIPE) return;
+  const rtl = () => document.documentElement.dir === "rtl";
+  let startX = null, startY = 0, moved = 0, sliding = false;
+  addEventListener("touchstart", event => {
+    startX = null;
+    if (event.touches.length !== 1 || $("navMoves").hidden) return;
+    const x = event.touches[0].clientX;
+    if ((rtl() ? innerWidth - x : x) > 24) return;
+    startX = x; startY = event.touches[0].clientY; moved = 0; sliding = false;
+  }, { passive: true });
+  addEventListener("touchmove", event => {
+    if (startX === null) return;
+    const touch = event.touches[0];
+    const along = (touch.clientX - startX) * (rtl() ? -1 : 1);
+    const across = Math.abs(touch.clientY - startY);
+    if (!sliding) { if (across > 12 && across > along) { startX = null; return; } if (along > 10) sliding = true; }
+    if (sliding) { moved = Math.max(0, along); app.style.transition = "none"; app.style.transform = `translateX(${(rtl() ? -1 : 1) * moved}px)`; }
+  }, { passive: true });
+  addEventListener("touchend", () => {
+    if (startX === null) return;
+    startX = null;
+    const go = sliding && moved > Math.min(100, innerWidth * 0.28);
+    app.style.transition = go ? "none" : "transform 0.22s"; app.style.transform = "";
+    setTimeout(() => { app.style.transition = ""; }, 240);
+    if (go) { skipMotion = true; location.hash = dockBack; }
+  });
+})();
 
 // After a page is drawn: its back link moves into the bar, and its title appears small when scrolled away
 let titleWatcher = null;
@@ -2651,14 +2774,23 @@ app.addEventListener("animationend", event => { if (event.target === app) app.cl
 function afterDraw(motion, scrollTo) {
   const back = $("navBack");
   const link = app.querySelector(":scope > .back");
-  back.hidden = !link;
-  $("navBrand").hidden = !!link;
-  if (link) {
-    back.href = link.getAttribute("href");
-    back.setAttribute("aria-label", t("Back") + ": " + link.textContent);
-    link.remove();
-  }
-  watchTitle(app.querySelector("h1"));
+  const home = !shownName || shownName === "home";
+  // Back and Home in the top bar on every page but home; the page's name in the middle
+  $("navMoves").hidden = home;
+  $("navBrand").hidden = !home;
+  dockBack = link ? link.getAttribute("href") : "#home";
+  back.href = dockBack;
+  back.setAttribute("aria-label", t("Back") + (link ? ": " + link.textContent : ""));
+  if (link) link.remove();
+  const plain = app.querySelector(":scope > h1"); // home too: its name sits next to "Opely Admin"
+  if (plain) plain.classList.add("visually-hidden");
+  document.body.classList.toggle("title-nav", !!plain);
+  if (plain) {
+    $("navTitle").textContent = home ? "" : plain.textContent; // home: "Opely Admin" alone (the switch shows the department)
+    if (plain.dataset.short && $("navTitle").scrollWidth > $("navTitle").clientWidth) $("navTitle").textContent = plain.dataset.short;
+    if (titleWatcher) titleWatcher.disconnect();
+    document.body.classList.remove("scrolled-title");
+  } else watchTitle(app.querySelector("h1"));
   if (scrollTo !== null) window.scrollTo(0, scrollTo);
   if (motion) {
     app.classList.remove("push", "pop");
@@ -2754,8 +2886,10 @@ function showConnected() {
 }
 
 function showSignIn() {
-  $("navBack").hidden = true;
+  $("navMoves").hidden = true;
   $("navBrand").hidden = false;
+  document.body.classList.remove("title-nav");
+  setDock([]);
   shownName = null; // the next session starts fresh, without a slide
   watchTitle(document.querySelector("#signIn h1"));
   $("signIn").hidden = false;
@@ -2867,6 +3001,9 @@ async function start() {
     const message = error instanceof TypeError ? "Can’t load the list of departments. Check your connection, then reload." : error.message;
     return setStatus($("connectStatus"), message, "error");
   }
+  const local = typeof testOwner !== "undefined" && testOwner.available; // the local test, on your own computer only
+  if (local) testOwner.showCard();
+  if (local && saved && saved.token === testOwner.key) return testOwner.signIn();
   if (saved && saved.token) signIn(saved.token);
   else showSignIn();
 }
