@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-21T23:12:38.194Z",
+  "updated": "2026-11-21T23:13:12.760Z",
   "stages": [
     {
       "id": "stage1",
@@ -13,7 +13,99 @@
           "title": "Gg",
           "instructor": "Gg",
           "sources": [],
-          "lectures": [],
+          "lectures": [
+            {
+              "id": "lmwr0xbsx0",
+              "title": "test",
+              "date": "2026-11-16",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "test.cpp",
+                  "url": "files/cyber/stage1/gg/mwr0xbsx0-test.cpp"
+                }
+              ]
+            },
+            {
+              "id": "lmwr0xbsx1",
+              "title": "test",
+              "date": "2026-11-16",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "test.html",
+                  "url": "files/cyber/stage1/gg/mwr0xbsx1-test.html"
+                }
+              ]
+            },
+            {
+              "id": "lmwr0xbsx2",
+              "title": "test",
+              "date": "2026-11-16",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "test.js",
+                  "url": "files/cyber/stage1/gg/mwr0xbsx2-test.js"
+                }
+              ]
+            },
+            {
+              "id": "lmwr0xbsx3",
+              "title": "test",
+              "date": "2026-11-16",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "test.md",
+                  "url": "files/cyber/stage1/gg/mwr0xbsx3-test.md"
+                }
+              ]
+            },
+            {
+              "id": "lmwr0xbsx4",
+              "title": "test",
+              "date": "2026-11-16",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "test.pdf",
+                  "url": "files/cyber/stage1/gg/mwr0xbsx4-test.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwr0xbsx5",
+              "title": "test",
+              "date": "2026-11-16",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "test.py",
+                  "url": "files/cyber/stage1/gg/mwr0xbsx5-test.py"
+                }
+              ]
+            },
+            {
+              "id": "lmwr0xbsx6",
+              "title": "test",
+              "date": "2026-11-16",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "test.txt",
+                  "url": "files/cyber/stage1/gg/mwr0xbsx6-test.txt"
+                }
+              ]
+            }
+          ],
           "hasLabs": true,
           "labs": []
         }
