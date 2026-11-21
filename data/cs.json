@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-21T06:14:05.647Z",
+  "updated": "2026-11-21T06:15:25.791Z",
   "stages": [
     {
       "id": "stage1",
@@ -338,6 +338,19 @@
                 {
                   "label": "امثلة 1(1).pdf",
                   "url": "files/cs/stage2/fg33-labs/mwq0g9g1-امثلة-1-1.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwq0kl0e",
+              "title": "Lab 2",
+              "date": "2026-11-21",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "ملخص العملي الجزء الثاني .pdf",
+                  "url": "files/cs/stage2/fg33-labs/mwq0khzq-ملخص-العملي-الجزء-الثاني.pdf"
                 }
               ]
             }
