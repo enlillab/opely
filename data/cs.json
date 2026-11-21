@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-21T07:15:10.263Z",
+  "updated": "2026-11-21T07:16:18.390Z",
   "stages": [
     {
       "id": "stage1",
@@ -610,6 +610,19 @@
                 {
                   "label": "Networks Protocols MAC.pdf",
                   "url": "files/cs/stage2/fg66/mwq2p5ak-networks-protocols-mac.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwq2qvdi",
+              "title": "Lec IP",
+              "date": "2026-11-21",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "Networks Protocols ip.pdf",
+                  "url": "files/cs/stage2/fg66/mwq2qfjr-networks-protocols-ip.pdf"
                 }
               ]
             }
