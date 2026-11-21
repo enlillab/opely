@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-21T06:20:20.689Z",
+  "updated": "2026-11-21T06:21:03.965Z",
   "stages": [
     {
       "id": "stage1",
@@ -156,8 +156,16 @@
               "video": "",
               "files": [
                 {
+                  "label": "lec5-Queue_Lecture.pdf",
+                  "url": "files/cs/stage2/fg22/mwq0roij-lec5-queue-lecture.pdf"
+                }
+              ],
+              "earlier": [
+                {
                   "label": "lec5-Queue..pptx (1).pdf",
-                  "url": "files/cs/stage2/fg22/mwovp0zk-lec5-queue..pptx-1.pdf"
+                  "url": "files/cs/stage2/fg22/mwovp0zk-lec5-queue..pptx-1.pdf",
+                  "commit": "f804dad3b1353b3f8b6214926fd8b69a810e2c08",
+                  "removedAt": "2026-11-21"
                 }
               ]
             },
