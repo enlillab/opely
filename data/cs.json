@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-21T06:01:21.048Z",
+  "updated": "2026-11-21T06:02:23.821Z",
   "stages": [
     {
       "id": "stage1",
@@ -288,6 +288,19 @@
                 {
                   "label": "lec 1.pdf",
                   "url": "files/cs/stage2/fg33/mwowi8qu-lec-1.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwq03tn1",
+              "title": "Lec 2",
+              "date": "2026-11-21",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "lec 2 new.pdf",
+                  "url": "files/cs/stage2/fg33/mwq03qzb-lec-2-new.pdf"
                 }
               ]
             }
