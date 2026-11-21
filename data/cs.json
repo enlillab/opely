@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-21T06:54:53.127Z",
+  "updated": "2026-11-21T07:00:45.513Z",
   "stages": [
     {
       "id": "stage1",
@@ -550,7 +550,21 @@
           "title": "جرائم نظام البعث",
           "instructor": "م.سعد حسين",
           "sources": [],
-          "lectures": []
+          "lectures": [
+            {
+              "id": "lmwq26vk9",
+              "title": "جرائم نظام البعث",
+              "date": "2026-11-21",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "‎⁨منهاج 16-10-23⁩_compressed.pdf",
+                  "url": "files/cs/stage2/fg55/mwq2637l-منهاج-16-10-23-compressed.pdf"
+                }
+              ]
+            }
+          ]
         }
       ]
     },
