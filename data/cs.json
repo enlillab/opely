@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-21T07:17:26.236Z",
+  "updated": "2026-11-21T07:18:59.985Z",
   "stages": [
     {
       "id": "stage1",
@@ -636,6 +636,19 @@
                 {
                   "label": "Networks Protocols ARP.pdf",
                   "url": "files/cs/stage2/fg66/mwq2rv8p-networks-protocols-arp.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwq2uc29",
+              "title": "Lec http",
+              "date": "2026-11-21",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "Networks Protocols HTTP.pdf",
+                  "url": "files/cs/stage2/fg66/mwq2tn8v-networks-protocols-http.pdf"
                 }
               ]
             }
