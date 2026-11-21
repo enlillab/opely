@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-21T14:18:21.593Z",
+  "updated": "2026-11-21T14:18:32.647Z",
   "stages": [
     {
       "id": "stage1",
@@ -1172,19 +1172,6 @@
               ]
             },
             {
-              "id": "lmwqhtho21",
-              "title": "LECTURE 4",
-              "date": "2026-11-12",
-              "summary": "",
-              "video": "",
-              "files": [
-                {
-                  "label": "HTTP- cach and FTP.pdf",
-                  "url": "files/cs/stage3/06/mwqhtho21-http-cach-and-ftp.pdf"
-                }
-              ]
-            },
-            {
               "id": "lmwqhtho20",
               "title": "LECTURE 3 (input validation)",
               "date": "2026-11-21",
@@ -1196,8 +1183,22 @@
                   "url": "files/cs/stage3/06/mwqhtho20-التحقق-من-صحة-المدخلات-input-validation.pdf"
                 }
               ]
+            },
+            {
+              "id": "lmwqhtho21",
+              "title": "LECTURE 4",
+              "date": "2026-11-12",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "HTTP- cach and FTP.pdf",
+                  "url": "files/cs/stage3/06/mwqhtho21-http-cach-and-ftp.pdf"
+                }
+              ]
             }
-          ]
+          ],
+          "lecturesOrdered": true
         }
       ]
     },
