@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-21T06:36:27.390Z",
+  "updated": "2026-11-21T06:36:38.363Z",
   "stages": [
     {
       "id": "stage1",
@@ -463,19 +463,6 @@
               ]
             },
             {
-              "id": "lmwq166cn",
-              "title": "Lec 5",
-              "date": "2026-11-21",
-              "summary": "",
-              "video": "",
-              "files": [
-                {
-                  "label": "lecture 5.pdf",
-                  "url": "files/cs/stage2/fg44/mwq160g9-lecture-5.pdf"
-                }
-              ]
-            },
-            {
               "id": "lmwq17692",
               "title": "Lec 4",
               "date": "2026-11-21",
@@ -485,6 +472,19 @@
                 {
                   "label": "lecture 4(1).pdf",
                   "url": "files/cs/stage2/fg44/mwq1731x-lecture-4-1.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwq166cn",
+              "title": "Lec 5",
+              "date": "2026-11-21",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "lecture 5.pdf",
+                  "url": "files/cs/stage2/fg44/mwq160g9-lecture-5.pdf"
                 }
               ]
             },
@@ -540,7 +540,8 @@
                 }
               ]
             }
-          ]
+          ],
+          "lecturesOrdered": true
         }
       ]
     },
