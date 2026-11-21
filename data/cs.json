@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-21T06:19:11.236Z",
+  "updated": "2026-11-21T06:20:20.689Z",
   "stages": [
     {
       "id": "stage1",
@@ -135,8 +135,16 @@
               "video": "",
               "files": [
                 {
+                  "label": "lec4-Expression_Parsing_Final.pdf",
+                  "url": "files/cs/stage2/fg22/mwq0qqs3-lec4-expression-parsing-final.pdf"
+                }
+              ],
+              "earlier": [
+                {
                   "label": "lec4-Stack&Expression.pdf",
-                  "url": "files/cs/stage2/fg22/mwovnhtt-lec4-stack-expression.pdf"
+                  "url": "files/cs/stage2/fg22/mwovnhtt-lec4-stack-expression.pdf",
+                  "commit": "113780d368587e0252b698ac99f6c9b6cc8a504b",
+                  "removedAt": "2026-11-21"
                 }
               ]
             },
