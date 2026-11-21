@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-21T23:13:12.760Z",
+  "updated": "2026-11-21T23:14:53.218Z",
   "stages": [
     {
       "id": "stage1",
@@ -130,5 +130,15 @@
       "courses": []
     }
   ],
-  "announcements": []
+  "announcements": [
+    {
+      "id": "nmwr0zleg",
+      "title": "Something",
+      "text": "Someone",
+      "date": "2026-11-22",
+      "event": "2026-11-30T10:00",
+      "until": "2026-11-30T12:30",
+      "stage": "stage1"
+    }
+  ]
 }
