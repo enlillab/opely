@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-21T06:13:38.928Z",
+  "updated": "2026-11-21T06:14:05.647Z",
   "stages": [
     {
       "id": "stage1",
@@ -322,7 +322,7 @@
           "labs": [
             {
               "id": "lmwq0gb7i",
-              "title": "Lab 2",
+              "title": "Lab 1",
               "date": "2026-11-21",
               "summary": "امثله عملي 2",
               "video": "",
