@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-21T06:04:40.282Z",
+  "updated": "2026-11-21T06:07:50.669Z",
   "stages": [
     {
       "id": "stage1",
@@ -319,7 +319,25 @@
             }
           ],
           "hasLabs": true,
-          "labs": [],
+          "labs": [
+            {
+              "id": "lmwq0atu5",
+              "title": "Lab 1",
+              "date": "2026-11-21",
+              "summary": "امثلة عملي",
+              "video": "",
+              "files": [
+                {
+                  "label": "امثلة 2.pdf",
+                  "url": "files/cs/stage2/fg33-labs/mwq0aqko-امثلة-2.pdf"
+                },
+                {
+                  "label": "امثلة 2(1).pdf",
+                  "url": "files/cs/stage2/fg33-labs/mwq0as6k-امثلة-2-1.pdf"
+                }
+              ]
+            }
+          ],
           "lecturesOrdered": true
         }
       ]
