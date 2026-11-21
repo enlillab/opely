@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-21T06:12:06.462Z",
+  "updated": "2026-11-21T06:13:38.928Z",
   "stages": [
     {
       "id": "stage1",
@@ -321,23 +321,6 @@
           "hasLabs": true,
           "labs": [
             {
-              "id": "lmwq0atu5",
-              "title": "Lab 1",
-              "date": "2026-11-21",
-              "summary": "امثلة عملي",
-              "video": "",
-              "files": [
-                {
-                  "label": "امثلة 2.pdf",
-                  "url": "files/cs/stage2/fg33-labs/mwq0aqko-امثلة-2.pdf"
-                },
-                {
-                  "label": "امثلة 2(1).pdf",
-                  "url": "files/cs/stage2/fg33-labs/mwq0as6k-امثلة-2-1.pdf"
-                }
-              ]
-            },
-            {
               "id": "lmwq0gb7i",
               "title": "Lab 2",
               "date": "2026-11-21",
@@ -359,7 +342,36 @@
               ]
             }
           ],
-          "lecturesOrdered": true
+          "lecturesOrdered": true,
+          "archive": {
+            "versions": [],
+            "removed": [
+              {
+                "id": "rmwq0iak0",
+                "kind": "lab",
+                "removedAt": "2026-11-21",
+                "item": {
+                  "id": "lmwq0atu5",
+                  "title": "Lab 1",
+                  "date": "2026-11-21",
+                  "summary": "امثلة عملي",
+                  "video": "",
+                  "files": [
+                    {
+                      "label": "امثلة 2.pdf",
+                      "url": "files/cs/stage2/fg33-labs/mwq0aqko-امثلة-2.pdf",
+                      "commit": "5b599d3c618b48b42a79c36c7890f2526a0ce980"
+                    },
+                    {
+                      "label": "امثلة 2(1).pdf",
+                      "url": "files/cs/stage2/fg33-labs/mwq0as6k-امثلة-2-1.pdf",
+                      "commit": "5b599d3c618b48b42a79c36c7890f2526a0ce980"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         }
       ]
     },
