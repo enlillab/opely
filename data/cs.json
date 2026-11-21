@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-21T07:02:13.570Z",
+  "updated": "2026-11-21T07:11:16.098Z",
   "stages": [
     {
       "id": "stage1",
@@ -573,7 +573,21 @@
           "title": "بروتوكولات الشبكة",
           "instructor": "م.م. عمر عادل",
           "sources": [],
-          "lectures": []
+          "lectures": [
+            {
+              "id": "lmwq2ke4i",
+              "title": "Lec ppp",
+              "date": "2026-11-21",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "Networks Protocols PPP.pdf",
+                  "url": "files/cs/stage2/fg66/mwq2kam0-networks-protocols-ppp.pdf"
+                }
+              ]
+            }
+          ]
         }
       ]
     },
