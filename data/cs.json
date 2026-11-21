@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-21T07:12:13.920Z",
+  "updated": "2026-11-21T07:15:10.263Z",
   "stages": [
     {
       "id": "stage1",
@@ -597,6 +597,19 @@
                 {
                   "label": "OSI Layer_251213_134827.pdf",
                   "url": "files/cs/stage2/fg66/mwq2lgp3-osi-layer-251213-134827.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwq2pet2",
+              "title": "Lec Mac",
+              "date": "2026-11-21",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "Networks Protocols MAC.pdf",
+                  "url": "files/cs/stage2/fg66/mwq2p5ak-networks-protocols-mac.pdf"
                 }
               ]
             }
