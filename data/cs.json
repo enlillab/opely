@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-21T06:31:31.777Z",
+  "updated": "2026-11-21T06:32:13.223Z",
   "stages": [
     {
       "id": "stage1",
@@ -459,6 +459,19 @@
                 {
                   "label": "lecture 3(1).pdf",
                   "url": "files/cs/stage2/fg44/mwq154x0-lecture-3-1.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwq166cn",
+              "title": "Lec 4",
+              "date": "2026-11-21",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "lecture 5.pdf",
+                  "url": "files/cs/stage2/fg44/mwq160g9-lecture-5.pdf"
                 }
               ]
             }
