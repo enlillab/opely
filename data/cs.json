@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-21T06:36:38.363Z",
+  "updated": "2026-11-21T06:54:53.127Z",
   "stages": [
     {
       "id": "stage1",
@@ -542,6 +542,15 @@
             }
           ],
           "lecturesOrdered": true
+        },
+        {
+          "id": "fg55",
+          "code": "Fg 55",
+          "semester": 1,
+          "title": "جرائم نظام البعث",
+          "instructor": "م.سعد حسين",
+          "sources": [],
+          "lectures": []
         }
       ]
     },
