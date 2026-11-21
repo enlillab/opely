@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-21T07:11:16.098Z",
+  "updated": "2026-11-21T07:12:13.920Z",
   "stages": [
     {
       "id": "stage1",
@@ -584,6 +584,19 @@
                 {
                   "label": "Networks Protocols PPP.pdf",
                   "url": "files/cs/stage2/fg66/mwq2kam0-networks-protocols-ppp.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwq2lmqn",
+              "title": "Lec Osi",
+              "date": "2026-11-21",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "OSI Layer_251213_134827.pdf",
+                  "url": "files/cs/stage2/fg66/mwq2lgp3-osi-layer-251213-134827.pdf"
                 }
               ]
             }
