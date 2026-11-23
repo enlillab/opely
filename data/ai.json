@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-23T08:04:14.621Z",
+  "updated": "2026-11-23T08:06:51.126Z",
   "stages": [
     {
       "id": "stage1",
@@ -937,7 +937,7 @@
             },
             {
               "id": "bmwmlj1im1",
-              "title": "Lab 2",
+              "title": "Lab 2 ( Arithmetic operations )",
               "date": "2026-10-08",
               "summary": "",
               "video": "",
