@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-23T08:08:11.724Z",
+  "updated": "2026-11-23T08:10:46.949Z",
   "stages": [
     {
       "id": "stage1",
@@ -315,6 +315,19 @@
                 {
                   "label": "6.pdf",
                   "url": "files/ai/stage2/ai014/mwjq5ibu5-6.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwszkmqt",
+              "title": "L7 ( Queue )",
+              "date": "2026-11-19",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "7.pdf",
+                  "url": "files/ai/stage2/ai014/mwszkjkc-7.pdf"
                 }
               ]
             }
