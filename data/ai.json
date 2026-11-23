@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-18T21:08:16.665Z",
+  "updated": "2026-11-23T08:04:14.621Z",
   "stages": [
     {
       "id": "stage1",
@@ -945,6 +945,19 @@
                 {
                   "label": "LAB WORK 2.pdf",
                   "url": "files/ai/stage2/ai016/mwmlj1im0-lab-work-2.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwszc80t",
+              "title": "L3 ( Flags )",
+              "date": "2026-11-23",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "LAB WORK 3.pdf",
+                  "url": "files/ai/stage2/ai016-labs/mwszc59q-lab-work-3.pdf"
                 }
               ]
             }
