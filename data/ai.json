@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-23T08:10:46.949Z",
+  "updated": "2026-11-23T08:10:50.905Z",
   "stages": [
     {
       "id": "stage1",
@@ -254,19 +254,6 @@
               ]
             },
             {
-              "id": "lmwjq5ibu1",
-              "title": "L2 ( Algorithms and Complexity )",
-              "date": "2026-10-07",
-              "summary": "",
-              "video": "",
-              "files": [
-                {
-                  "label": "2.pdf",
-                  "url": "files/ai/stage2/ai014/mwjq5ibu1-2.pdf"
-                }
-              ]
-            },
-            {
               "id": "lmwjq5ibu2",
               "title": "L3 ( Arrays and Pointers )",
               "date": "2026-10-14",
@@ -276,6 +263,19 @@
                 {
                   "label": "3.pdf",
                   "url": "files/ai/stage2/ai014/mwjq5ibu2-3.pdf"
+                }
+              ]
+            },
+            {
+              "id": "lmwjq5ibu1",
+              "title": "L2 ( Algorithms and Complexity )",
+              "date": "2026-10-07",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "2.pdf",
+                  "url": "files/ai/stage2/ai014/mwjq5ibu1-2.pdf"
                 }
               ]
             },
@@ -386,7 +386,8 @@
               ]
             }
           ],
-          "labsOrdered": true
+          "labsOrdered": true,
+          "lecturesOrdered": true
         },
         {
           "id": "ai15",
