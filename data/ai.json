@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-23T08:07:06.717Z",
+  "updated": "2026-11-23T08:08:11.724Z",
   "stages": [
     {
       "id": "stage1",
@@ -924,7 +924,7 @@
           "labs": [
             {
               "id": "bmwmlj1im0",
-              "title": "Lab 1",
+              "title": "Lab 1 ( Introduction (mov, push, pop) )",
               "date": "2026-10-01",
               "summary": "",
               "video": "",
