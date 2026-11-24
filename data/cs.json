@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-24T18:18:03.618Z",
+  "updated": "2026-11-24T18:18:07.968Z",
   "stages": [
     {
       "id": "stage1",
@@ -86,19 +86,6 @@
               ]
             },
             {
-              "id": "lmwv0ny8f",
-              "title": "lec 7",
-              "date": "2026-11-24",
-              "summary": "",
-              "video": "",
-              "files": [
-                {
-                  "label": "lect7 new.pdf",
-                  "url": "files/cs/stage2/fg11/mwv0nvm0-lect7-new.pdf"
-                }
-              ]
-            },
-            {
               "id": "lmwv0pg4i",
               "title": "lec 6",
               "date": "2026-11-24",
@@ -110,6 +97,19 @@
                   "url": "files/cs/stage2/fg11/mwv0pdk6-lecture-6-constructor.pdf"
                 }
               ]
+            },
+            {
+              "id": "lmwv0ny8f",
+              "title": "lec 7",
+              "date": "2026-11-24",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "lect7 new.pdf",
+                  "url": "files/cs/stage2/fg11/mwv0nvm0-lect7-new.pdf"
+                }
+              ]
             }
           ],
           "hasLabs": true,
@@ -117,7 +117,8 @@
           "archive": {
             "versions": [],
             "removed": []
-          }
+          },
+          "lecturesOrdered": true
         },
         {
           "id": "fg22",
