@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-24T18:18:07.968Z",
+  "updated": "2026-11-24T18:19:05.566Z",
   "stages": [
     {
       "id": "stage1",
@@ -113,7 +113,21 @@
             }
           ],
           "hasLabs": true,
-          "labs": [],
+          "labs": [
+            {
+              "id": "lmwv0qrxa",
+              "title": "lab",
+              "date": "2026-11-24",
+              "summary": "",
+              "video": "",
+              "files": [
+                {
+                  "label": "----.pdf",
+                  "url": "files/cs/stage2/fg11-labs/mwv0qp7r-pdf"
+                }
+              ]
+            }
+          ],
           "archive": {
             "versions": [],
             "removed": []
