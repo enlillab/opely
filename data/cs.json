@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-24T18:27:21.865Z",
+  "updated": "2026-11-24T18:27:40.565Z",
   "stages": [
     {
       "id": "stage1",
@@ -22,7 +22,7 @@
           "lectures": [
             {
               "id": "lmwmc9u9z",
-              "title": "LUC 1",
+              "title": "lec 1",
               "date": "2026-11-18",
               "summary": "",
               "video": "",
